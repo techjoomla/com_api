@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset
+		name="config"
+		label="COM_API_CONFIG_TEXT_FILTERS_LABEL"
+		description="COM_API_CONFIG_TEXT_FILTERS_DESC">
+
+		<field
+			name="key_registration"
+			type="radio"
+			default="0"
+			label="COM_API_CONFIG_KEY_REGISTRATION"
+			description="COM_API_CONFIG_KEY_REGISTRATION_DESC">
+			<option value="0">JDISABLED</option>
+			<option value="1">JENABLED</option>
+		</field>
+
+		<field
+			name="key_registration_access"
+			type="accesslevel"
+			default="3"
+			label="COM_API_CONFIG_KEY_REGISTRATION_ACCESS"
+			description="COM_API_CONFIG_KEY_REGISTRATION_ACCESS_DESC"
+			/>
+
+		<field
+			name="resource_access"
+			type="list"
+			default="protected"
+			label="COM_API_CONFIG_RESOURCE_ACCESS"
+			description="COM_API_CONFIG_RESOURCE_ACCESS_DESC">
+			<option value="protected">COM_API_CONFIG_PROTECTED</option>
+			<option value="public">COM_API_CONFIG_PUBLIC</option>
+		</field>
+
+		<field
+			name="default_content_type"
+			type="list"
+			default="json"
+			label="COM_API_CONFIG_DEFAULT_CONTENT_TYPE"
+			description="COM_API_CONFIG_DEFAULT_CONTENT_TYPE_DESC">
+			<option value="json">JSON</option>
+			<option value="xml">XML</option>
+		</field>
+		<field
+			name="auth_method"
+			type="list"
+			default="user"
+			label="COM_API_CONFIG_AUTH_METHOD"
+			description="COM_API_CONFIG_AUTH_METHOD_DESC">
+			<option value="user">COM_API_CONFIG_USER</option>
+		</field>
+
+		<field
+			name="auth_method"
+			type="list"
+			default="key"
+			label="COM_API_CONFIG_AUTH_METHOD"
+			description="COM_API_CONFIG_AUTH_METHOD_DESC">
+			<option value="key">COM_API_CONFIG_KEY</option>
+		</field>
+
+		<field
+			name="request_limit"
+			type="text"
+			default="1500"
+			label="COM_API_CONFIG_REQUEST_LIMIT"
+			description="COM_API_CONFIG_REQUEST_LIMIT_DESC"
+			/>
+
+		<field
+			name="request_limit_time"
+			type="list"
+			default="hour"
+			label="COM_API_CONFIG_REQUEST_LIMIT_TIME"
+			description="COM_API_CONFIG_REQUEST_LIMIT_TIME_DESC">
+			<option value="hour">COM_API_CONFIG_HOUR</option>
+			<option value="day">COM_API_CONFIG_DAY</option>
+			<option value="minute">COM_API_CONFIG_MINUTE</option>
+		</field>
+	</fieldset>
+</config>

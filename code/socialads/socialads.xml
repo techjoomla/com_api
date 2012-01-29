@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="1.7" type="plugin" group="api" method="upgrade">
+    <name>Api - Socialads</name>
+    <version>1.0</version>
+    <creationDate>November 2011</creationDate>
+    <author>Reportoise</author>
+    <authorEmail>support@reportoise.com</authorEmail>
+    <authorUrl>http://www.reportoise.com</authorUrl>
+    <copyright>2011 Reportoise</copyright>
+    <license>GNU General Public License v2</license>
+    <description>This plugin exposes com_socialads to the Joomla! API</description>
+    
+    <files>
+        <filename plugin="socialads">socialads.php</filename> 
+        <filename >socialads/summary.php</filename>
+        <filename >socialads/details.php</filename>
+        <filename >socialads/helper.php</filename>
+        <folder>socialads</folder> 
+    </files>
+</extension>

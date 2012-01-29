@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="1.7" type="plugin" group="api" method="upgrade">
+   <name>Api_Redshop</name>
+   <version>1.0</version>
+   <creationDate>November 2011</creationDate>
+   <author>Reportoise</author>
+   <authorEmail>support@reportoise.com</authorEmail>
+   <authorUrl>http://www.reportoise.com</authorUrl>
+   <copyright>2011 Reportoise</copyright>
+   <license>GNU General Public License v2</license>
+   <description>This plugin exposes com_redshop to the Joomla! API</description>
+    
+    <files>
+        <filename plugin="redshop">redshop.php</filename> 
+        <folder>redshop</folder> 
+    </files>
+</extension>
