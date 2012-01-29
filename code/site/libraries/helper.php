@@ -15,7 +15,7 @@ class APIHelper
 	function getAPIUserID()
 	{
 		static $user_id;
-
+                           
 		if ( !$user_id ) {
 			$user_id = APIAuthentication::getInstance()->authenticate();
 		}
@@ -23,14 +23,10 @@ class APIHelper
 		return $user_id;
 	}
 
-	function setSessionUser( $user_id = false )
+	function setSessionUser()
 	{
-		if ( false === $user_id ) {
-			$user_id = APIHelper::getAPIUserID();
-		}
-
-		$session =& JFactory::getSession();
-		$session->set( 'user', JUser::getInstance( $user_id ) );
+		$session  =& JFactory::getSession();
+		$session->set( 'user', JUser::getInstance( APIHelper::getAPIUserID() ) );
 	}
 
 	function unsetSessionUser()
@@ -38,31 +34,4 @@ class APIHelper
 		$session  =& JFactory::getSession();
 		$session->clear( 'user' );
 	}
-
-	/**
-	 * Gets a list of the actions that can be performed.
-	 *
-	 * @param	int		The category ID.
-	 *
-	 * @return	JObject
-	 * @since	1.6
-	 */
-	public static function getActions()
-	{
-		$user   = JFactory::getUser();
-		$result = new JObject;
-
-		$assetName = 'com_api';
-
-		$actions = array(
-			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete'
-		);
-
-		foreach ( $actions as $action ) {
-			$result->set( $action, $user->authorise( $action, $assetName ) );
-		}
-
-		return $result;
-	}
-
 }

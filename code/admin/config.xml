@@ -42,14 +42,6 @@
 			<option value="json">JSON</option>
 			<option value="xml">XML</option>
 		</field>
-		<field
-			name="auth_method"
-			type="list"
-			default="user"
-			label="COM_API_CONFIG_AUTH_METHOD"
-			description="COM_API_CONFIG_AUTH_METHOD_DESC">
-			<option value="user">COM_API_CONFIG_USER</option>
-		</field>
 
 		<field
 			name="auth_method"

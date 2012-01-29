@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <install version="1.5" type="plugin" group="api" method="upgrade">
-    <name>Api - Socialads</name>
+    <name>Api - Virtuemart</name>
     <version>1.0</version>
     <creationDate>November 2011</creationDate>
     <author>Reportoise</author>
@@ -8,13 +8,13 @@
     <authorUrl>http://www.reportoise.com</authorUrl>
     <copyright>2011 Reportoise</copyright>
     <license>GNU General Public License v2</license>
-    <description>This plugin exposes com_socialads to the Joomla! API</description>
+    <description>This plugin exposes com_virtuemart to the Joomla! API</description>
     
     <files>
-        <filename plugin="socialads">socialads.php</filename> 
-        <filename >socialads/summary.php</filename>
-        <filename >socialads/details.php</filename>
-        <filename >socialads/helper.php</filename>
-        <folder>socialads</folder> 
+        <filename plugin="virtuemart">virtuemart.php</filename>
+        <filename >virtuemart/summary.php</filename>
+        <filename >virtuemart/details.php</filename>
+        <filename >virtuemart/helper.php</filename>
+        <folder>virtuemart</folder> 
     </files>
 </install>

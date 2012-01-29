@@ -9,11 +9,9 @@ class Sale_Data
    {
             $db = JFactory::getDBO();
            
-		    $query = "SELECT SUM(order_total) AS sale
-		               FROM #__redshop_orders 
-		               WHERE DATE(FROM_UNIXTIME(mdate)) BETWEEN '".$startdate."'AND '".$enddate."'
-		               AND order_status='s' AND order_payment_status='Paid'"; 
-		            	                     	 
+		    $query = "SELECT SUM(order_total) FROM #__vm_orders 
+		             	WHERE order_status='c' AND DATE(FROM_UNIXTIME(mdate)) 
+		            	BETWEEN '".$startdate."'AND '".$enddate."'";                     	 
 		              
 	        $db->setQuery( $query ); 
 			$total = $db->loadResult();

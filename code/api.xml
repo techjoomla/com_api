@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="1.7" method="upgrade">
+<install type="component" version="1.5" method="upgrade">
 	<name>API</name>
-	<creationDate>November 2011</creationDate>
-	<author>Reportoise</author>
-	<copyright>2011 Reportoise</copyright>
-	 <authorEmail>support@reportoise.com</authorEmail>
-   <authorUrl>http://www.reportoise.com</authorUrl>
-   <license>GNU General Public License v2</license>
-	<version>0.5.0</version>
+	<version>1.0</version>
+    <creationDate>November 2011</creationDate>
+    <author>Reportoise</author>
+    <authorEmail>support@reportoise.com</authorEmail>
+    <authorUrl>http://www.reportoise.com</authorUrl>
+    <copyright>2011 Reportoise</copyright>
+    <license>GNU General Public License v2</license>
     <description>
 		<![CDATA[
 		<p><h2>Reportoise - Generic Api framework for Joomla to be used with the mobile app</h2></p>
@@ -16,7 +16,6 @@
 		]]>
 	</description>
     <installfile>install.api.php</installfile>
-	<scriptfile>script.php</scriptfile>
 
 	<install>
         <sql>
@@ -43,7 +42,7 @@
     </languages>
 
 	<administration>
-		<menu>COM_API</menu>
+		<menu link="option=com_api">COM_API</menu>
 
 		<files folder="admin">
 			<filename>api.php</filename>
@@ -62,4 +61,9 @@
 			<language tag="en-GB">language/en-GB/en-GB.com_api.sys.ini</language>
 		</languages>
 	</administration>
-</extension>
+</install>
+
+
+
+
+

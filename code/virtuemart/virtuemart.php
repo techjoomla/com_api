@@ -6,12 +6,18 @@
  * @link 	http://www.edgewebworks.com
  * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ */
 
-class ApiError extends JError
+defined('_JEXEC') or die( 'Restricted access' );
+
+jimport('joomla.plugin.plugin');
+
+class plgAPIVirtuemart extends ApiPlugin
 {
-	function raiseError($code, $msg)
+	public function __construct()
 	{
-		throw new Exception($msg, $code);
+		parent::__construct();
+
+		ApiResource::addIncludePath(dirname(__FILE__).'/virtuemart');
 	}
 }

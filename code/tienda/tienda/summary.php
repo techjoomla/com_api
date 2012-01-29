@@ -12,68 +12,62 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.plugin.plugin');
 
-class RedshopApiResourceSummary extends ApiResource
+class TiendaApiResourceSummary extends ApiResource
 {
 	public function get()
 	{
+		
 		//set offset & date for server
 		$config =& JFactory::getConfig();
         $offset = $config->getValue('config.offset');
         $dt=date($_SERVER['REQUEST_TIME']);
         $odate= & JFactory::getDate($dt,$offset);
         $date = $odate->toFormat('%F %T');
-             	
+        	
 		// Write query to get daily, weekly, mohthly & yearly sales
 		$db = JFactory::getDBO();
 		
 		//Daily data BETWEEN(CONVERT(int(10),DATE(time()),20) AND time()) 
-		$query = "SELECT SUM(order_total)
-		               FROM #__redshop_orders 
-		               WHERE DATE(FROM_UNIXTIME(mdate))=$date
-		               AND order_status='s' AND order_payment_status='Paid'";
-		               	
+		$query = "SELECT SUM(order_total) As sale
+		               FROM #__tienda_orders
+		               WHERE DATE(modified_date)='".$date."'
+		               AND order_state_id='5'";
+		              	
 		$db->setQuery( $query );
 		$daily=$db->loadResult();
-		if(!$daily){$daily=0;}
+		if(!$daily){ $daily = 0;}
 		$this->compress($daily);
-					
+			
 		//weekly data BETWEEN((time()-((date_format(DATE(time()),'%w')*24*60*60)+time()-DATE(time()))) AND time())
-		//DATE(DATE_SUB(CURDATE(),INTERVAL (DATE_FORMAT(CURDATE(),'%w')-1) DAY))
-		$query = "SELECT SUM(order_total) 
-		               FROM #__redshop_orders AS 
-		               WHERE DATE(FROM_UNIXTIME(mdate)) 
-		               BETWEEN DATE(DATE_SUB('".$date."', INTERVAL WEEKDAY('".$date."') day)) AND '".$date."' 
-		               AND order_status='s' AND order_payment_status='Paid'"; 
-		/*  SELECT SUM(a.product_final_price) 
-		               FROM #__redshop_order_item AS a 
-		               WHERE DATE(FROM_UNIXTIME(a.mdate)) 
-		               BETWEEN DATE(date_sub(CURDATE(), interval WEEKDAY(CURDATE()) day)) AND CURDATE() 
-		               AND a.order_id IN (SELECT order_id FROM #__redshop_orders 
-		               WHERE order_status='s' AND order_payment_status='Paid')    */        
+		$query = "SELECT SUM(order_total) As sale
+		               FROM #__tienda_orders 
+		               WHERE DATE(modified_date) 
+		               BETWEEN DATE(date_sub('".$date."', interval WEEKDAY('".$date."') day)) AND '".$date."' 
+		               AND order_state_id='5'";  
 		               	
 		$db->setQuery( $query );
 		$weekly=$db->loadResult();
-		if(!$weekly){$weekly=0;}
+		if(!$weekly){ $weekly = 0;}
 		$this->compress($weekly);
-		
+					
 		//monthly data BETWEEN((time()-(((date_format(DATE(time()),'%e')-1)24*60*60)+time()-DATE(time()))) AND time())
 		$query = "SELECT SUM(order_total) As sale
-		               FROM #__redshop_orders 
-		               WHERE DATE(FROM_UNIXTIME(mdate)) 
+		               FROM #__tienda_orders 
+		               WHERE DATE(modified_date) 
 		               BETWEEN DATE(DATE_SUB('".$date."',INTERVAL (DATE_FORMAT('".$date."','%e')-1) DAY)) AND '".$date."' 
-		               AND order_status='s' AND order_payment_status='Paid'";  
+		               AND order_state_id='5'";  
 		               	
 		$db->setQuery( $query );
 		$monthly=$db->loadResult();
-		if(!$monthly){$monthly=0;}
+		if(!$monthly){ $monthly = 0;}
 		$this->compress($monthly);
-		
+				
 		//quarterly sale
-		$query = "SELECT QUARTER('".$date."' ) FROM #__redshop_order_item";
+		$query = "SELECT QUARTER( '".$date."' ) FROM #__tienda_orderitems";
 		$db->setQuery( $query );
 		$res=$db->loadResult();
 				
-		$query = "SELECT YEAR('".$date."' ) FROM #__redshop_order_item";
+		$query = "SELECT YEAR( '".$date."' ) FROM #__tienda_orderitems";
 		$db->setQuery( $query );
 		$year=$db->loadResult();
 		
@@ -92,63 +86,66 @@ class RedshopApiResourceSummary extends ApiResource
 		$qstart=$year."-10-01";
 		}
 		
+		
 		$query = "SELECT SUM(order_total) As sale
-		               FROM #__redshop_orders 
-		               WHERE DATE(FROM_UNIXTIME(mdate)) 
+		               FROM #__tienda_orders 
+		               WHERE DATE(modified_date) 
 		               BETWEEN '".$qstart."' AND '".$date."' 
-		               AND order_status='s' AND order_payment_status='Paid'";  
+		               AND  order_state_id='5'";  
 		               
 		$db->setQuery( $query );
 		$quarterly=$db->loadResult();
-		if(!$quarterly){$quarterly=0;}
+		if(!$quarterly){ $quarterly = 0;}
 		$this->compress($quarterly);
 		
 		//yearly data BETWEEN((time()-(((date_format(DATE(time()),'%j')-1)24*60*60)+time()-DATE(time()))) AND time())
 		$query = "SELECT SUM(order_total) As sale
-		               FROM #__redshop_orders 
-		               WHERE DATE(FROM_UNIXTIME(mdate)) 
+		               FROM #__tienda_orders
+		               WHERE DATE(modified_date) 
 		               BETWEEN DATE(DATE_SUB('".$date."',INTERVAL (DATE_FORMAT('".$date."','%j')-1) DAY)) AND '".$date."' 
-		               AND order_status='s' AND order_payment_status='Paid'";  
+		               AND order_state_id='5'";  
 		               
 		$db->setQuery( $query );
 		$yearly=$db->loadResult();
-		if(!$yearly){$yearly=0;}
+		if(!$yearly){ $yearly = 0;}
 		$this->compress($yearly);
 		
-		// financial Yearly data
+		//financial Yearly data
 		 
 		$fdate = DATE("Y")."-4-1 00:00:00";            
 		  
  	    $query = "SELECT SUM(order_total) As sale 
-		       		FROM #__redshop_orders 
+		       		FROM #__tienda_orders 
 				    WHERE DATE_SUB('".$date."',INTERVAL (DATEDIFF('".$date."','".$fdate."'))DAY)
-		            <= DATE(FROM_UNIXTIME(mdate)) AND order_status='s' AND order_payment_status='Paid'";
+		            <= DATE(modified_date) AND order_state_id='5'";
 		            
 		$db->setQuery( $query );
 		$fyearly=$db->loadResult();
 		if(!$fyearly){ $fyearly = 0;}
 		$this->compress($fyearly);
-		
+				
 		//Currency
-		$query="SELECT order_item_currency FROM #__redshop_order_item";              	
+		$query="SELECT c.symbol_left FROM #__tienda_currencies AS c WHERE c.currency_id IN (SELECT currency_id 
+				FROM  #__tienda_orders) ";   
+		            	
 		$db->setQuery( $query );
 		$currency=$db->loadResult();
 		
-		//summary
-		 $result = array();	
+		$result = array();	
 
-        $result['summary'] = array("daily"=>$daily,"weekly"=>$weekly,"monthly"=>$monthly,"quarterly"=> $quarterly,
-        						   "calender_yearly"=> $yearly,"financial_yearly"=>$fyearly);
+        $result['summary'] = array("daily"=>$daily,"weekly"=>$weekly,"monthly"=>$monthly,"quarterly"=>$quarterly,
+        							"calender_yearly"=> $yearly,"financial_yearly"=>$fyearly);
         $result['attribs'] = array("currency"=>$currency);
-         
-		$this->plugin->setResponse( $result );
+   
+        $this->plugin->setResponse( $result );
+		
 		
 		//$this->plugin->setResponse( 'Guru Katre' );
 	}
 
 	public function post()
 	{
-		//query to get daily, weekly, mohthly & yearly sales
+		 //query to get daily, weekly, mohthly & yearly sales
 		$db = JFactory::getDBO();
 		
 		require_once(dirname(__FILE__).DS.'helper.php');
@@ -165,12 +162,12 @@ class RedshopApiResourceSummary extends ApiResource
 		$user = &JFactory::getUser();
 		$userId = $user->get('id');
 		$log->addEntry(array('user_id' => $userId, 'comment' => 'This is the comment','cdate' => $current_date));
-		
-*/
+		*/
+
 		//set offset & date for server
 		$config =& JFactory::getConfig();
         $offset = $config->getValue('config.offset');	
-  	//	$offset = '';
+  		//$offset = '';
   		$current_date= & JFactory::getDate($current_date,$offset);
   		$current_date = $current_date->toFormat('%F %T');
 		
@@ -243,18 +240,20 @@ class RedshopApiResourceSummary extends ApiResource
 		if(!$fyearly){ $fyear = 0;}
 		
 		// Currency
-		//Currency
-		$query="SELECT order_item_currency FROM #__redshop_order_item";              	
+		$query = "SELECT c.symbol_left FROM #__tienda_currencies AS c WHERE c.currency_id IN (SELECT currency_id 
+				FROM  #__tienda_orders)";  
+		               	
 		$db->setQuery( $query );
-		$currency=$db->loadResult();
-		
+		$currency  = $db->loadResult();
+				
 		//send result
 		
 		$result = array();
 		$result['summary'] = array("daily"=>$daily, "weekly"=>$weekly, "monthly"=>$monthly,"quarterly"=>$quarterly, "financial_yearly"=>$fyearly,"calender_yearly"=>$yearly);
 		$result['attribs'] = array("currency"=>$currency);
 				
-		$this->plugin->setResponse( ( $result) );	
+		$this->plugin->setResponse( ( $result) );		 
+		
 	}
 
 	public function put()

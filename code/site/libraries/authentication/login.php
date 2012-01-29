@@ -10,7 +10,7 @@
 
 defined('_JEXEC') or die;
 
-class ApiAuthenticationUser extends ApiAuthentication
+class ApiAuthenticationLogin extends ApiAuthentication
 {
 	protected $auth_method     = null;
 	protected $domain_checking = null;
@@ -39,9 +39,10 @@ class ApiAuthenticationUser extends ApiAuthentication
 		jimport('joomla.user.authentication');
 
 		$authenticate = JAuthentication::getInstance();
-		$response = $authenticate->authenticate(array( 'username' => $user, 'password' => $pass ));
+		 
+		$response = $authenticate->authenticate(array( 'username' => $user, 'password' => $pass ),$options = array());
 		
-		if ($response->status === JAuthentication::STATUS_SUCCESS) {
+		if ($response->status ===JAUTHENTICATE_STATUS_SUCCESS) {
 			$instance = JUser::getInstance($response->username);
 			if ( $instance === false ) {
 				$this->setError( JError::getError() );
