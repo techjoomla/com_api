@@ -174,7 +174,7 @@ class ApiPlugin extends JPlugin
 
 		if ( $access == 'protected' ) {
 			$auth_handler = APIAuthentication::getInstance();
-			$user = $auth_handler->authenticateRequest();
+			$user = $auth_handler->authenticateRequest(); // print_r($user);die("in lib/plugin");
 			if ( $user === false ) {
 				throw new Exception( $auth_handler->getError(), 403 );
 			}

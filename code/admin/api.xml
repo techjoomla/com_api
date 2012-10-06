@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="2.5" method="upgrade">
+	<name>API</name>
+	<creationDate>November 2011</creationDate>
+	<author>Reportoise</author>
+	<copyright>2011 Edge Web Works, LLC</copyright>
+	 <authorEmail>support@reportoise.com</authorEmail>
+   <authorUrl>http://www.reportoise.com</authorUrl>
+   <license>GNU General Public License v2</license>
+	<version>0.1.1</version>
+	 <description>Generic Api framework for Joomla to be used with the Reportoise app</description>
+    <installfile>install.api.php</installfile>
+	<scriptfile>script.php</scriptfile>
+
+	<install>
+        <sql>
+            <file charset="utf8" driver="mysql">install.mysql.sql</file>
+        </sql>
+    </install>
+
+	<files folder="site">
+        <file>api.php</file>
+        <file>LICENSE.php</file>
+        <file>router.php</file>
+        <file>index.html</file>
+		<folder>assets</folder>
+        <folder>controllers</folder>
+        <folder>helpers</folder>
+		<folder>libraries</folder>
+        <folder>models</folder>
+		<folder>tables</folder>
+        <folder>views</folder>
+    </files>
+
+    <languages folder="site">
+        <language tag="en-GB">language/en-GB/en-GB.com_api.ini</language>
+    </languages>
+
+	<administration>
+		<menu>COM_API</menu>
+
+		<files folder="admin">
+			<filename>api.php</filename>
+			<filename>config.xml</filename>
+			<filename>index.html</filename>
+			<filename>LICENSE.php</filename>
+			<filename>install.mysql.sql</filename>
+			<folder>controllers</folder>
+			<folder>elements</folder>
+	        <folder>helpers</folder>
+			<folder>views</folder>
+    	</files>
+
+		<languages folder="admin">
+			<language tag="en-GB">language/en-GB/en-GB.com_api.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_api.sys.ini</language>
+		</languages>
+	</administration>
+</extension>

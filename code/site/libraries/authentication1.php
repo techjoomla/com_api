@@ -22,12 +22,7 @@ abstract class ApiAuthentication extends JObject
     	parent::__construct( $params );
 
 		$this->set( 'auth_method', $this->get( 'auth_method', 'key' ) );
-		//vishal-for air api
-		//$this->set('auth_method',$this->get('auth_method','username'));
-    	//$this->set('auth_method',$this->get('auth_method','password'));
-		//
 		$this->set( 'domain_checking', $this->get( 'domain_checking', 1 ) );
-		
   	}
 
 	public function getInstance( $method = null )
@@ -40,23 +35,16 @@ abstract class ApiAuthentication extends JObject
 		if ( null == $method ) {
 			//2nd params for key authentication
 			$method = $params->get( 'auth_method', 'key' );
-		    //vishal -for air api
-		    if(!JRequest::getVar('key'))
-		    {
-				$method	= $params->get('auth_method', 'login');
 			
-			}
-			//
-			
-		//print_r($this->get( 'auth_method', 'username' ));die("in authentication.php 11");
 		}
 
 		if ( isset( $instances[$method] ) ) {
 		    
 			return $instances[$method];
 		}
-		$className    = 'APIAuthentication' . ucwords( $method ); 
-		$auth_handler = new $className( $params->toArray() ); 
+
+		$className    = 'APIAuthentication' . ucwords( $method );
+		$auth_handler = new $className( $params->toArray() );
 		$instances[$method] = $auth_handler;
 		return $instances[$method];
 	}
