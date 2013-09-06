@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="1.7" method="upgrade">
+<extension type="component" version="3.0" method="upgrade">
 	<name>API</name>
 	<creationDate>November 2011</creationDate>
 	<author>Reportoise</author>
-	<copyright>2011 Reportoise</copyright>
+	<copyright>2011 Edge Web Works, LLC</copyright>
 	 <authorEmail>support@reportoise.com</authorEmail>
    <authorUrl>http://www.reportoise.com</authorUrl>
    <license>GNU General Public License v2</license>
-	<version>0.5.0</version>
-    <description>
-		<![CDATA[
-		<p><h2>Reportoise - Generic Api framework for Joomla to be used with the mobile app</h2></p>
-		Reportoise is an extensible reporting app for Android & iPhone. We're supporting Virtuemart, redSHOP, Tienda & Social Ads at the moment. <br />
-		Visit <a href="http://www.reportoise.com" target="_blank">reportoise.com</a> for more information
-		]]>
-	</description>
-    <installfile>install.api.php</installfile>
-	<scriptfile>script.php</scriptfile>
-
-	<install>
+	<version>0.1.1</version>
+	 <description>Generic Api framework for Joomla to be used with the Reportoise app</description>
+  <install>
         <sql>
             <file charset="utf8" driver="mysql">install.mysql.sql</file>
         </sql>

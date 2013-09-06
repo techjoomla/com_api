@@ -23,8 +23,8 @@ abstract class ApiAuthentication extends JObject
 
 		$this->set( 'auth_method', $this->get( 'auth_method', 'key' ) );
 		//vishal-for air api
-		//$this->set('auth_method',$this->get('auth_method','username'));
-    	//$this->set('auth_method',$this->get('auth_method','password'));
+		$this->set('auth_method',$this->get('auth_method','username'));
+    	$this->set('auth_method',$this->get('auth_method','password'));
 		//
 		$this->set( 'domain_checking', $this->get( 'domain_checking', 1 ) );
 		
@@ -44,14 +44,12 @@ abstract class ApiAuthentication extends JObject
 		    if(!JRequest::getVar('key'))
 		    {
 				$method	= $params->get('auth_method', 'login');
-			
 			}
 			//
-			
-		//print_r($this->get( 'auth_method', 'username' ));die("in authentication.php 11");
+				
 		}
 
-		if ( isset( $instances[$method] ) ) {
+		if ( isset( $instances[$method] ) ) {  //print_r($instances[$method]);die("in authentication.php 1");
 		    
 			return $instances[$method];
 		}

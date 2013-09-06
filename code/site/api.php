@@ -7,14 +7,13 @@
  * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
- 
-error_reporting(0);
-ini_set('display_errors','Off');
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.application.component.controller');
-
+if(!defined('DS')){
+   define('DS',DIRECTORY_SEPARATOR);
+}
 $library_path = JPATH_COMPONENT .DS. 'libraries';
 
 JLoader::register( 'APIController', $library_path .DS. 'controller.php' );

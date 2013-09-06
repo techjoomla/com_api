@@ -7,18 +7,14 @@
  * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
-error_reporting(0);
-ini_set('display_errors','Off');
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.application.component.controller');
 
 $front_end = JPATH_SITE .DS. 'components' .DS. 'com_api';
-
 JLoader::register( 'APIController', $front_end .DS. 'libraries' .DS. 'controller.php' );
-JLoader::register( 'ApiControllerAdmin',
-	$front_end .DS. 'libraries' .DS. 'admin' .DS. 'controller.php' );
+JLoader::register( 'ApiControllerAdmin',$front_end .DS. 'libraries' .DS. 'admin' .DS. 'controller.php' );
 JLoader::register( 'APIModel', $front_end .DS. 'libraries' .DS. 'model.php' );
 JLoader::register( 'APIView', $front_end .DS. 'libraries' .DS. 'view.php' );
 

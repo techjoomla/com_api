@@ -12,7 +12,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.application.component.model');
 
-class ApiModel extends JModel {
+class ApiModel extends JModelLegacy {
 	
 	public function __construct($config=array()) {
 		parent::__construct($config);

@@ -21,7 +21,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		$password = JRequest::getVar( 'password' );
 		$user = $this->loadUserByCredentials( $username, $password );
 		
-
+     
 		if ( $user === false ) {
 			$this->setError(JText::_('Username/password does not match'));
 			return false;
@@ -32,17 +32,24 @@ class ApiAuthenticationLogin extends ApiAuthentication
 
 	public function loadUserByCredentials( $user, $pass )
 	{
+		jimport('joomla.user.authentication');
+
+		$authenticate = JAuthentication::getInstance();   
+		$response = $authenticate->authenticate(array( 'username' => $user, 'password' => $pass ));
 		
-		$app = JFactory::getApplication();
-		$response = $app->login(array('username'=>$user, 'password'=>$pass));
-	
-		if ($response === true) {
+		//if ($response === true) {
+		if ($response->status == 1) {
+		
+		    $app = JFactory::getApplication();    
+			$response = $app->login(array('username'=>$user, 'password'=>$pass));
+			
 			$db = JFactory::getDBO();
 			$db->setQuery("SELECT id FROM #__users WHERE username = " . $db->Quote($user));
 			$userid = $db->loadResult();	
 			$app->logout();
 			return $userid;
 		} else {
+		
 			return false;
 		}
 		

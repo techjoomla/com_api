@@ -42,13 +42,13 @@ class ApiViewKeys extends ApiView {
 		
 		$user	= JFactory::getUser();
 	
-		$model	= JModel::getInstance('Key', 'ApiModel');
+		$model	= JModelLegacy::getInstance('Key', 'ApiModel');
 		$model->setState('user_id', $user->get('id'));
 		$tokens	= $model->getList();
 		
 		$new_token_link = JRoute::_('index.php?option=com_api&view=keys&layout=new');
 		
-		$this->assignRef('session_token', JUtility::getToken());
+		$this->assignRef('session_token', JSession::getFormToken());
 		$this->assignRef('new_token_link', $new_token_link);
 		$this->assignRef('user', $user);
 		$this->assignRef('tokens', $tokens);

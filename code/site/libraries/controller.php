@@ -16,7 +16,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 jimport( 'joomla.application.component.controller' );
 
-class ApiController extends JController
+class ApiController extends JControllerLegacy
 {	
 	/**
 	 * Base Controller Constructor
@@ -29,7 +29,21 @@ class ApiController extends JController
 	{
 		parent::__construct( $config );
 		$this->set( 'option', JRequest::getCmd( 'option' ) );
-		JModel::addIncludePath( JPATH_SITE .DS. 'components' .DS. 'com_api' .DS. 'models' );
-		JTable::addIncludePath( JPATH_SITE .DS. 'components' .DS. 'com_api' .DS. 'tables' );
+		$app = JFactory::getApplication();
+
+		JModelLegacy::addIncludePath( JPATH_ROOT .DS. 'components' .DS. 'com_api' .DS. 'models' );
+		JTable::addIncludePath( JPATH_ROOT .DS. 'components' .DS. 'com_api' .DS. 'tables' );
+	}
+	
+	public function display($cachable = false, $urlparams = false)
+	{
+		require_once JPATH_COMPONENT.'/helpers/api_my.php';
+
+		$view		= JFactory::getApplication()->input->getCmd('view', 'keys');
+        JFactory::getApplication()->input->set('view', $view);
+
+		parent::display($cachable, $urlparams);
+
+		return $this;
 	}
 }

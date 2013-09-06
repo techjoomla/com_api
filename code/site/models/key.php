@@ -32,6 +32,7 @@ class ApiModelKey extends ApiModel
 
 	public function getList()
 	{
+		
 		$where = null;
 		if($user_id	= $this->getState('user_id')) :
 			$where = 'WHERE user_id = '.$this->_db->Quote($user_id);

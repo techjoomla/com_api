@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
-class ApiView extends JView {
+class ApiView extends JViewLegacy {
 
 	protected $option	= null;
 	protected $view		= null;
