@@ -37,7 +37,7 @@ class ApiController extends JControllerLegacy
 	
 	public function display($cachable = false, $urlparams = false)
 	{
-		require_once JPATH_COMPONENT.'/helpers/api_my.php';
+		//require_once JPATH_COMPONENT.'/helpers/api_my.php';
 
 		$view		= JFactory::getApplication()->input->getCmd('view', 'keys');
         JFactory::getApplication()->input->set('view', $view);
