@@ -316,7 +316,15 @@ class ApiPlugin extends JPlugin
 	 */
 	protected function toJson() 
 	{
-		return json_encode( $this->get( 'response' ) );
+		$json = json_encode($this->get('response'));
+		$app = JFactory::getApplication();
+		$callback = $app->input->get('callback');
+		if ($callback) {
+			return $callback . '(' . $json . ')';
+		} else {
+			return $json;
+		}
+		
 	}
 	
 	/**
