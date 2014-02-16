@@ -286,6 +286,15 @@ class ApiPlugin extends JPlugin
 	{
 		$this->set( 'response', $data );
 	}
+        
+        /**
+	 * Return the User object
+	 * return object user
+	 */
+        public function getUser()
+        {
+                return $this->user;
+        }
 	
 	/**
 	 * Determines the method with which to encode the output based on the requested content type
