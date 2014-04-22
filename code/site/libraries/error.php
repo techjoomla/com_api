@@ -8,4 +8,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
-class ApiError extends JError {}
+class ApiError extends JException
+{
+	function raiseError($code, $msg)
+	{
+		//throw new Exception($msg, $code);
+		//return ApiResource::getErrorResponse( $code, $msg );
+		throw new Exception($msg, $code);
+	}
+}

@@ -14,10 +14,11 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 
-jimport( 'joomla.application.component.controller' );
+jimport('joomla.application.component.controller');
 
-class ApiController extends JControllerLegacy
-{	
+//class ApiController extends JController {
+class ApiController extends JControllerLegacy {
+
 	/**
 	 * Base Controller Constructor
 	 *
@@ -25,25 +26,17 @@ class ApiController extends JControllerLegacy
 	 * @return void
 	 * @since 0.1
 	 */
-	public function __construct( $config = array() )
-	{
-		parent::__construct( $config );
-		$this->set( 'option', JRequest::getCmd( 'option' ) );
+
+	public function __construct($config=array()) {
+		parent::__construct();
+
 		$app = JFactory::getApplication();
 
-		JModelLegacy::addIncludePath( JPATH_ROOT .DS. 'components' .DS. 'com_api' .DS. 'models' );
-		JTable::addIncludePath( JPATH_ROOT .DS. 'components' .DS. 'com_api' .DS. 'tables' );
+		$this->set('option', $app->input->get('option','','STRING'));
+
+		JModelList::addIncludePath(JPATH_SITE.'/components/com_api/models');
+		JTable::addIncludePath(JPATH_SITE.'/components/com_api/tables');
+
 	}
-	
-	public function display($cachable = false, $urlparams = false)
-	{
-		//require_once JPATH_COMPONENT.'/helpers/api_my.php';
 
-		$view		= JFactory::getApplication()->input->getCmd('view', 'keys');
-        JFactory::getApplication()->input->set('view', $view);
-
-		parent::display($cachable, $urlparams);
-
-		return $this;
-	}
 }

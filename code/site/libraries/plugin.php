@@ -12,68 +12,85 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.plugin.plugin');
 
-class ApiPlugin extends JPlugin
-{
-	protected $user               = null;
-	public    $params             = null;
-	protected $format             = null;
-	protected $response           = null;
-	protected $request            = null;
-	protected $request_method     = null;
-	protected $request_headers    = null;
-	protected $skip_request_limit = false;
-	protected $resource_acl       = array();
-	protected $cache_folder       = 'com_api';
-	protected $content_types      = array(
-		'application/json' 	=> 'json',
-		'application/xml'	=> 'xml'
-		);
+class ApiPlugin extends JObject {
 
-	static	$instances  = array();
-	static	$plg_prefix = 'plgAPI';
-	static	$plg_path   = '/plugins/api/';
+	protected $user				= null;
+	protected $params			= null;
+	protected $format			= null;
+	protected $response			= null;
+	protected $request			= null;
+	protected $request_method	= null;
+	protected $request_headers	= null;
+	protected $resource_acl		= array();
+	protected $cache_folder		= 'com_api';
+	protected $content_types	= array(
+									'application/json' 	=> 'json',
+									'application/xml'	=> 'xml'
+								);
 
-	public static function getInstance($name) 
-	{	
-		if ( isset( self::$instances[$name] ) ) {
+	static	$instances		= array();
+	static	$plg_prefix		= 'plgAPI';
+	static	$plg_path		= '/plugins/api/';
+
+
+	public static function getInstance($name)
+	{
+		$app = JFactory::getApplication();
+
+		if (isset(self::$instances[$name])) :
 			return self::$instances[$name];
+		endif;
+
+		$plugin	= JPluginHelper::getPlugin('api', $name);
+
+		if (empty($plugin)) :
+			ApiError::raiseError(400, JText::_('COM_API_PLUGIN_CLASS_NOT_FOUND'));
+		endif;
+
+		jimport('joomla.filesystem.file');
+		/* vishal - for j3.2 plugin */
+		if((float)JVERSION > 2.5)
+		{
+			self::$plg_path = self::$plg_path.$plugin->name.'/';
+
 		}
 
-		$plugin	= JPluginHelper::getPlugin( 'api', $name );
 
-		if ( empty( $plugin ) ) {
-			throw new Exception( JText::_( 'COM_API_PLUGIN_CLASS_NOT_FOUND' ), 400 );
-		}
+		$plgfile	= JPATH_BASE.self::$plg_path.$name.'.php';
+		$param_path = JPATH_BASE.self::$plg_path.$name.'.xml';
 
-		jimport( 'joomla.filesystem.file' );
 
-		$plgfile	= JPATH_BASE.self::$plg_path.$name.DS.$name.'.php';
-		$param_path = JPATH_BASE.self::$plg_path.$name.DS.$name.'.xml';
+		if (!JFile::exists($plgfile)) :
+			ApiError::raiseError(400, JText::_('COM_API_FILE_NOT_FOUND'));
+		endif;
 
-		if ( !JFile::exists( $plgfile ) ) {
-			throw new Exception( JText::_( 'COM_API_FILE_NOT_FOUND' ), 400 );
-		}
+		include_once $plgfile;
+		$class 	= self::$plg_prefix.ucwords($name);
 
-		include $plgfile;
-		$class 	= self::$plg_prefix . ucwords( $name );
+		if (!class_exists($class)) :
+			ApiError::raiseError(400, JText::_('COM_API_PLUGIN_CLASS_NOT_FOUND'));
+		endif;
 
-		if ( !class_exists( $class ) ) {
-			throw new Exception( JText::_( 'COM_API_PLUGIN_CLASS_NOT_FOUND' ), 400 );
-		}
+		$handler	=  new $class();
 
-		$handler =  new $class();
+		$cparams	= JComponentHelper::getParams('com_api');
+		//$params		= new JParameter($plugin->params, $param_path);
+		$params		= new JRegistry($plugin->params, $param_path);
+		$cparams->merge($params);
 
-		$cparams = JComponentHelper::getParams( 'com_api' );
-		$params  = new JRegistry;
-		$params->loadString( $plugin->params );
-		$cparams->merge( $params );
+		$handler->set('params', $cparams);
 
-		$handler->set( 'params', $cparams );
-		$handler->set( 'component', JRequest::getCmd( 'app' ) );
-		$handler->set( 'resource', JRequest::getCmd( 'resource' ) );
-		$handler->set( 'format', $handler->negotiateContent( JRequest::getCmd( 'output', null ) ) );
-		$handler->set( 'request_method', JRequest::getMethod() );
+		/*$handler->set('component', JRequest::getCmd('app'));
+		$handler->set('resource', JRequest::getCmd('resource'));
+		$handler->set('format', $handler->negotiateContent(JRequest::getCmd('output', null)));
+		$handler->set('request_method', JRequest::getMethod());*/
 
+		$handler->set('component', $app->input->post->get('app','','CMD'));
+		$handler->set('resource', $app->input->post->get('resource','','CMD'));
+		$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+		$handler->set('request_method', $app->input->server->get('REQUEST_METHOD','','STRING'));
+
+//print_r($app->input);die("in plugin.php 11");
 		self::$instances[$name] = $handler;
 
 		return self::$instances[$name];
@@ -81,33 +98,36 @@ class ApiPlugin extends JPlugin
 
 	public function __construct()
 	{
-		
+
 	}
 
 	//public function __call($name, $arguments) {
-	//	throw new Exception( JText::_('COM_API_PLUGIN_METHOD_UNREACHABLE'), 400 );
+	//	ApiError::raiseError(400, JText::_('COM_API_PLUGIN_METHOD_UNREACHABLE'));
 	//}
-	
+
 	/**
 	 * Intelligently negotiates the content type based on explicit declaration or header (HTTP_ACCEPT) declaration. If neither is present, it will default to the component parameter default.
 	 * @param	string	$output	String content declaration (usually 'json' or 'xml')
 	 * @return	string
 	 */
-	protected function negotiateContent( $output = null )
+	protected function negotiateContent($output=null)
 	{
 		$format = null;
-		if ( is_null( $output ) && isset( $_SERVER['HTTP_ACCEPT'] ) ) {
-			if ( in_array( $_SERVER['HTTP_ACCEPT'], array_keys( $this->content_types ) ) ) {
+		if (is_null($output) && isset($_SERVER['HTTP_ACCEPT']))
+		{
+			if (in_array($_SERVER['HTTP_ACCEPT'], array_keys($this->content_types)))
+			{
 				$format = $_SERVER['HTTP_ACCEPT'];
 			}
-		} elseif ( in_array( $output, $this->content_types ) ) {
-			$flipped = array_flip( $this->content_types );
-			$format = $flipped[$output]; 
+		} elseif (in_array($output, $this->content_types)) {
+			$flipped = array_flip($this->content_types);
+			$format = $flipped[$output];
 		}
 
-		if ( is_null( $format ) ) {
-			$output = $this->params->get( 'default_content_type', 'json' );
-			$flipped = array_flip( $this->content_types );
+		if (is_null($format))
+		{
+			$output = $this->params->get('default_content_type', 'json');
+			$flipped = array_flip($this->content_types);
 			$format = $flipped[$output];
 		}
 
@@ -116,21 +136,18 @@ class ApiPlugin extends JPlugin
 
 	/**
 	 * Sets the access level of a given resource
-	 * @param	mixed	$resource	Resource name
+	 * @param	string	$resource	Resource name
 	 * @param	string	$access		The access string (public or protected)
 	 * @param	string	$method		The request method for the resource
 	 * @return boolean
 	 */
-	final public function setResourceAccess( $resources, $access, $method = 'GET' ) {
-		$method = strtoupper( $method );
+	final public function setResourceAccess($resource, $access, $method='GET') {
+		$method = strtoupper($method);
 
-		foreach ( (array) $resources as $resource ) {
-			$this->resource_acl[$resource][$method] = $access;
-		}
-
+		$this->resource_acl[$resource][$method] = $access;
 		return true;
 	}
-	
+
 	/**
 	 * Checks the access level of a given resource
 	 * @param	string	$resource	Resource name
@@ -138,16 +155,21 @@ class ApiPlugin extends JPlugin
 	 * @param	boolean $returnParamsDefault	Set to true to have the component parameters default access level returned if not explicitly set
 	 * @return	mixed
 	 */
-	final public function getResourceAccess( $resource, $method = 'GET', $returnParamsDefault = true )
-	{
-		$method = strtoupper( $method );
+	final public function getResourceAccess($resource, $method='GET', $returnParamsDefault=true) {
+		$method = strtoupper($method);
 
-		if ( isset( $this->resource_acl[$resource] ) && isset( $this->resource_acl[$resource][$method] ) ) {
+		if (isset($this->resource_acl[$resource]) && isset($this->resource_acl[$resource][$method]))
+		{
 			return $this->resource_acl[$resource][$method];
-		} else {
-			if ( $returnParamsDefault ) {
-				return $this->params->get( 'resource_access', 'protected' );
-			} else {
+		}
+		else
+		{
+			if ($returnParamsDefault)
+			{
+				return $this->params->get('resource_access','protected');
+			}
+			else
+			{
 				return false;
 			}
 		}
@@ -158,93 +180,111 @@ class ApiPlugin extends JPlugin
 	 * @param	string	$resource_name	Requested resource name
 	 * @return	string
 	 */
-	final public function fetchResource( $resource_name = null )
-	{
-		if ( $resource_name == null ) {
-			$resource_name = $this->get( 'resource' );
+	final public function fetchResource($resource_name=null) {
+
+		if ($resource_name == null)
+		{
+			$resource_name = $this->get('resource');
 		}
 
-		$resource_obj = ApiResource::getInstance( $resource_name, $this );
+		$resource_obj = ApiResource::getInstance($resource_name, $this);
 
-		if ( $resource_obj === false ) {
-			$this->checkInternally( $resource_name );
+		if ($resource_obj === false)
+		{
+			$this->checkInternally($resource_name);
 		}
 
-		$access = $this->getResourceAccess( $resource_name, $this->request_method );
+		$access		= $this->getResourceAccess($resource_name, $this->request_method);
 
-		if ( $access == 'protected' ) {
-			$auth_handler = APIAuthentication::getInstance();
-			$user = $auth_handler->authenticateRequest();
-			if ( $user === false ) {
-				throw new Exception( $auth_handler->getError(), 403 );
+		if ($access == 'protected')
+		{
+			$user = APIAuthentication::authenticateRequest();
+
+			if ($user === false)
+			{
+				ApiError::raiseError(403, APIAuthentication::getAuthError());
 			}
 
-			$this->set( 'user', $user );
+			$this->set('user', $user);
 		}
 
-		if ( !$this->checkRequestLimit() )  {
-			throw new Exception( JText::_('COM_API_RATE_LIMIT_EXCEEDED'), 403 );
+		if (!$this->checkRequestLimit())
+		{
+			ApiError::raiseError(403, JText::_('COM_API_RATE_LIMIT_EXCEEDED'));
 		}
 
 		$this->log();
 
-		if ($resource_obj !== false) {
+		if ($resource_obj !== false)
+		{
 			$resource_obj->invoke();
-		} else {
-			call_user_func( array( $this, $resource_name ) );
 		}
-        $output= array();
-        $output = $this->encode();
-		
+		else
+		{
+			call_user_func(array($this, $resource_name));
+		}
+
+		$output		= $this->encode();
+
 		return $output;
 	}
-	
+
 	/**
 	 * Checks to see if resource exists as a method on the main plugin
 	 * @param	string	$resource_name	Requested resource name
 	 * @return boolean
 	 */
-	final private function checkInternally( $resource_name )
+	final private function checkInternally($resource_name)
 	{
-		if ( !method_exists( $this, $resource_name ) ) {
-			throw new Exception( JText::_('COM_API_PLUGIN_METHOD_NOT_FOUND'), 404 );
+		if (!method_exists($this, $resource_name))
+		{
+			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_METHOD_NOT_FOUND'));
 		}
 
-		if ( !is_callable( array( $this, $resource_name ) ) ) {
-			throw new Exception( JText::_('COM_API_PLUGIN_METHOD_NOT_CALLABLE'), 404 );
+		if (!is_callable(array($this, $resource_name)))
+		{
+			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_METHOD_NOT_CALLABLE'));
 		}
 
 		return true;
 	}
-	
+
 	/**
 	 * Determines whether or not a request is over the time limit
 	 * @return boolean
 	 */
-	final private function checkRequestLimit() 
+	final private function checkRequestLimit()
 	{
-		$limit = $this->params->get( 'request_limit', 0 );
-		if ( $limit == 0 || $this->get('skip_request_limit', false) ) {
+
+		$app = JFactory::getApplication();
+
+		$limit = $this->params->get('request_limit', 0);
+		if ($limit == 0)
+		{
 			return true;
 		}
 
-		$hash = JRequest::getVar( 'key', '' );
-		$ip_address = JRequest::getVar( 'REMOTE_ADDR', '', 'server' );
+		//$hash = JRequest::getVar('key', '');
+		//$ip_address = JRequest::getVar('REMOTE_ADDR', '', 'server');
 
-		$time = $this->params->get( 'request_limit_time', 'hour' );
-		switch( $time ) {
+		$hash = $app->input->post->get('key', '','STRING');
+		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
+
+		$time = $this->params->get('request_limit_time', 'hour');
+		switch($time)
+		{
 			case 'day':
-				$offset = 60*60*24;
-				break;
+			$offset = 60*60*24;
+			break;
 
 			case 'minute':
-				$offset = 60;
-				break;
+			$offset = 60;
+			break;
 
 			case 'hour':
 			default:
-				$offset = 60*60;
-				break;
+			$offset = 60*60;
+			break;
 		}
 
 		$query_time = time() - $offset;
@@ -258,62 +298,66 @@ class ApiPlugin extends JPlugin
 		$db->setQuery($query);
 		$result = $db->loadResult();
 
-		if ( $result >= $limit ) {
+		if ($result >= $limit)
+		{
 			return false;
-		} else {
+		}
+		else
+		{
 			return true;
 		}
+
 	}
 
 	/**
 	 * Logs the incoming request to the database
 	 */
-	final private function log() 
+	final private function log()
 	{
-		$table = JTable::getInstance( 'Log', 'ApiTable' );
-		$table->hash = JRequest::getVar( 'key', '' );
-		$table->ip_address = JRequest::getVar( 'REMOTE_ADDR', '', 'server' );
+		$app = JFactory::getApplication();
+
+		$table = JTable::getInstance('Log', 'ApiTable');
+
+		//$table->hash = JRequest::getVar('key', '');
+		//$table->ip_address = JRequest::getVar('REMOTE_ADDR', '', 'server');
+
+		$table->hash = $app->input->post->get('key', '','STRING');
+		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
+
 		$table->time = time();
 		$table->request = JFactory::getURI()->getQuery();
 		$table->store();
 	}
-	
+
 	/**
 	 * Setter method for $response instance variable
 	 * @param	mixed	$data	The plugin's output
 	 */
-	public function setResponse( $data ) 
+	public function setResponse($data)
 	{
-		$this->set( 'response', $data );
+		$this->set('response', $data);
 	}
-        
-        /**
-	 * Return the User object
-	 * return object user
-	 */
-        public function getUser()
-        {
-                return $this->user;
-        }
-	
+
 	/**
 	 * Determines the method with which to encode the output based on the requested content type
 	 * @return string
 	 */
-	public function encode() 
-	{	
+	public function encode()
+	{
 		$document = JFactory::getDocument();
-		$document->setMimeEncoding( $this->format );
+		$document->setMimeEncoding($this->format);
 
 		$format_name = $this->content_types[$this->format];
-		$method = 'to' . ucfirst( $format_name );
+		$method = 'to'.ucfirst($format_name);
 
-		if ( !method_exists( $this, $method ) ) {
-			throw new Exception( JText::_( 'COM_API_PLUGIN_NO_ENCODER' ), 406 );
+		if (!method_exists($this, $method))
+		{
+			ApiError::raiseError(406, JText::_('COM_API_PLUGIN_NO_ENCODER'));
 		}
 
-		if ( !is_callable( array( $this, $method ) ) ) {
-			throw new Exception( JText::_( 'COM_API_PLUGIN_NO_ENCODER' ), 404 );
+		if (!is_callable(array($this, $method)))
+		{
+			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_NO_ENCODER'));
 		}
 
 		return $this->$method();
@@ -323,55 +367,53 @@ class ApiPlugin extends JPlugin
 	 * Transforms the plugin response to a JSON-encoded string
 	 * @return string
 	 */
-	protected function toJson() 
+	protected function toJson()
 	{
-		$json = json_encode($this->get('response'));
-		$app = JFactory::getApplication();
-		$callback = $app->input->get('callback');
-		if ($callback) {
-			return $callback . '(' . $json . ')';
-		} else {
-			return $json;
-		}
-		
+		return json_encode($this->get('response'));
 	}
-	
+
 	/**
 	 * Transforms the plugin response to an XML string
 	 * @return string
 	 */
-	protected function toXml() 
+	protected function toXml()
 	{
-		$response = $this->get( 'response' );
-		$xml = new SimpleXMLElement( '<?xml version="1.0"?><response></response>' );
+		$response = $this->get('response');
+		$xml = new SimpleXMLElement('<?xml version="1.0"?><response></response>');
 
-		$this->_toXMLRecursive( $response, $xml );
+		$this->_toXMLRecursive($response, $xml);
 
 		return $xml->asXML();
 	}
 
-	protected function _toXMLRecursive( $element, &$xml )
-	{
-		if ( !is_array( $element ) && !is_object( $element ) ) {
+	protected function _toXMLRecursive($element, &$xml) {
+
+		if (!is_array($element) && !is_object($element)) :
 			return null;
-		}
+		endif;
 
-		if ( is_object( $element ) ) {
-			$element = get_object_vars( $element );
-		}
+		if (is_object($element)) :
+			$element = get_object_vars($element);
+		endif;
 
-		foreach ( $element as $key => $value ) {
-			$this->_handleMultiDimensions( $key, $value, $xml );
-		}
+		foreach($element as $key => $value) :
+			$this->_handleMultiDimensions($key, $value, $xml);
+		endforeach;
 	}
 
-	protected function _handleMultiDimensions( $key, $value, &$xml )
+	protected function _handleMultiDimensions($key, $value, &$xml) {
+		if (is_array($value) || is_object($value)) :
+			$node = $xml->addChild($key);
+			$this->_toXMLRecursive($value, $node);
+		else :
+			$node = $xml->addChild($key, htmlspecialchars($value));
+		endif;
+	}
+
+	public function getUser()
 	{
-		if ( is_array( $value ) || is_object( $value ) ) {
-			$node = $xml->addChild( $key );
-			$this->_toXMLRecursive( $value, $node );
-		} else {
-			$node = $xml->addChild( $key, htmlspecialchars( $value ) );
-		}
+		return $this->user;
 	}
+
+
 }

@@ -24,15 +24,22 @@ class ApiControllerHttp extends ApiController
 		$this->resetDocumentType();
 
 		jimport( 'joomla.plugin.helper' );
-		$name = JRequest::getCmd( 'app' );
+
+		//vishal - for j3.2
+		$app = JFactory::getApplication();
+
+		//$name = JRequest::getCmd( 'app' );
+
+		$name = $app->input->get('app','','CMD');
 
 		try {
 			echo ApiPlugin::getInstance( $name )->fetchResource();
+
 		}  catch ( Exception $e ) {
 			echo $this->sendError( $e );
 		}
 	}
-	
+
 	private function sendError( $exception )
 	{
 		JResponse::setHeader( 'status', $exception->getCode() );
@@ -40,14 +47,14 @@ class ApiControllerHttp extends ApiController
 		JFactory::getDocument()->setMimeEncoding( 'application/json' );
 		return json_encode( $error->toArray() );
 	}
-	
+
 	/**
-	 * Resets the document type to format=raw 
+	 * Resets the document type to format=raw
 	 *
 	 * @return void
 	 * @since 0.1
 	 * @todo Figure out if there is a better way to do this
-	 */	
+	 */
 	private function resetDocumentType()
 	{
 		JResponse::clearHeaders();

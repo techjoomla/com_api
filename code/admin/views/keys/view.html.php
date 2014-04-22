@@ -10,28 +10,25 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
- $front_end = JPATH_SITE .DS. 'components' .DS. 'com_api';
-//include ( $front_end .DS. 'libraries' .DS. 'model.php');
+jimport('joomla.application.component.model');
+
 class ApiViewKeys extends ApiView {
-	
+
 	public function display($tpl = null) {
+
 		$this->generateToolbar();
-		$mainframe = JFactory::getApplication();
-		$input=$mainframe->input;
-		//$this->setModel(JModelLegacy::getInstance('Property', 'MyModel'));
-		$model		= $this->getModel();
-		
+
+		$model		= $this->getModel('keys');
 		$rows		= $this->get('list');
 		$pagination	= $this->get('pagination');
-		//$this->model	=$model;
-		//$this->rows	=$rows;
-		//$this->pagination	=$pagination;
+//print_r($rows);die("in keys view11");
 		$this->assignRef('model', $model);
 		$this->assignRef('rows', $rows);
 		$this->assignRef('pagination', $pagination);
+
 		parent::display($tpl);
 	}
-	
+
 	private function generateToolbar() {
 		JToolBarHelper::title(JText::_('COM_API').': '.JText::_('COM_API_KEYS'));
 		JToolBarHelper::publishList();
@@ -41,7 +38,5 @@ class ApiViewKeys extends ApiView {
 		JToolBarHelper::editList();
 		JToolBarHelper::deleteList();
 	}
-	
-	
-	
+
 }

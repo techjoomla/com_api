@@ -8,38 +8,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 defined('_JEXEC') or die('Restricted access');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
-JHtml::_('formbehavior.chosen', 'select');
-JHtml::_('behavior.keepalive');
 ?>
-<script type="text/javascript">
-    js = jQuery.noConflict();
-    js(document).ready(function(){
-        
-    });
-    
-    Joomla.submitbutton = function(task)
-    {
-        if(task == 'cancel'){
-            Joomla.submitform(task, document.getElementById('key-form'));
-        }
-        else{
-            if (task != 'cancel' && document.formvalidator.isValid(document.id('key-form'))) {
-                  Joomla.submitform(task, document.getElementById('key-form'));
-            }
-            else {
-                alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
-            }
-        }
-       
-    }
-</script>
 
-
-<form action="<?php echo JRoute::_('index.php?option=com_api&layout=keys'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="key-form" class="form-validate">
 <fieldset class='adminform'>
     <legend><?php echo $this->row->id ? 'Edit' : 'New';?> Category</legend>
+		<form action="" method="post" id='adminForm' name='adminForm' >
 		<table width='100%' cellpadding='5' cellspacing='0' class='admintable form-validate'>
 			<tr>
 				<td class="key"><?php echo JText::_('COM_API_USER');?></td>
@@ -69,14 +42,11 @@ JHtml::_('behavior.keepalive');
 			</tr>
 			<?php endif; ?>
 		</table>
-		
 		<input type='hidden' name='id' id='id' value='<?php echo $this->row->id;?>' />
-		<input type="hidden" name="task" id="task" value="" />
-		<input type="hidden" name="controller" id="c" value="key" />
-		<input type="hidden" name="view" value="key" />
-		<input type="hidden" name="ret" id="ret" value="<?php //echo $this->return;?>" />
+		<input type="hidden" name="task" id="task" value="save" />
+		<input type="hidden" name="c" id="c" value="key" />
+		<input type="hidden" name="ret" id="ret" value="<?php echo $this->return;?>" />
 		<input type="hidden" name="option" id="option" value="<?php echo $this->option;?>" />
 		<?php echo JHTML::_('form.token'); ?>
-		</fieldset>
 		</form>
-
+</fieldset>

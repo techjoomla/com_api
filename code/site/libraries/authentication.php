@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @package	API
  * @version 1.5
@@ -9,77 +9,86 @@
 */
 
 defined('_JEXEC') or die;
+jimport('joomla.application.component.model');
 
-jimport( 'joomla.application.component.model' );
+abstract class ApiAuthentication extends JObject {
 
-abstract class ApiAuthentication extends JObject
-{
-	protected $auth_method     = null;
-	protected $domain_checking = null;
+	protected	$auth_method		= null;
+	protected	$domain_checking	= null;
+	static		$auth_errors		= array();
 
-	public function __construct( $params )
-	{
-    	parent::__construct( $params );
+	public function __construct($params) {
+    	//parent::__construct($config);
+    	parent::__construct();
 
-		$this->set( 'auth_method', $this->get( 'auth_method', 'key' ) );
-		//vishal-for air api
-		$this->set('auth_method',$this->get('auth_method','username'));
-    	$this->set('auth_method',$this->get('auth_method','password'));
-		//
-		$this->set( 'domain_checking', $this->get( 'domain_checking', 1 ) );
-		
+		//vishal - for j3.2
+    	$app = JFactory::getApplication();
+		$key = $app->input->get('key');
+		//print_r($key);die("in auth.php");
+		if(empty($key))
+		{
+			$this->set('auth_method',$params->get('auth_method','username'));
+			$this->set('auth_method',$params->get('auth_method','password'));
+			$this->set('auth_method', $params->get('auth_method', 'login'));
+		}
+		else
+		{
+			$this->set('auth_method', $params->get('auth_method', 'key'));
+		}
+		$this->set('domain_checking', $params->get('domain_checking', 1));
   	}
-
-	public function getInstance( $method = null )
-	{
-		static $instances = array();
-		
-		jimport('joomla.application.component.helper');
-		$params = JComponentHelper::getParams( 'com_api' );
-
-		if ( null == $method ) {
-			//2nd params for key authentication
-			$method = $params->get( 'auth_method', 'key' );
-		    //vishal -for air api
-		    if(!JRequest::getVar('key'))
-		    {
-				$method	= $params->get('auth_method', 'login');
-			}
-			//
-				
-		}
-
-		if ( isset( $instances[$method] ) ) {  //print_r($instances[$method]);die("in authentication.php 1");
-		    
-			return $instances[$method];
-		}
-		$className    = 'APIAuthentication' . ucwords( $method ); 
-		$auth_handler = new $className( $params->toArray() ); 
-		$instances[$method] = $auth_handler;
-		return $instances[$method];
-	}
 
 	abstract public function authenticate();
 
-	public function authenticateRequest()
-	{
-		$user_id = APIHelper::getAPIUserID();
+	public static function authenticateRequest() {
+		$params			= JComponentHelper::getParams('com_api');
 
-		if ( $user_id === false ) {
+		//vishal - for j3.2
+    	$app = JFactory::getApplication();
+		$key = $app->input->get('key');
+
+		if(!empty($key))
+		$method			= $params->get('auth_method', 'key');
+		else
+		$method			= $params->get('auth_method', 'login');
+
+		$className 		= 'APIAuthentication'.ucwords($method);
+
+		$auth_handler 	= new $className($params);
+
+		$user_id		= $auth_handler->authenticate();
+
+		if ($user_id === false) :
+			self::setAuthError($auth_handler->getError());
 			return false;
-		} else {
-			$user = JFactory::getUser( $user_id );
-			if ( !$user->id ) {
-				$this->setError( JText::_( 'COM_API_USER_NOT_FOUND' ) );
+		else :
+			$user	= JFactory::getUser($user_id);
+			if (!$user->id) :
+				self::setAuthError(JText::_("COM_API_USER_NOT_FOUND"));
 				return false;
-			}
+			endif;
 
-			if ( $user->block == 1 ) {
-				$this->setError( JText::_( 'COM_API_BLOCKED_USER' ) );
+			if ($user->block == 1) :
+				self::setAuthError(JText::_("COM_API_BLOCKED_USER"));
 				return false;
-			}
+			endif;
 
-			return $user;	
-		}
+			return $user;
+
+		endif;
+
 	}
+
+	public static function setAuthError($msg) {
+		self::$auth_errors[] = $msg;
+		return true;
+	}
+
+	public static function getAuthError() {
+		if (empty(self::$auth_errors)) :
+			return false;
+		endif;
+		return array_pop(self::$auth_errors);
+	}
+
 }

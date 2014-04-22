@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @package	API
  * @version 1.5
@@ -17,10 +17,16 @@ class ApiAuthenticationUser extends ApiAuthentication
 
 	public function authenticate()
 	{
-		$username = JRequest::getVar( 'username' );
-		$password = JRequest::getVar( 'password' );
+		$app = JFactory::getApplication();
+
+		$username = $app->input->post->get('username','','STRING');
+		$password = $app->input->post->get('password','','STRING');
+
+		//$username = JRequest::getVar( 'username' );
+		//$password = JRequest::getVar( 'password' );
+
 		$user = $this->loadUserByCredentials( $username, $password );
-		
+
 		// Remove username and password from request for when it gets logged
 		$uri = JFactory::getURI();
 		$uri->delVar('username');
@@ -30,7 +36,7 @@ class ApiAuthenticationUser extends ApiAuthentication
 			// Errors are already set, just return
 			return false;
 		}
-		
+
 		return $user->id;
 	}
 
@@ -40,9 +46,8 @@ class ApiAuthenticationUser extends ApiAuthentication
 
 		$authenticate = JAuthentication::getInstance();
 		$response = $authenticate->authenticate(array( 'username' => $user, 'password' => $pass ));
-		
-		if ($response->status === JAuthentication::STATUS_SUCCESS)
-		 {
+
+		if ($response->status === JAuthentication::STATUS_SUCCESS) {
 			$instance = JUser::getInstance($response->username);
 			if ( $instance === false ) {
 				$this->setError( JError::getError() );

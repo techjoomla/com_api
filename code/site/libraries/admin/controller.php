@@ -11,71 +11,96 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.application.component.controller');
-require_once (JPATH_SITE.DS.'components'.DS.'com_api'.DS.'tables'.DS.'key.php');
+
 class ApiControllerAdmin extends ApiController {
-	
+
 	public function __construct($config=array()) {
-		
 		parent::__construct($config);
 		$this->registerTask('apply', 'save');
 		$this->registerTask('add', 'edit');
-		
+
+		$app = JFactory::getApplication();
+
 		$default_url = 'index.php?option='.$this->get('option');
-		$view = JRequest::getVar('view','');
+
+		//$view = JRequest::getVar('view','');
+		$view = $app->input->get('view','','STRING');
+
+		$task = $app->input->post->get('task','','STRING');
+
+		if($task == 'add' || $task == 'edit')
+			$view = 'key';
+
 		if ($view)
 			$default_url .= '&view='.$view;
-			
+
 		$this->set('default_url', $default_url);
-		
+
 	}
-	
-	public function display($cachable = false, $urlparams = false) {
+
+	public function display() {
 		$app	= JFactory::getApplication();
-		$view 	= JRequest::getVar('view', '');
+
+		//$view 	= JRequest::getVar('view', '');
+
+		$view = $app->input->get('view','','STRING');
+
 		if (!$view) :
-			JRequest::setVar('view', 'cpanel');
+			//JRequest::setVar('view', 'cpanel');
+			$app->input->set('view','cpanel');
+
 		endif;
-		
+
 		parent::display();
-	
+
 	}
-	
+
 	public function edit() {
 		$app 	= JFactory::getApplication();
 		$view	= $this->getEntityName();
+
 		$layout = 'default';
-		JRequest::setVar('view', $view);
-		JRequest::setVar('layout', $layout);
+		//JRequest::setVar('view', $view);
+		//JRequest::setVar('layout', $layout);
+
+		//$app->input->post->set('view',$view);
+		//$app->input->post->set('layout',$layout);
+
+		$app->input->set('view',$view);
+		$app->input->set('layout',$layout);
+
+//print_r($app->input->post);die("in edit view admin control");
+
 		parent::display();
 	}
-	
+
 	public function cancel() {
-		$msg ='';
-		JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
-		if(JRequest::getVar('ret'))
-		{
-			$this->setRedirect(JRequest::getVar('ret', $this->get('default_url')), $msg);
-		}
-		else
-		{
-			$this->setRedirect('index.php?option=com_api&view=keys', $msg);
-		}
+
+		//JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+		$app 	= JFactory::getApplication();
+		//$this->setRedirect(JRequest::getVar('ret', $this->get('default_url')), $msg);
+		$this->setRedirect($app->input->get('ret', $this->get('default_url'),'STRING'), $msg);
 	}
-	
+
 	public function remove($hash='post') {
-		
-		JRequest::checkToken($hash) or jexit(JText::_('INVALID_TOKEN'));
-		$name	= 'Key';
-		$post 	= JRequest::get('post');
+		//JRequest::checkToken($hash) or jexit(JText::_('INVALID_TOKEN'));
+		JSession::checkToken($hash) or jexit(JText::_('INVALID_TOKEN'));
+		$app 	= JFactory::getApplication();
+
+		$name	= $this->getEntityName();
+		//$post 	= JRequest::get('post');
+		$post 	= $app->input->post();
 		$model 	= $this->getModel($name);
-		
-		
-		 $cid	= JRequest::getVar('cid', array(), $hash, 'array');
-		// print_r($cid);
+
+		//$cid	= JRequest::getVar('cid', array(), $hash, 'array');
+		$cid	= $app->input->post->get('cid',array(), 'ARRAY');
+
 		if (empty($cid)) :
-			$cid = JRequest::getVar('id', 0, $hash, 'int');
+			//$cid = JRequest::getVar('id', 0, $hash, 'int');
+			$cid = $app->input->post->get('id', 0,'INT');
 		endif;
-		
+
 		if ($cid) :
 			if (!$model->delete($cid)) :
 				$msg	= $model->getError();
@@ -88,25 +113,38 @@ class ApiControllerAdmin extends ApiController {
 			$msg	= JText::_('COM_API_NO_SELECTION');
 			$type	= 'error';
 		endif;
-		
-		$url = isset($post['ret']) ? $post['ret'] : JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server');
+
+		$url = isset($post['ret']) ? $post['ret'] :$app->input->server->get('HTTP_REFERER', $this->get('default_url'), 'STRING');
 		$this->setRedirect($url, $msg, $type);
 	}
 
 	public function save() {
-		//echo "save";die();
-		JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+		JSession::checkToken()  or jexit(JText::_('INVALID_TOKEN'));
+
+		$app = JFactory::getApplication();
+
 		$name	= $this->getEntityName();
-		$post 	= JRequest::get('post');
+		//$post 	= JRequest::get('post');
+		$post['user_id'] 	=  $app->input->post->get('user_id',0,'INT');
+		$post['domain'] 	=  $app->input->post->get('domain','','STRING');
+		$post['published'] 	=  $app->input->post->get('published',0,'INT');
+		$post['id'] 	=  $app->input->post->get('id',0,'INT');
+		$post['task'] 	=  $app->input->post->get('task','','STRING');
+		$post['c'] 	=  $app->input->post->get('c','','STRING');
+		$post['ret'] 	=  $app->input->post->get('ret','','STRING');
+		$post['option'] 	=  $app->input->post->get('option');
+		//$post[JSession::getToken()] 	=  $app->input->post->get(JSession::getToken(),'','INT');
+	//print_r($post);die("in admin control");
 		$model 	= $this->getModel($name);
-		
+
 		if (!$item = $model->save($post)) :
 			$msg = $model->getError();
-			$url = JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server');
+			//$url = JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server');
+			$url = $app->input->server->get('HTTP_REFERER', $this->get('default_url'), 'STRING');
 			$this->setRedirect($url, $msg, 'error');
 			return;
 		endif;
-		
+
 		$name = strtolower($name);
 		$msg = JText::_("COM_API_SAVE_SUCCESSFUL");
 		if($this->getTask() == 'apply') :
@@ -114,66 +152,20 @@ class ApiControllerAdmin extends ApiController {
 		elseif (isset($post['ret'])) :
 			$url = $post['ret'];
 		else :
-			$url = JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server');
+			$url = $app->input->server->get('HTTP_REFERER', $this->get('default_url'), 'STRING');
 		endif;
 		$this->setRedirect($url, $msg);
 	}
-	public function save_close()
-	{
-		//echo "sss";die();
-		JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
-		$name	= $this->getEntityName();
-		$post 	= JRequest::get('post');
-		$model 	= $this->getModel($name);
-		
-		if (!$item = $model->save($post)) :
-			$msg = $model->getError();
-			$url = JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server');
-			$this->setRedirect($url, $msg, 'error');
-			return;
-		endif;
-		
-		$name = strtolower($name);
-		$msg = JText::_("COM_API_SAVE_SUCCESSFUL");
-		if(JRequest::getVar('ret'))
-		{
-			$this->setRedirect(JRequest::getVar('ret', $this->get('default_url')), $msg);
-		}
-		else
-		{
-			$this->setRedirect('index.php?option=com_api&view=keys', $msg);
-		}
-	}
-	public function save_new()
-	{
-		//echo "save2close";die();
-		JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
-		$name	= $this->getEntityName();
-		$post 	= JRequest::get('post');
-		$model 	= $this->getModel($name);
-		
-		if (!$item = $model->save($post)) :
-			$msg = $model->getError();
-			$url = JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server');
-			$this->setRedirect($url, $msg, 'error');
-			return;
-		endif;
-		
-		$name = strtolower($name);
-		$msg = JText::_("COM_API_SAVE_SUCCESSFUL");
-		if(JRequest::getVar('ret'))
-		{
-			$this->setRedirect(JRequest::getVar('ret', $this->get('default_url')), $msg);
-		}
-		else
-		{
-			$this->setRedirect('index.php?option=com_api&view=key', $msg);
-		}
-	}
+
 	public function publish() {
-		JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+
+		//JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+
+		$app = JFactory::getApplication();
+
 		$this->changeState(1);
-		
+
 		if ($error = $this->getError()) :
 			$msg = $error;
 			$type = 'error';
@@ -181,13 +173,17 @@ class ApiControllerAdmin extends ApiController {
 			$msg = JText::_("COM_API_PUBLISH_SUCCESS");
 			$type = 'message';
 		endif;
-		
-		$this->setRedirect(JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server'), $msg, $type);
+
+		$this->setRedirect($app->input->server->get('HTTP_REFERER', $this->get('default_url'), 'STRING'), $msg, $type);
 	}
-	
+
 	public function unpublish() {
-		//echo "hi";die();
-		JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+
+		//JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+		JSession::checkToken()  or jexit(JText::_('INVALID_TOKEN'));
+
+		$app = JFactory::getApplication();
+
 		$this->changeState(0);
 		if ($error = $this->getError()) :
 			$msg = $error;
@@ -196,27 +192,30 @@ class ApiControllerAdmin extends ApiController {
 			$msg = JText::_("COM_API_UNPUBLISH_SUCCESS");
 			$type = 'message';
 		endif;
-		
-		$this->setRedirect(JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server'), $msg, $type);
+
+		$this->setRedirect($app->input->server->get('HTTP_REFERER', $this->get('default_url'), 'STRING'), $msg, $type);
 	}
-	
+
 	protected function changeState($state, $cids=array(), $table_class=null) {
-		
+
+		$app = JFactory::getApplication();
+
 		if (empty($cids)) :
-			$cids = JRequest::getVar('cid', array(), 'post', 'array');
+			$cids = $app->input->post->get('cid', array(),'ARRAY');
 		endif;
-		//print_r($cids);
-		echo $table_class = $table_class ? $table_class : $this->getEntityName();
-		
-		$table = JTable::getInstance('key', 'ApiTable');
+
+		$table_class = $table_class ? $table_class : $this->getEntityName();
+
+		$table 	= JTable::getInstance($table_class, 'ApiTable');
+
 		if (!$table->publish($cids, $state)) :
 			$this->setError($table->getError());
 			return false;
 		endif;
-		
+
 		return true;
 	}
-	
+
 	protected function getEntityName() {
 		preg_match( '/(.*)Controller(.*)/i', get_class( $this ), $r );
 		if (!isset($r[2])) :
@@ -225,5 +224,5 @@ class ApiControllerAdmin extends ApiController {
 			return $r[2];
 		endif;
 	}
-	
+
 }
