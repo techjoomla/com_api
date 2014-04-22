@@ -14,7 +14,6 @@ jimport('joomla.application.component.controller');
 
 class ApiControllerKeys extends ApiController {
 
-
 	public function display() {
 		parent::display();
 	}
@@ -42,29 +41,24 @@ class ApiControllerKeys extends ApiController {
 	}
 
 	public function cancel() {
-
 		//JRequest::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
-		 JSession::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
-
+		JSession::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
 		$this->setRedirect(JRoute::_('index.php?option=com_api&view=keys', FALSE));
 	}
 
 	public function save() {
+		//JRequest::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
+		JSession::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
 
-		JSession::checkToken('default') or jexit(JText::_("COM_API_INVALID_TOKEN"));
+		$app	= JFactory::getApplication();
 
-		//$id		= JRequest::getInt('id', 0, 'post');
-		//vishal - for j3.2
-		$app = JFactory::getApplication();
-		$id 	= $app->input->post->get('id',0,'INT');
-
+		$id		= $app->input->post->get('id', 0, 'INT');
 		if (!$id && !$this->checkAccess()) :
 			JFactory::getApplication()->redirect('index.php', JText::_('COM_API_NOT_AUTH_MSG'));
 			exit();
 		endif;
 
-		//$domain	= JRequest::getVar('domain', '', 'post', 'string');
-		$domain	= $app->input->post->get('domain','','STRING');
+		$domain	= $app->input->post->get('domain', '', 'STRING');
 
 		$data	= array(
 			'id'		=> $id,
@@ -85,13 +79,10 @@ class ApiControllerKeys extends ApiController {
 	}
 
 	public function delete() {
-
-		//vishal - for j3.2
-    	$app = JFactory::getApplication();
-
-		//$key = $app->input->get('key');
 		//JRequest::checkToken('request') or jexit(JText::_("COM_API_INVALID_TOKEN"));
-		JSession::checkToken('default') or jexit(JText::_("COM_API_INVALID_TOKEN"));
+		JSession::checkToken('request') or jexit(JText::_("COM_API_INVALID_TOKEN"));
+
+		$app	= JFactory::getApplication();
 
 		if (!$this->checkAccess()) :
 			JFactory::getApplication()->redirect('index.php', JText::_('COM_API_NOT_AUTH_MSG'));
@@ -99,8 +90,8 @@ class ApiControllerKeys extends ApiController {
 		endif;
 
 		$user_id	= JFactory::getUser()->get('id');
-		//$id 		= JRequest::getInt('id', 0);
-		$id 		= $app->input->get('id','','INT');
+
+		$id 		= $app->input->post->get('id', 0 ,'INT');
 
 		$table 	= JTable::getInstance('Key', 'ApiTable');
 		$table->load($id);

@@ -9,7 +9,7 @@
 */
 defined('_JEXEC') or die( 'Restricted access' );
 ?>
-<form action='index.php' method='post' name='adminForm'>
+<form action='' method='post' id='adminForm' name='adminForm'>
 <table cellpadding='4' cellspacing='0' border='0' width='100%' class='adminlist'>
 	<thead>
 		<tr>
@@ -24,7 +24,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 		</tr>
 	</thead>
 	<tbody>
-	<?php 
+	<?php
 	$count 	= count($this->rows);
 	for($i=0; $i<$count; $i++) :
 		$row = $this->rows[$i];

@@ -12,7 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 
 <fieldset class='adminform'>
     <legend><?php echo $this->row->id ? 'Edit' : 'New';?> Category</legend>
-		<form action="index.php" method="post" name='adminForm'>
+		<form action="" method="post" id='adminForm' name='adminForm' >
 		<table width='100%' cellpadding='5' cellspacing='0' class='admintable form-validate'>
 			<tr>
 				<td class="key"><?php echo JText::_('COM_API_USER');?></td>

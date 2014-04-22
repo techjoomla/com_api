@@ -12,25 +12,29 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.plugin.plugin');
 
-abstract class ApiResource { 
-	
-	protected $plugin; 
+abstract class ApiResource {
+
+	protected $plugin;
 	protected $allowed_methods = array('GET', 'POST', 'PUT', 'DELETE', 'HEAD');
-	
+
 	public function __construct(ApiPlugin $plugin) {
+
 		$this->plugin = $plugin;
+
+
 	}
-	
+
 	final public function invoke() {
 		$method_name	= $this->plugin->get('request_method');
-		
+//print_r($this->plugin);die("in resource.php 1");
 		if (in_array($method_name, $this->allowed_methods) && method_exists($this, $method_name) && is_callable(array($this, $method_name))) :
 			$this->$method_name();
 		else :
+
 			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_METHOD_NOT_FOUND'));
-		endif;	
+		endif;
 	}
-	
+
 	final public function getInstance($name, ApiPlugin $plugin, $prefix=null)
 	{
 
@@ -38,7 +42,7 @@ abstract class ApiResource {
 		{
 			$prefix = $plugin->get('component').'ApiResource';
 		}
-		
+
 		$type = preg_replace('/[^A-Z0-9_\.-]/i', '', $name);
 		$resourceClass = $prefix.ucfirst($type);
 
@@ -61,15 +65,17 @@ abstract class ApiResource {
 				return false;
 			}
 		}
+		//print_r($plugin);die("in apiresource file");
 		$instance = new $resourceClass($plugin);
+
 		return $instance;
 	}
-	
+
 	final public function addIncludePath( $path=null )
 	{
 		static $paths;
 
-		if ($paths === null) 
+		if ($paths === null)
 		{
 			$paths = array();
 		}
@@ -89,6 +95,16 @@ abstract class ApiResource {
 				array_unshift($paths, $dir);
 			}
 		}
+
 		return $paths;
+	}
+
+	final public function getErrorResponse($code, $message)
+	{
+		$error = new stdClass;
+		$error->code = $code;
+		$error->message = $message;
+
+		return $error;
 	}
 }

@@ -12,6 +12,7 @@ class ApiException extends JException
 {
 	public function toArray()
 	{
+		//print_r($this->code);die("in exception class");
 		return ApiResource::getErrorResponse( $this->code, $this->message );
 	}
 }

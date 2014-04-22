@@ -52,6 +52,7 @@ class ApiModelKey extends ApiModel
 	}
 
 	public function save($data) {
+
 		$creator			= JFactory::getUser()->get('id');
 		$table 				= JTable::getInstance('Key', 'ApiTable');
 
