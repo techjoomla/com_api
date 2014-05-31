@@ -19,12 +19,13 @@ abstract class ApiAuthentication extends JObject {
 
 	public function __construct($params) {
     	//parent::__construct($config);
+
     	parent::__construct();
 
 		//vishal - for j3.2
     	$app = JFactory::getApplication();
 		$key = $app->input->get('key');
-		//print_r($key);die("in auth.php");
+
 		if(empty($key))
 		{
 			$this->set('auth_method',$params->get('auth_method','username'));

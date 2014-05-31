@@ -29,9 +29,8 @@ class ApiModelKeys extends ApiModel
 		//vishal - for j3 changes
 		$app = JFactory::getApplication();
 
-		$this->option = $app->input->get('option');
-		$this->view   = $app->input->get('view');
-
+		$this->option = $app->input->get('option','','CMD');
+		$this->view   = $app->input->get('view','','CMD');
 
 		//$this->option  = JRequest::getCmd('option');
 		//$this->view    = JRequest::getCmd('view');

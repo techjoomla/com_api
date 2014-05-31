@@ -60,16 +60,12 @@ class ApiControllerAdmin extends ApiController {
 		$view	= $this->getEntityName();
 
 		$layout = 'default';
-		//JRequest::setVar('view', $view);
-		//JRequest::setVar('layout', $layout);
 
 		//$app->input->post->set('view',$view);
 		//$app->input->post->set('layout',$layout);
 
 		$app->input->set('view',$view);
 		$app->input->set('layout',$layout);
-
-//print_r($app->input->post);die("in edit view admin control");
 
 		parent::display();
 	}
@@ -84,13 +80,13 @@ class ApiControllerAdmin extends ApiController {
 	}
 
 	public function remove($hash='post') {
-		//JRequest::checkToken($hash) or jexit(JText::_('INVALID_TOKEN'));
+
 		JSession::checkToken($hash) or jexit(JText::_('INVALID_TOKEN'));
 		$app 	= JFactory::getApplication();
 
 		$name	= $this->getEntityName();
 		//$post 	= JRequest::get('post');
-		$post 	= $app->input->post();
+		$post 	= $app->input->post;
 		$model 	= $this->getModel($name);
 
 		//$cid	= JRequest::getVar('cid', array(), $hash, 'array');
@@ -125,6 +121,9 @@ class ApiControllerAdmin extends ApiController {
 
 		$name	= $this->getEntityName();
 		//$post 	= JRequest::get('post');
+
+		//vishal- add for create new key
+
 		$post['user_id'] 	=  $app->input->post->get('user_id',0,'INT');
 		$post['domain'] 	=  $app->input->post->get('domain','','STRING');
 		$post['published'] 	=  $app->input->post->get('published',0,'INT');
@@ -134,7 +133,9 @@ class ApiControllerAdmin extends ApiController {
 		$post['ret'] 	=  $app->input->post->get('ret','','STRING');
 		$post['option'] 	=  $app->input->post->get('option');
 		//$post[JSession::getToken()] 	=  $app->input->post->get(JSession::getToken(),'','INT');
-	//print_r($post);die("in admin control");
+
+		//end
+
 		$model 	= $this->getModel($name);
 
 		if (!$item = $model->save($post)) :

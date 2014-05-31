@@ -58,7 +58,10 @@
 			label="COM_API_CONFIG_AUTH_METHOD"
 			description="COM_API_CONFIG_AUTH_METHOD_DESC">
 			<option value="key">COM_API_CONFIG_KEY</option>
+			<option value="login">COM_API_CONFIG_LOGIN</option>
+			<option value="both">COM_API_CONFIG_BOTH</option>
 		</field>
+
 
 		<field
 			name="request_limit"

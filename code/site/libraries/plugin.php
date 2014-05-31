@@ -55,10 +55,8 @@ class ApiPlugin extends JObject {
 
 		}
 
-
 		$plgfile	= JPATH_BASE.self::$plg_path.$name.'.php';
 		$param_path = JPATH_BASE.self::$plg_path.$name.'.xml';
-
 
 		if (!JFile::exists($plgfile)) :
 			ApiError::raiseError(400, JText::_('COM_API_FILE_NOT_FOUND'));
@@ -84,13 +82,45 @@ class ApiPlugin extends JObject {
 		$handler->set('resource', JRequest::getCmd('resource'));
 		$handler->set('format', $handler->negotiateContent(JRequest::getCmd('output', null)));
 		$handler->set('request_method', JRequest::getMethod());*/
+		$call_methd = $app->input->server->get('REQUEST_METHOD','','STRING');
 
-		$handler->set('component', $app->input->post->get('app','','CMD'));
-		$handler->set('resource', $app->input->post->get('resource','','CMD'));
-		$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+		//switch case for differ calling method
+		switch ($call_methd)
+		{
+			case 'GET' :
+							$handler->set('component', $app->input->get('app','','CMD'));
+							$handler->set('resource', $app->input->get('resource','','CMD'));
+							$handler->set('format', $handler->negotiateContent($app->input->get('output',null,'CMD')));
+							break;
+
+			case 'POST' :
+							$handler->set('component', $app->input->post->get('app','','CMD'));
+							$handler->set('resource', $app->input->post->get('resource','','CMD'));
+							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							break;
+
+			case 'PUT' :
+							$handler->set('component', $app->input->get('app','','CMD'));
+							$handler->set('resource', $app->input->get('resource','','CMD'));
+							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							break;
+
+			case 'DELETE':
+							$handler->set('component', $app->input->get('app','','CMD'));
+							$handler->set('resource', $app->input->get('resource','','CMD'));
+							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							break;
+
+			case 'PATCH':
+							$handler->set('component', $app->input->get('app','','CMD'));
+							$handler->set('resource', $app->input->get('resource','','CMD'));
+							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							break;
+		}
+
 		$handler->set('request_method', $app->input->server->get('REQUEST_METHOD','','STRING'));
 
-//print_r($app->input);die("in plugin.php 11");
+
 		self::$instances[$name] = $handler;
 
 		return self::$instances[$name];
@@ -409,6 +439,10 @@ class ApiPlugin extends JObject {
 			$node = $xml->addChild($key, htmlspecialchars($value));
 		endif;
 	}
+
+	/**
+	 * method used for get logged use object
+	 */
 
 	public function getUser()
 	{

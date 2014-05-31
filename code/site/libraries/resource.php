@@ -26,7 +26,7 @@ abstract class ApiResource {
 
 	final public function invoke() {
 		$method_name	= $this->plugin->get('request_method');
-//print_r($this->plugin);die("in resource.php 1");
+
 		if (in_array($method_name, $this->allowed_methods) && method_exists($this, $method_name) && is_callable(array($this, $method_name))) :
 			$this->$method_name();
 		else :
@@ -65,7 +65,7 @@ abstract class ApiResource {
 				return false;
 			}
 		}
-		//print_r($plugin);die("in apiresource file");
+
 		$instance = new $resourceClass($plugin);
 
 		return $instance;

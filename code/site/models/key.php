@@ -52,6 +52,7 @@ class ApiModelKey extends ApiModel
 	}
 
 	public function save($data) {
+
 		$creator			= JFactory::getUser()->get('id');
 		$table 				= JTable::getInstance('Key', 'ApiTable');
 
@@ -98,7 +99,10 @@ class ApiModelKey extends ApiModel
 
 		return $table;
 	}
-
+	/**
+	 * Delete api key
+	 *
+	 */
 	public function delete($cid) {
 		if (is_array($cid)) :
 			$where = "id IN (".implode(", ", $cid).")";
