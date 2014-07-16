@@ -13,14 +13,14 @@ defined('_JEXEC') or die( 'Restricted access' );
 <table cellpadding='4' cellspacing='0' border='0' width='100%' class='adminlist'>
 	<thead>
 		<tr>
-			<th width="20">#</th>
+			<th width="20" align="left">#</th>
 			<th width="20">&nbsp;</th>
-			<th width="30"><?php echo JHTML::_('grid.sort',   JText::_('COM_API_ID'), 'k.id', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
-			<th><?php echo JHTML::_('grid.sort',   JText::_('COM_API_DOMAIN'), 'k.domain', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
-			</th>
-			<th><?php echo JHTML::_('grid.sort',   JText::_('COM_API_USER'), 'u.name', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
-			<th><?php echo JText::_('COM_API_KEY');?></th>
-			<th><?php echo JHTML::_('grid.sort',   JText::_('COM_API_PUBLISHED'), 'k.published', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
+			<th align="left"><?php echo JHTML::_('grid.sort',   JText::_('COM_API_USER'), 'u.name', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
+			<th width="30" align="left"><?php echo JHTML::_('grid.sort',   JText::_('COM_API_ID'), 'k.id', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
+			<th align="left"><?php echo JHTML::_('grid.sort',   JText::_('COM_API_DOMAIN'), 'k.domain', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
+
+			<th align="left"><?php echo JText::_('COM_API_KEY');?></th>
+			<th align="left"><?php echo JHTML::_('grid.sort',   JText::_('COM_API_PUBLISHED'), 'k.published', $this->model->getState('filter.order_dir'), $this->model->getState('filter.order') ); ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -33,13 +33,14 @@ defined('_JEXEC') or die( 'Restricted access' );
 		<tr class="<?php echo $class;?>">
 			<td><?php echo $this->pagination->getRowOffset($i);?></td>
 			<td><?php echo $row->checked;?></td>
+			<td><?php echo $row->name." (".$row->username.")"; ?></td>
 			<td><?php echo $row->id; ?></td>
 			<td>
 				<a href="<?php echo $row->admin_link;?>">
 					<?php echo $row->domain; ?>
 				</a>
 			</td>
-			<td><?php echo $row->name." (".$row->username.")"; ?></td>
+
 			<td><?php echo $row->hash;?></td>
 			<td><?php echo $row->published_html; ?></td>
 		</tr>

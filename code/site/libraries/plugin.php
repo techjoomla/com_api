@@ -441,13 +441,11 @@ class ApiPlugin extends JObject {
 	}
 
 	/**
-	 * method used for get logged use object
+	 * Method to get current logged in API user
+	 * @return JUser
 	 */
-
 	public function getUser()
 	{
 		return $this->user;
 	}
-
-
 }

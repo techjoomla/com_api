@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install type="component" version="1.5" method="upgrade">
+<extension type="component" version="2.5.0" method="upgrade">
 	<name>API</name>
 	<version>1.0</version>
     <creationDate>November 2011</creationDate>
-    <author>Reportoise</author>
-    <authorEmail>support@reportoise.com</authorEmail>
-    <authorUrl>http://www.reportoise.com</authorUrl>
-    <copyright>2011 Reportoise</copyright>
+    <author>Techjoomla</author>
+    <authorEmail>contact@techjoomla.com</authorEmail>
+    <authorUrl>http://techjoomla.com</authorUrl>
+    <copyright>2011 Techjoomla</copyright>
     <license>GNU General Public License v2</license>
     <description>
 		<![CDATA[
-		<p><h2>Reportoise - Generic Api framework for Joomla to be used with the mobile app</h2></p>
-		Reportoise is an extensible reporting app for Android & iPhone. We're supporting Virtuemart, redSHOP, Tienda & Social Ads at the moment. <br />
-		Visit <a href="http://www.reportoise.com" target="_blank">reportoise.com</a> for more information
+		<p><h2>Generic Api framework for Joomla</h2></p>
 		]]>
 	</description>
-    <installfile>install.api.php</installfile>
 
 	<install>
         <sql>
@@ -26,7 +23,6 @@
 	<files folder="site">
         <file>api.php</file>
         <file>LICENSE.php</file>
-        <file>router.php</file>
         <file>index.html</file>
 		<folder>assets</folder>
         <folder>controllers</folder>
@@ -50,10 +46,11 @@
 			<filename>index.html</filename>
 			<filename>LICENSE.php</filename>
 			<filename>install.mysql.sql</filename>
+			<folder>models</folder>
+			<folder>views</folder>
 			<folder>controllers</folder>
 			<folder>elements</folder>
 	        <folder>helpers</folder>
-			<folder>views</folder>
     	</files>
 
 		<languages folder="admin">
@@ -61,9 +58,4 @@
 			<language tag="en-GB">language/en-GB/en-GB.com_api.sys.ini</language>
 		</languages>
 	</administration>
-</install>
-
-
-
-
-
+</extension>
