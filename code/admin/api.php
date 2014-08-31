@@ -14,14 +14,12 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.application.component.controller');
 
-if(!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
+$front_end = JPATH_SITE.'/components/com_api';
 
-$front_end = JPATH_SITE .DS. 'components' .DS. 'com_api';
-
-JLoader::register( 'APIController', $front_end .DS. 'libraries' .DS. 'controller.php' );
-JLoader::register( 'ApiControllerAdmin',$front_end .DS. 'libraries' .DS. 'admin' .DS. 'controller.php' );
-JLoader::register( 'APIModel', $front_end .DS. 'libraries' .DS. 'model.php' );
-JLoader::register( 'APIView', $front_end .DS. 'libraries' .DS. 'view.php' );
+JLoader::register( 'APIController', $front_end.'/libraries/controller.php' );
+JLoader::register( 'ApiControllerAdmin',$front_end.'/libraries/admin/controller.php' );
+JLoader::register( 'APIModel', $front_end.'/libraries/model.php' );
+JLoader::register( 'APIView', $front_end.'/libraries/view.php' );
 
 $app	= JFactory::getApplication();
 
@@ -37,7 +35,7 @@ if ( $view && !$controller ) {
 	$controller	= $view;
 }
 
-$c_path	= JPATH_COMPONENT_ADMINISTRATOR .DS. 'controllers' .DS. strtolower( $controller ) . '.php';
+$c_path	= JPATH_COMPONENT_ADMINISTRATOR.'/controllers/'.strtolower( $controller ) . '.php';
 
 if ( file_exists( $c_path ) ) {
 	include_once $c_path;
