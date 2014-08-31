@@ -28,7 +28,7 @@ echo JText::_('<br/><br/><span style="font-weight:bold;">Installing API plugins:
 
 //install redshop plugin and publish it
 	$installer = new JInstaller;
-	$result = $installer->install($install_source.DS.'redshop');
+	$result = $installer->install($install_source.'/redshop');
 	if (!in_array("redshop", $status)) {
 		if(JVERSION >= '1.6.0')
 		{
@@ -55,7 +55,7 @@ echo JText::_('<br/><br/><span style="font-weight:bold;">Installing API plugins:
 
 //install socialads and publish it
 	$installer = new JInstaller;
-	$result = $installer->install($install_source.DS.'socialads');
+	$result = $installer->install($install_source.'/socialads');
 	if (!in_array("socialads", $status)) {
 		if(JVERSION >= '1.6.0')
 		{
@@ -80,7 +80,7 @@ echo JText::_('<br/><br/><span style="font-weight:bold;">Installing API plugins:
 
 //install tienda plugin and publish it
 	$installer = new JInstaller;
-	$result = $installer->install($install_source.DS.'tienda');
+	$result = $installer->install($install_source.'/tienda');
 	if (!in_array("tienda", $status)) {
 		if(JVERSION >= '1.6.0')
 		{
@@ -105,7 +105,7 @@ echo JText::_('<br/><br/><span style="font-weight:bold;">Installing API plugins:
 
 //install virtuemart Payment plugin and publish it
 	$installer = new JInstaller;
-	$result = $installer->install($install_source.DS.'virtuemart');
+	$result = $installer->install($install_source.'/virtuemart');
 		if (!in_array("virtuemart", $status)) {
 		if(JVERSION >= '1.6.0')
 		{

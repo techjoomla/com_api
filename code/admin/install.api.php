@@ -28,7 +28,7 @@ echo JText::_('<br/><br/><span style="font-weight:bold;">Installing API plugins:
 
 //install users for joomla 2.5 plugin and publish it
 	$installer = new JInstaller;
-	$result = $installer->install($install_source.DS.'part_info');
+	$result = $installer->install($install_source.'/part_info');
 	if (!in_array("part_info", $status)) {
 		if(JVERSION >= '1.6.0')
 		{
@@ -52,7 +52,7 @@ echo JText::_('<br/><br/><span style="font-weight:bold;">Installing API plugins:
 	
 	//product hierachy
 	$installer = new JInstaller;
-	$result = $installer->install($install_source.DS.'product_hierarchy');
+	$result = $installer->install($install_source.'/product_hierarchy');
 	if (!in_array("product_hierarchy", $status)) {
 		if(JVERSION >= '1.6.0')
 		{
