@@ -25,6 +25,7 @@ JLoader::register('APIResource', $library_path.'/resource.php');
 JLoader::register('APIAuthentication', $library_path.'/authentication.php');
 JLoader::register('APIAuthenticationKey', $library_path.'/authentication/key.php');
 JLoader::register('APIAuthenticationLogin', $library_path.'/authentication/login.php');
+JLoader::register('APIHelper', $library_path.'/helper.php');
 
 $app = JFactory::getApplication();
 
