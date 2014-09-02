@@ -1,42 +1,78 @@
 <?php
+
 /**
- * @package	API
- * @version 1.5
- * @author 	Brian Edgerton
- * @link 	http://www.edgewebworks.com
- * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @version     1.0.0
+ * @package     com_api
+ * @copyright   Copyright (C) 2014. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Parth Lawate <contact@techjoomla.com> - http://techjoomla.com
+ */
+// No direct access
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 
-class ApiViewKey extends ApiView {
+/**
+ * View to edit
+ */
+class ApiViewKey extends JViewLegacy {
 
-	public function display($tpl = null) {
-		$this->generateToolbar();
+    protected $state;
+    protected $item;
+    protected $form;
 
-		$model		= $this->getModel();
-		$row		= $this->get('data');
+    /**
+     * Display the view
+     */
+    public function display($tpl = null) {
+        $this->state = $this->get('State');
+        $this->item = $this->get('Item');
+        $this->form = $this->get('Form');
 
-		$return		= 'index.php?option='.$this->option.'&view=keys';
+        // Check for errors.
+        if (count($errors = $this->get('Errors'))) {
+            throw new Exception(implode("\n", $errors));
+        }
 
-		$this->assignRef('return', $return);
-		$this->assignRef('model', $model);
-		$this->assignRef('row', $row);
+        $this->addToolbar();
+        parent::display($tpl);
+    }
 
-		parent::display($tpl);
-	}
+    /**
+     * Add the page title and toolbar.
+     */
+    protected function addToolbar() {
+        JFactory::getApplication()->input->set('hidemainmenu', true);
 
-	private function generateToolbar() {
+        $user = JFactory::getUser();
+        $isNew = ($this->item->id == 0);
+        if (isset($this->item->checked_out)) {
+            $checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
+        } else {
+            $checkedOut = false;
+        }
+        $canDo = ApiHelper::getActions();
 
-		// Get the toolbar object instance
-		$bar = JToolBar::getInstance('toolbar');
+        JToolBarHelper::title(JText::_('COM_API_TITLE_KEY'), 'key.png');
 
-		JToolBarHelper::title(JText::_('COM_API').': '.JText::_('COM_API_KEYS'));
-		JToolBarHelper::save();
-		JToolBarHelper::apply();
-		JToolBarHelper::cancel();
-	}
+        // If not checked out, can save the item.
+        if (!$checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create')))) {
+
+            JToolBarHelper::apply('key.apply', 'JTOOLBAR_APPLY');
+            JToolBarHelper::save('key.save', 'JTOOLBAR_SAVE');
+        }
+        if (!$checkedOut && ($canDo->get('core.create'))) {
+            JToolBarHelper::custom('key.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+        }
+        // If an existing item, can save to a copy.
+        if (!$isNew && $canDo->get('core.create')) {
+            JToolBarHelper::custom('key.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+        }
+        if (empty($this->item->id)) {
+            JToolBarHelper::cancel('key.cancel', 'JTOOLBAR_CANCEL');
+        } else {
+            JToolBarHelper::cancel('key.cancel', 'JTOOLBAR_CLOSE');
+        }
+    }
 
 }

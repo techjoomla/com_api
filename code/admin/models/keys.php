@@ -1,142 +1,160 @@
 <?php
+
 /**
- * @package	API
- * @version 1.5
- * @author 	Brian Edgerton
- * @link 	http://www.edgewebworks.com
- * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
-
+ * @version     1.0.0
+ * @package     com_api
+ * @copyright   Copyright (C) 2014. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Parth Lawate <contact@techjoomla.com> - http://techjoomla.com
+ */
 defined('_JEXEC') or die;
-jimport('joomla.application.component.model');
 
-class ApiModelKeys extends ApiModel
-{
+jimport('joomla.application.component.modellist');
 
-	protected $option 		= null;
-	protected $view			= null;
-	protected $context		= null;
-	protected $pagination 	= null;
+/**
+ * Methods supporting a list of Api records.
+ */
+class ApiModelKeys extends JModelList {
 
-	protected $list			= null;
-	protected $total		= null;
+    /**
+     * Constructor.
+     *
+     * @param    array    An optional associative array of configuration settings.
+     * @see        JController
+     * @since    1.6
+     */
+    public function __construct($config = array()) {
+        if (empty($config['filter_fields'])) {
+            $config['filter_fields'] = array(
+                                'id', 'a.id',
+                'userid', 'a.userid',
+                'hash', 'a.hash',
+                'domain', 'a.domain',
+                'ordering', 'a.ordering',
+                'state', 'a.state',
+                'created_by', 'a.created_by',
+                'last_used', 'a.last_used',
+                'per_hour', 'a.per_hour',
 
-	public function __construct()
-	{
-		parent::__construct();
+            );
+        }
 
-		//vishal - for j3 changes
-		$app = JFactory::getApplication();
+        parent::__construct($config);
+    }
 
-		$this->option = $app->input->get('option');
-		$this->view   = $app->input->get('view');
+    /**
+     * Method to auto-populate the model state.
+     *
+     * Note. Calling getState in this method will result in recursion.
+     */
+    protected function populateState($ordering = null, $direction = null) {
+        // Initialise variables.
+        $app = JFactory::getApplication('administrator');
 
+        // Load the filter state.
+        $search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+        $this->setState('filter.search', $search);
 
-		//$this->option  = JRequest::getCmd('option');
-		//$this->view    = JRequest::getCmd('view');
+        $published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_published', '', 'string');
+        $this->setState('filter.state', $published);
 
-		$this->context = $this->option . '.categories';
+        
 
-		$this->populateState();
-	}
+        // Load the parameters.
+        $params = JComponentHelper::getParams('com_api');
+        $this->setState('params', $params);
 
-	protected function populateState()
-	{
-    	$app = JFactory::getApplication();
+        // List state information.
+        parent::populateState('a.id', 'asc');
+    }
 
-		$search 			= $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search', '', 'string');
-		$this->setState('filter.search', $search);
+    /**
+     * Method to get a store id based on model configuration state.
+     *
+     * This is necessary because the model is used by the component and
+     * different modules that might need different sets of data or different
+     * ordering requirements.
+     *
+     * @param	string		$id	A prefix for the store id.
+     * @return	string		A store id.
+     * @since	1.6
+     */
+    protected function getStoreId($id = '') {
+        // Compile the store id.
+        $id.= ':' . $this->getState('filter.search');
+        $id.= ':' . $this->getState('filter.state');
 
-		$limit 				= $app->getUserStateFromRequest($this->context.'.limit', 'limit', '', 'string');
-		$this->setState('limit', $limit);
+        return parent::getStoreId($id);
+    }
 
-		$limitstart 		= $app->getUserStateFromRequest($this->context.'.limitstart', 'limitstart', '', 'string');
-		$this->setState('limitstart', $limitstart);
+    /**
+     * Build an SQL query to load the list data.
+     *
+     * @return	JDatabaseQuery
+     * @since	1.6
+     */
+    protected function getListQuery() {
+        // Create a new query object.
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
 
-		$filter_order		= $app->getUserStateFromRequest($this->context.'.filter.order', 'filter_order', 'k.created', 'string');
-		$this->setState('filter.order', $filter_order);
+        // Select the required fields from the table.
+        $query->select(
+                $this->getState(
+                        'list.select', 'DISTINCT a.*'
+                )
+        );
+        $query->from('`#__api_keys` AS a');
 
-		$filter_order_Dir	= $app->getUserStateFromRequest($this->context.'.filter.order_dir', 'filter_order_Dir', 'DESC', 'string');
-		$this->setState('filter.order_dir', $filter_order_Dir);
-  	}
+        
+		// Join over the users for the checked out user
+		$query->select("uc.name AS editor");
+		$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
+		// Join over the user field 'userid'
+		$query->select('userid.name AS userid');
+		$query->join('LEFT', '#__users AS userid ON userid.id = a.userid');
+		// Join over the user field 'created_by'
+		$query->select('created_by.name AS created_by');
+		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
 
-	public function getList($override=false, $filter=true) {
-		if (!$override && $this->get('list') !== null) :
-			return $this->get('list');
-		endif;
+        
 
-		$where	= $this->buildWhere();
-		$order	= $this->buildOrder();
-
-		$query	= "SELECT k.*, u.name, u.username "
-				."FROM #__api_keys AS k "
-				."LEFT JOIN #__users AS u ON u.id = k.user_id "
-				.$where
-				.$order
-				;
-
-		$this->_db->setQuery($query, $this->getState('limitstart'), $this->getState('limit'));
-		$this->list	= $this->_db->loadObjectList();
-
-		if ($filter) :
-			$this->filterList($this->list);
-		endif;
-
-		return $this->list;
-	}
-
-	private function filterList( &$list )
-	{
-		for ( $i = 0; $i < count( $list ); $i++ ) {
-			$row				= $list[$i];
-			$row->checked_out	= false;
-			$row->checked 		= JHTML::_('grid.checkedout', $row, $i );
-			$row->published_html = JHTML::_('grid.published', $row, $i);
-			$row->admin_link 	= 'index.php?option='.$this->get('option').'&view=key&cid[]='.$row->id;
+		// Filter by published state
+		$published = $this->getState('filter.state');
+		if (is_numeric($published)) {
+			$query->where('a.state = ' . (int) $published);
+		} else if ($published === '') {
+			$query->where('(a.state IN (0, 1))');
 		}
-	}
 
-	public function getTotal( $override = false )
-	{
-		if ( !$override && $this->get( 'total' ) !== null ) {
-			return $this->get( 'list' );
-		}
+        // Filter by search in title
+        $search = $this->getState('filter.search');
+        if (!empty($search)) {
+            if (stripos($search, 'id:') === 0) {
+                $query->where('a.id = ' . (int) substr($search, 3));
+            } else {
+                $search = $db->Quote('%' . $db->escape($search, true) . '%');
+                
+            }
+        }
 
-		$where = $this->buildWhere();
-		$order = $this->buildOrder();
+        
 
-		$query	= "SELECT COUNT(*) "
-				. "FROM #__api_keys AS k"
-				. $where
-				. $order
-				;
 
-		$this->_db->setQuery( $query );
-		$this->total = $this->_db->loadResult();
+        // Add the list ordering clause.
+        $orderCol = $this->state->get('list.ordering');
+        $orderDirn = $this->state->get('list.direction');
+        if ($orderCol && $orderDirn) {
+            $query->order($db->escape($orderCol . ' ' . $orderDirn));
+        }
 
-		return $this->total;
-	}
+        return $query;
+    }
 
-	private function buildWhere()
-	{
-		$where  = null;
-		$wheres = array();
+    public function getItems() {
+        $items = parent::getItems();
+        
+        return $items;
+    }
 
-		if ( !empty( $wheres ) ) {
-			$where = " WHERE " . implode( ' AND ', $wheres );
-		}
-
-		return $where;
-	}
-
-	private function buildOrder()
-	{
-		$ordering = null;
-
-		$ordering = " ORDER BY " . $this->getState( 'filter.order' )
-			. ' ' . $this->getState( 'filter.order_dir' );
-
-		return $ordering;
-	}
 }

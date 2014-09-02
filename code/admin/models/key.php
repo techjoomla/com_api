@@ -1,163 +1,125 @@
 <?php
 /**
- * @package	API
- * @version 1.5
- * @author 	Brian Edgerton
- * @link 	http://www.edgewebworks.com
- * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @version     1.0.0
+ * @package     com_api
+ * @copyright   Copyright (C) 2014. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Parth Lawate <contact@techjoomla.com> - http://techjoomla.com
+ */
 
+// No direct access.
 defined('_JEXEC') or die;
-jimport('joomla.application.component.model');
 
-class ApiModelKey extends ApiModel
+jimport('joomla.application.component.modeladmin');
+
+/**
+ * Api model.
+ */
+class ApiModelKey extends JModelAdmin
 {
-	public function __construct( $config = array() )
-	{
-		parent::__construct( $config );
+	/**
+	 * @var		string	The prefix to use with controller messages.
+	 * @since	1.6
+	 */
+	protected $text_prefix = 'COM_API';
 
+
+	/**
+	 * Returns a reference to the a Table object, always creating it.
+	 *
+	 * @param	type	The table type to instantiate
+	 * @param	string	A prefix for the table class name. Optional.
+	 * @param	array	Configuration array for model. Optional.
+	 * @return	JTable	A database object
+	 * @since	1.6
+	 */
+	public function getTable($type = 'Key', $prefix = 'ApiTable', $config = array())
+	{
+		return JTable::getInstance($type, $prefix, $config);
+	}
+
+	/**
+	 * Method to get the record form.
+	 *
+	 * @param	array	$data		An optional array of data for the form to interogate.
+	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
+	 * @return	JForm	A JForm object on success, false on failure
+	 * @since	1.6
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		// Initialise variables.
 		$app	= JFactory::getApplication();
 
-		//$id = JRequest::getInt( 'id', false );
-		$id = $app->input->get( 'id', false,'INT' );
-
-		if ( !$id ) {
-			//$cid = JRequest::getVar( 'cid', array() );
-			$cid = $app->input->post->get( 'cid', array(),'ARRAY' );
-
-			$id = @$cid[0];
+		// Get the form.
+		$form = $this->loadForm('com_api.key', 'key', array('control' => 'jform', 'load_data' => $loadData));
+        
+        
+		if (empty($form)) {
+			return false;
 		}
 
-		if ( $id ) {
-			$this->setState('id', $id);
-		}
-
+		return $form;
 	}
 
-	public function getList()
+	/**
+	 * Method to get the data that should be injected in the form.
+	 *
+	 * @return	mixed	The data for the form.
+	 * @since	1.6
+	 */
+	protected function loadFormData()
 	{
-		$where = null;
-		if($user_id	= $this->getState('user_id')) :
-			$where = 'WHERE user_id = '.$this->_db->Quote($user_id);
-		endif;
+		// Check the session for previously entered form data.
+		$data = JFactory::getApplication()->getUserState('com_api.edit.key.data', array());
 
-		$query = "SELECT id, hash, domain, published, created "
-				."FROM #__api_keys "
-				.$where
-				;
-		$this->_db->setQuery($query);
-		$tokens	= $this->_db->loadObjectList();
-		return $tokens;
+		if (empty($data)) {
+			$data = $this->getItem();
+            
+		}
+
+		return $data;
 	}
 
-	public function save($data) {
+	/**
+	 * Method to get a single record.
+	 *
+	 * @param	integer	The id of the primary key.
+	 *
+	 * @return	mixed	Object on success, false on failure.
+	 * @since	1.6
+	 */
+	public function getItem($pk = null)
+	{
+		if ($item = parent::getItem($pk)) {
 
-		$creator			= JFactory::getUser()->get('id');
-		$table 				= JTable::getInstance('Key', 'ApiTable');
+			//Do any procesing on fields here if needed
 
-		$old	= JTable::getInstance('Key', 'ApiTable');
-		if ($data['id']) :
-			$old->load($data['id']);
-		endif;
+		}
 
-		if (!$table->bind($data)) :
-			$this->setError($this->_db->getErrorMsg());
-			return false;
-		endif;
-
-		$table->domain		= ($old->domain != $table->domain) ? $this->validateDomain($table->domain) : $table->domain;
-		if ($table->domain === false) :
-			return false;
-		endif;
-
-		$table->created		= gmdate("Y-m-d H:i:s");
-		$table->created_by	= $creator;
-
-		if (!$table->id && !$table->hash) :
-			$table->hash		= $this->generateUniqueHash();
-		endif;
-
-		if (!$table->check()) :
-			$this->setError($table->getError());
-			return false;
-		endif;
-
-		if (!$table->store()) :
-			$this->setError($table->getError());
-			return false;
-		endif;
-
-		return $table;
+		return $item;
 	}
 
-	public function getData() {
+	/**
+	 * Prepare and sanitise the table prior to saving.
+	 *
+	 * @since	1.6
+	 */
+	protected function prepareTable($table)
+	{
+		jimport('joomla.filter.output');
 
-		$table = JTable::getInstance('Key', 'ApiTable');
-		if ($this->getState('id', 0))
-			$table->load($this->getState('id'));
+		if (empty($table->id)) {
 
-		return $table;
-	}
+			// Set ordering to the last item if not set
+			if (@$table->ordering === '') {
+				$db = JFactory::getDbo();
+				$db->setQuery('SELECT MAX(ordering) FROM #__api_keys');
+				$max = $db->loadResult();
+				$table->ordering = $max+1;
+			}
 
-	public function delete($cid) {
-		if (is_array($cid)) :
-			$where = "id IN (".implode(", ", $cid).")";
-		else :
-			$where = "id = ".(int)$cid;
-		endif;
-
-		$this->_db->setQuery("DELETE FROM #__api_keys WHERE ".$where);
-		if (!$this->_db->query()) :
-			$this->setError($this->_db->getErrorMsg());
-			return false;
-		endif;
-		return true;
-	}
-
-	private function generateUniqueHash() {
-		$seed	= $this->makeRandomSeed();
-		$hash	= sha1(uniqid($seed.microtime()));
-
-		$this->_db->setQuery('SELECT COUNT(*) FROM #__api_keys WHERE hash = "'.$hash.'"');
-		$exists	= $this->_db->loadResult();
-
-		if ($exists) :
-			return $this->generateUniqueHash();
-		else :
-			return $hash;
-		endif;
-	}
-
-	private function makeRandomSeed() {
-		$string	= 'abcdefghijklmnopqrstuvwxyz';
-		$alpha	= str_split($string.strtoupper($string));
-		$last	= count($alpha)-1;
-
-		$seed	= null;
-		for ($i=0; $i<16; $i++) :
-			$seed .= $alpha[mt_rand(0, $last)];
-		endfor;
-		return $seed;
-	}
-
-	public function validateDomain($domain) {
-
-		$sanitized	= preg_replace('/(http|https|ftp):\/\//', '', $domain);
-
-		if(!preg_match('/^([0-9a-z-_\.]+\.+[0-9a-z\.]+)|localhost$/i',$sanitized)) :
-			$this->setError(JText::_('COM_API_INVALID_DOMAIN_MSG'));
-			return false;
-		elseif ($sanitized != 'localhost') :
-			$this->_db->setQuery("SELECT COUNT(*) FROM #__api_keys WHERE domain = ".$this->_db->Quote($sanitized));
-			$exists = $this->_db->loadResult();
-			if ($exists > 0) :
-				$this->setError(JText::_('COM_API_DUPLICATE_DOMAIN_MSG'));
-				return false;
-			endif;
-		endif;
-
-		return $sanitized;
+		}
 	}
 
 }
