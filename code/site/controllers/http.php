@@ -19,7 +19,7 @@ class ApiControllerHttp extends ApiController
 		parent::__construct( $config );
 	}
 
-	public function display()
+	public function display( $cachable = false, $urlparams = array() )
 	{
 		$this->resetDocumentType();
 

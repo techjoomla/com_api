@@ -18,12 +18,10 @@ abstract class ApiAuthentication extends JObject {
 	static		$auth_errors		= array();
 
 	public function __construct($params) {
-    	//parent::__construct($config);
 
-    	parent::__construct();
+		parent::__construct();
 
-		//vishal - for j3.2
-    	$app = JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$key = $app->input->get('key');
 
 		if(empty($key))
@@ -37,21 +35,19 @@ abstract class ApiAuthentication extends JObject {
 			$this->set('auth_method', $params->get('auth_method', 'key'));
 		}
 		$this->set('domain_checking', $params->get('domain_checking', 1));
-  	}
+  }
 
 	abstract public function authenticate();
 
 	public static function authenticateRequest() {
 		$params			= JComponentHelper::getParams('com_api');
-
-		//vishal - for j3.2
-    	$app = JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$key = $app->input->get('key');
 
 		if(!empty($key))
-		$method			= $params->get('auth_method', 'key');
+			$method			= $params->get('auth_method', 'key');
 		else
-		$method			= $params->get('auth_method', 'login');
+			$method			= $params->get('auth_method', 'login');
 
 		$className 		= 'APIAuthentication'.ucwords($method);
 

@@ -21,7 +21,6 @@ abstract class ApiResource {
 
 		$this->plugin = $plugin;
 
-
 	}
 
 	final public function invoke() {
@@ -35,7 +34,7 @@ abstract class ApiResource {
 		endif;
 	}
 
-	final public function getInstance($name, ApiPlugin $plugin, $prefix=null)
+	final public static function getInstance($name, ApiPlugin $plugin, $prefix=null)
 	{
 
 		if (is_null($prefix))
@@ -71,7 +70,7 @@ abstract class ApiResource {
 		return $instance;
 	}
 
-	final public function addIncludePath( $path=null )
+	final public static function addIncludePath( $path=null )
 	{
 		static $paths;
 

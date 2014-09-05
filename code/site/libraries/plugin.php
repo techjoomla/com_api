@@ -48,7 +48,6 @@ class ApiPlugin extends JObject {
 		endif;
 
 		jimport('joomla.filesystem.file');
-		/* vishal - for j3.2 plugin */
 		if((float)JVERSION > 2.5)
 		{
 			self::$plg_path = self::$plg_path.$plugin->name.'/';
