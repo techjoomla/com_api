@@ -10,7 +10,7 @@
 
 class ApiError extends JException
 {
-	function raiseError($code, $msg)
+	public static function raiseError($code, $msg)
 	{
 		//throw new Exception($msg, $code);
 		//return ApiResource::getErrorResponse( $code, $msg );
