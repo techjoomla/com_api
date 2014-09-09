@@ -99,11 +99,6 @@ if (!empty($this->extra_sidebar)) {
 		<table class="table table-striped adminlist" id="keyList">
 			<thead>
 				<tr>
-                <?php if (isset($this->items[0]->ordering)): ?>
-					<th width="1%" class="nowrap center hidden-phone">
-						<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
-					</th>
-                <?php endif; ?>
 					<th width="1%" class="hidden-phone">
 						<input type="checkbox" name="checkall-toggle" value="" title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)" />
 					</th>
@@ -151,7 +146,6 @@ if (!empty($this->extra_sidebar)) {
 			</tfoot>
 			<tbody>
 			<?php foreach ($this->items as $i => $item) :
-				$ordering   = ($listOrder == 'a.ordering');
                 $canCreate	= $user->authorise('core.create',		'com_api');
                 $canEdit	= $user->authorise('core.edit',			'com_api');
                 $canCheckin	= $user->authorise('core.manage',		'com_api');
@@ -159,26 +153,6 @@ if (!empty($this->extra_sidebar)) {
 				?>
 				<tr class="row<?php echo $i % 2; ?>">
                     
-                <?php if (isset($this->items[0]->ordering)): ?>
-					<td class="order nowrap center hidden-phone">
-					<?php if ($canChange) :
-						$disableClassName = '';
-						$disabledLabel	  = '';
-						if (!$saveOrder) :
-							$disabledLabel    = JText::_('JORDERINGDISABLED');
-							$disableClassName = 'inactive tip-top';
-						endif; ?>
-						<span class="sortable-handler hasTooltip <?php echo $disableClassName?>" title="<?php echo $disabledLabel?>">
-							<i class="icon-menu"></i>
-						</span>
-						<input type="text" style="display:none" name="order[]" size="5" value="<?php echo $item->ordering;?>" class="width-20 text-area-order " />
-					<?php else : ?>
-						<span class="sortable-handler inactive" >
-							<i class="icon-menu"></i>
-						</span>
-					<?php endif; ?>
-					</td>
-                <?php endif; ?>
 					<td class="center hidden-phone">
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 					</td>

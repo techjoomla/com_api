@@ -36,14 +36,11 @@ class ApiAuthenticationKey extends ApiAuthentication {
 	}
 
 	public function loadTokenByHash($hash) {
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select('*');
-		$query->from('#__api_keys'); 
-		$query->where('hash = ' . $db->Quote($hash));
-		$db->setQuery($query);
-		$token	= $db->loadObject();
-		return $token;
+		
+		$table = JTable::getInstance('Key', 'ApiTable');
+		$table->loadByHash($hash);
+
+		return $table;
 	}
 
 }

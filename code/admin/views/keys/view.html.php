@@ -121,7 +121,6 @@ class ApiViewKeys extends JViewLegacy {
 		'a.id' => JText::_('JGRID_HEADING_ID'),
 		'a.userid' => JText::_('COM_API_KEYS_USERID'),
 		'a.domain' => JText::_('COM_API_KEYS_DOMAIN'),
-		'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
 		'a.state' => JText::_('JSTATUS'),
 		'a.last_used' => JText::_('COM_API_KEYS_LAST_USED'),
 		);

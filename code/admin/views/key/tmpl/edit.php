@@ -10,9 +10,11 @@
 defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+if (version_compare(JVERSION, "3.0.0", "ge")){
+	JHtml::_('behavior.formvalidation');
+	JHtml::_('formbehavior.chosen', 'select');
+}
 JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
-JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
 
 // Import CSS
@@ -46,9 +48,6 @@ $document->addStyleSheet('components/com_api/assets/css/api.css');
 <form action="<?php echo JRoute::_('index.php?option=com_api&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="key-form" class="form-validate">
 
     <div class="form-horizontal">
-        <?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
-
-        <?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_API_TITLE_KEY', true)); ?>
         <div class="row-fluid">
             <div class="span10 form-horizontal">
                 <fieldset class="adminform">
@@ -91,11 +90,6 @@ $document->addStyleSheet('components/com_api/assets/css/api.css');
                 </fieldset>
             </div>
         </div>
-        <?php echo JHtml::_('bootstrap.endTab'); ?>
-        
-        
-
-        <?php echo JHtml::_('bootstrap.endTabSet'); ?>
 
         <input type="hidden" name="task" value="" />
         <?php echo JHtml::_('form.token'); ?>

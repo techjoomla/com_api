@@ -93,11 +93,11 @@ class ApiTablekey extends JTable {
      */
     public function check() {
 
-        //If there is an ordering column and this is a new row then get the next ordering value
-        if (property_exists($this, 'ordering') && $this->id == 0) {
-            $this->ordering = self::getNextOrder();
+        if (!$this->userid) {
+					JError::raiseWarning( 100, JText::_('COM_API_KEY_NO_USER') );
+					return false;
         }
-
+        
         return parent::check();
     }
 
@@ -176,36 +176,6 @@ class ApiTablekey extends JTable {
         return true;
     }
 
-    /**
-     * Define a namespaced asset name for inclusion in the #__assets table
-     * @return string The asset name 
-     *
-     * @see JTable::_getAssetName 
-     */
-    protected function _getAssetName() {
-        $k = $this->_tbl_key;
-        return 'com_api.key.' . (int) $this->$k;
-    }
-
-    /**
-     * Returns the parent asset's id. If you have a tree structure, retrieve the parent's id using the external key field
-     *
-     * @see JTable::_getAssetParentId 
-     */
-    protected function _getAssetParentId(JTable $table = null, $id = null) {
-        // We will retrieve the parent-asset from the Asset-table
-        $assetParent = JTable::getInstance('Asset');
-        // Default: if no asset-parent can be found we take the global asset
-        $assetParentId = $assetParent->getRootId();
-        // The item has the component as asset-parent
-        $assetParent->loadByName('com_api');
-        // Return the found asset-parent-id
-        if ($assetParent->id) {
-            $assetParentId = $assetParent->id;
-        }
-        return $assetParentId;
-    }
-
     public function delete($pk = null) {
         $this->load($pk);
         $result = parent::delete($pk);
@@ -215,5 +185,25 @@ class ApiTablekey extends JTable {
         }
         return $result;
     }
+    
+    public function store($updateNulls = false) {
+			if (!$this->hash) {
+				$string = $this->userid . time();
+				$this->hash = md5($string); //@TODO : Better hashing algo
+			}
+			return parent::store($updateNulls = false);
+		}
+		
+		public function setLastUsed($hash) {
+			$key = $this->loadByHash($hash);
+
+			$date = JFactory::getDate();
+			$this->last_used = $date->toSql();
+			$this->store();
+		}
+		
+		public function loadByHash($hash) {
+			$this->load(array('hash'=>$hash));
+		}
 
 }

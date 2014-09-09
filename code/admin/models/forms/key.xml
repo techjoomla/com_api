@@ -2,34 +2,24 @@
 <form>
 	<fieldset>
 
-              <field name="id" type="text" default="0" label="COM_API_FORM_LBL_KEY_ID"
-            readonly="true" class="readonly"
-            description="JGLOBAL_FIELD_ID_DESC" /> 
+		<field name="id" type="text" default="0" label="COM_API_FORM_LBL_KEY_ID"
+					readonly="true" class="readonly"
+					description="JGLOBAL_FIELD_ID_DESC" /> 
 
-       <field name="userid" type="user"
-                
-            label="COM_API_FORM_LBL_KEY_USERID"
-            description="COM_API_FORM_DESC_KEY_USERID" 
-                
-                
-                 required="true"  /> 
+		<field name="userid" type="user"
+					label="COM_API_FORM_LBL_KEY_USERID"
+					description="COM_API_FORM_DESC_KEY_USERID" 
+					required="true"  /> 
 
-       <field name="hash" type="hidden"
-                
+		<field name="hash" type="hidden"
             label="COM_API_FORM_LBL_KEY_HASH"
             description="COM_API_FORM_DESC_KEY_HASH" 
-                
-                
-                
             filter="alnum" /> 
 
        <field name="domain" type="text"
                 
             label="COM_API_FORM_LBL_KEY_DOMAIN"
             description="COM_API_FORM_DESC_KEY_DOMAIN" 
-                
-                
-                
             filter="string" /> 
 
        <field name="created_by" type="createdby" default="" 
@@ -37,22 +27,16 @@
             description="COM_API_FORM_DESC_KEY_CREATED_BY"  /> 
 
        <field name="last_used" type="calendar" class="inputbox"
-        
-        
          default="0000-00-00 00:00:00" 
-        
             label="COM_API_FORM_LBL_KEY_LAST_USED"
             description="COM_API_FORM_DESC_KEY_LAST_USED" 
         format="%Y-%m-%d %H:%M:%S"
         filter="safehtml" /> 
 
        <field name="per_hour" type="text"
-                
             label="COM_API_FORM_LBL_KEY_PER_HOUR"
             description="COM_API_FORM_DESC_KEY_PER_HOUR" 
-                 default="0" 
-                
-                
+					default="0" 
             filter="int" /> 
 
          <field

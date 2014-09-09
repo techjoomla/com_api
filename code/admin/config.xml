@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
     <fieldset label="COM_API" name="api">
-              <field name="force_output" type="text"
-                
+			<field name="force_output" type="text"
             label="COM_API_FORM_LBL_FORCE_OUTPUT"
-            description="COM_API_FORM_DESC_FORCE_OUTPUT" 
-                
-                
-                 />
+            description="COM_API_FORM_DESC_FORCE_OUTPUT" />
+			<field name="request_limit" type="text"
+            label="COM_API_FORM_LBL_RATE_LIMIT"
+            description="COM_API_FORM_LBL_RATE_LIMIT_DESC" />
+			<field name="log_requests" type="list" default="0" label="COM_API_CONFIG_LOG_LBL" description="COM_API_CONFIG_LOG_DESC">
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</field>
     </fieldset>
     <fieldset 
         name="permissions"
