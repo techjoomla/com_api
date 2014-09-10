@@ -14,7 +14,7 @@ jimport('joomla.application.component.modellist');
 /**
  * Methods supporting a list of Api records.
  */
-class ApiModelKeys extends JModelList {
+class ApiModelLogs extends JModelList {
 
     /**
      * Constructor.
@@ -26,16 +26,10 @@ class ApiModelKeys extends JModelList {
     public function __construct($config = array()) {
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = array(
-                                'id', 'a.id',
-                'userid', 'a.userid',
+                'user', 'u.name',
                 'hash', 'a.hash',
-                'domain', 'a.domain',
-                'ordering', 'a.ordering',
-                'state', 'a.state',
-                'created_by', 'a.created_by',
-                'last_used', 'a.last_used',
-                'per_hour', 'a.per_hour',
-
+                'ip_address', 'a.ip_address',
+                'time', 'a.time',
             );
         }
 
@@ -54,6 +48,9 @@ class ApiModelKeys extends JModelList {
         // Load the filter state.
         $search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
         $this->setState('filter.search', $search);
+
+        $published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_published', '', 'string');
+        $this->setState('filter.state', $published);
 
         // Load the parameters.
         $params = JComponentHelper::getParams('com_api');
@@ -89,61 +86,43 @@ class ApiModelKeys extends JModelList {
      * @since	1.6
      */
     protected function getListQuery() {
-        // Create a new query object.
-        $db = $this->getDbo();
-        $query = $db->getQuery(true);
+			// Create a new query object.
+			$db = $this->getDbo();
+			$query = $db->getQuery(true);
 
-        // Select the required fields from the table.
-        $query->select(
-                $this->getState(
-                        'list.select', 'DISTINCT a.*'
-                )
-        );
-        $query->from('`#__api_keys` AS a');
-
-        
-		// Join over the users for the checked out user
-		$query->select("uc.name AS editor");
-		$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
-		// Join over the user field 'userid'
-		$query->select('userid.name AS userid');
-		$query->join('LEFT', '#__users AS userid ON userid.id = a.userid');
-		// Join over the user field 'created_by'
-		$query->select('created_by.name AS created_by');
-		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
-
+			// Select the required fields from the table.
+			$query->select(
+							$this->getState(
+											'list.select', 'DISTINCT a.*'
+							)
+			);
+			$query->from('`#__api_logs` AS a');
+			$query->join('LEFT', $db->quoteName('#__api_keys', 'k') . ' ON a.hash=k.hash');
+			$query->join('LEFT', $db->quoteName('#__users', 'u') . ' ON k.userid=u.id');
+      $query->select('u.name, u.id AS uid');
         
 
-		// Filter by published state
-		$published = $this->getState('filter.state');
-		if (is_numeric($published)) {
-			$query->where('a.state = ' . (int) $published);
-		} else if ($published === '') {
-			$query->where('(a.state IN (0, 1))');
-		}
+			// Filter by search in title
+			$search = $this->getState('filter.search');
+			if (!empty($search)) {
+				if (substr($search,0,3) == 'uid') {
+					$query->where('u.id = ' . (int)substr($search,4));
+				} elseif(substr($search,0,2) == 'ip') {
+					$query->where('a.ip_address = ' . $db->Quote(substr($search,3)));
+				} else {
+					$search = $db->Quote('%' . $db->escape($search, true) . '%');
+					$query->where('a.request LIKE ' . $search . ' OR a.post_data LIKE ' . $search . ' OR u.name LIKE ' . $search . ' OR a.hash LIKE ' . $search);
+				}
+			}
 
-        // Filter by search in title
-        $search = $this->getState('filter.search');
-        if (!empty($search)) {
-            if (stripos($search, 'id:') === 0) {
-                $query->where('a.id = ' . (int) substr($search, 3));
-            } else {
-                $search = $db->Quote('%' . $db->escape($search, true) . '%');
-                
-            }
-        }
+			// Add the list ordering clause.
+			$orderCol = $this->state->get('list.ordering');
+			$orderDirn = $this->state->get('list.direction');
+			if ($orderCol && $orderDirn) {
+					$query->order($db->escape($orderCol . ' ' . $orderDirn));
+			}
 
-        
-
-
-        // Add the list ordering clause.
-        $orderCol = $this->state->get('list.ordering');
-        $orderDirn = $this->state->get('list.direction');
-        if ($orderCol && $orderDirn) {
-            $query->order($db->escape($orderCol . ' ' . $orderDirn));
-        }
-
-        return $query;
+			return $query;
     }
 
     public function getItems() {
@@ -151,5 +130,13 @@ class ApiModelKeys extends JModelList {
         
         return $items;
     }
+    
+    public function delete($cid) {
+			$table = JTable::getInstance('Log', 'ApiTable');
+			
+			foreach ($cid as $id) {
+				return $table->delete($id);
+			}
+		}
 
 }

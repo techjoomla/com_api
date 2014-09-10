@@ -15,6 +15,7 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.application.component.controller');
+jimport('joomla.application.component.modellist');
 
 //class ApiController extends JController {
 class ApiController extends JControllerLegacy {
@@ -35,7 +36,7 @@ class ApiController extends JControllerLegacy {
 		$this->set('option', $app->input->get('option','','STRING'));
 
 		JModelList::addIncludePath(JPATH_SITE.'/components/com_api/models');
-		JTable::addIncludePath(JPATH_SITE.'/components/com_api/tables');
+		JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_api/tables');
 
 	}
 

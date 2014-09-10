@@ -8,6 +8,7 @@
 		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
 		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" />
 		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
+		<action name="logs.manage" title="JACTION_MANAGELOGS" description="JACTION_MANAGELOGS_DESC" />
 	</section>
     
 </access>

@@ -20,6 +20,7 @@ class ApiHelper {
      */
     public static function addSubmenu($vName = '') {
 			$submenus[] = array('title'=>JText::_('COM_API_TITLE_KEYS'), 'link'=>'index.php?option=com_api&view=keys', 'view'=>'keys');
+			$submenus[] = array('title'=>JText::_('COM_API_TITLE_LOGS'), 'link'=>'index.php?option=com_api&view=logs', 'view'=>'logs');
 			
 			foreach ($submenus as $submenu) {
 				if (version_compare(JVERSION, '3.0.0', 'ge')) {
@@ -51,7 +52,14 @@ class ApiHelper {
         $assetName = 'com_api';
 
         $actions = array(
-            'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete'
+            'core.admin', 
+            'core.manage', 
+            'core.create', 
+            'core.edit', 
+            'core.edit.own', 
+            'core.edit.state', 
+            'core.delete',
+            'logs.manage'
         );
 
         foreach ($actions as $action) {

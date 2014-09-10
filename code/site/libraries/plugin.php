@@ -84,21 +84,21 @@ class ApiPlugin extends JPlugin {
 							break;
 
 			case 'POST' :
-							$handler->set('component', $app->input->post->get('app','','CMD'));
-							$handler->set('resource', $app->input->post->get('resource','','CMD'));
-							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							$handler->set('component', $app->input->get('app','','CMD'));
+							$handler->set('resource', $app->input->get('resource','','CMD'));
+							$handler->set('format', $handler->negotiateContent($app->input->get('output',null,'CMD')));
 							break;
 
 			case 'PUT' :
 							$handler->set('component', $app->input->get('app','','CMD'));
 							$handler->set('resource', $app->input->get('resource','','CMD'));
-							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							$handler->set('format', $handler->negotiateContent($app->input->get('output',null,'CMD')));
 							break;
 
 			case 'DELETE':
 							$handler->set('component', $app->input->get('app','','CMD'));
 							$handler->set('resource', $app->input->get('resource','','CMD'));
-							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							$handler->set('format', $handler->negotiateContent($app->input->get('output',null,'CMD')));
 							break;
 
 			case 'PATCH':
@@ -280,10 +280,7 @@ class ApiPlugin extends JPlugin {
 			return true;
 		}
 
-		//$hash = JRequest::getVar('key', '');
-		//$ip_address = JRequest::getVar('REMOTE_ADDR', '', 'server');
-
-		$hash = $app->input->post->get('key', '','STRING');
+		$hash = $app->input->get('key', '','STRING');
 		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 
 		$time = $this->params->get('request_limit_time', 'hour');
@@ -330,15 +327,14 @@ class ApiPlugin extends JPlugin {
 	 */
 	final private function log()
 	{
-		echo $this->params->get('loq_requests');
-		if (!$this->params->get('loq_requests')) { return; }
+		if (!$this->params->get('log_requests')) { return; }
 		
 		$app = JFactory::getApplication();
 		$table = JTable::getInstance('Log', 'ApiTable');
-
+		$date = JFactory::getDate();
+		
 		$table->hash = $app->input->get('key', '','STRING');
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
-		$date = JFactory::getDate();
 		$table->time = $date->toSql();
 		$table->request = JFactory::getURI()->getQuery();
 		$table->post_data = $app->input->post->getArray(array());
