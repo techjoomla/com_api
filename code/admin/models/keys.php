@@ -54,6 +54,9 @@ class ApiModelKeys extends JModelList {
         // Load the filter state.
         $search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
         $this->setState('filter.search', $search);
+        
+        $state = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state');
+        $this->setState('filter.state', $state);
 
         // Load the parameters.
         $params = JComponentHelper::getParams('com_api');

@@ -221,6 +221,9 @@ class ApiPlugin extends JPlugin {
 			}
 
 			$this->set('user', $user);
+			$session = JFactory::getSession();			
+			$session->set('user', $user);
+
 		}
 
 		if (!$this->checkRequestLimit())

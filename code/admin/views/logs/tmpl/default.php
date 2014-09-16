@@ -132,13 +132,17 @@ if (!empty($this->extra_sidebar)) {
                    
 					<td>
 						<a href="index.php?option=com_api&view=logs&filter_search=<?php echo $item->hash; ?>"><?php echo $item->hash; ?></a>
+						<?php if ($item->name) : ?>
 						<br />
 						<a href="index.php?option=com_api&view=logs&filter_search=uid:<?php echo $item->uid; ?>"><?php echo $item->name; ?></a></td>
+						<?php else : echo JText::_('UNASSIGNED_HASH'); ?>
+						
+						<?php endif; ?>
 					<td>
 						<a href="index.php?option=com_api&view=logs&filter_search=ip:<?php echo $item->ip_address; ?>"><?php echo $item->ip_address; ?></a>
 					</td>
 					<td><?php echo $item->time; ?></td>
-					<td><?php echo $item->request; ?></td>
+					<td><div class="request_container"><?php echo implode('&#8203;&', explode('&', $item->request)); ?></div></td>
 					<td><?php echo $item->post_data; ?></td>
 				</tr>
 				<?php endforeach; ?>

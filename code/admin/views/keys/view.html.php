@@ -71,30 +71,19 @@ class ApiViewKeys extends JViewLegacy {
         }
 
         if ($canDo->get('core.edit.state')) {
-
             if (isset($this->items[0]->state)) {
                 JToolBarHelper::divider();
                 JToolBarHelper::custom('keys.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
                 JToolBarHelper::custom('keys.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
-            } else if (isset($this->items[0])) {
-                //If this component does not use state then show a direct delete button as we can not trash
-                JToolBarHelper::deleteList('', 'keys.delete', 'JTOOLBAR_DELETE');
-            }
-
-            if (isset($this->items[0]->checked_out)) {
-                JToolBarHelper::custom('keys.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
             }
         }
 
         //Show trash and delete for components that uses the state field
         if (isset($this->items[0]->state)) {
-            if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
-                JToolBarHelper::deleteList('', 'keys.delete', 'JTOOLBAR_EMPTY_TRASH');
-                JToolBarHelper::divider();
-            } else if ($canDo->get('core.edit.state')) {
-                JToolBarHelper::trash('keys.trash', 'JTOOLBAR_TRASH');
-                JToolBarHelper::divider();
-            }
+          if ($canDo->get('core.delete')) {
+						JToolBarHelper::deleteList('', 'keys.delete', 'JTOOLBAR_DELETE');
+            JToolBarHelper::divider();
+					}
         }
 
         if ($canDo->get('core.admin')) {
@@ -109,7 +98,7 @@ class ApiViewKeys extends JViewLegacy {
         
 					JHtmlSidebar::addFilter(
 						JText::_('JOPTION_SELECT_PUBLISHED'),
-						'filter_published',
+						'filter_state',
 						JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), "value", "text", $this->state->get('filter.state'), true)
 					);
 				}

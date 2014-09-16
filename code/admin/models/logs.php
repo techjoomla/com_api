@@ -111,7 +111,10 @@ class ApiModelLogs extends JModelList {
 					$query->where('a.ip_address = ' . $db->Quote(substr($search,3)));
 				} else {
 					$search = $db->Quote('%' . $db->escape($search, true) . '%');
-					$query->where('a.request LIKE ' . $search . ' OR a.post_data LIKE ' . $search . ' OR u.name LIKE ' . $search . ' OR a.hash LIKE ' . $search);
+					$query->where(	'a.request LIKE ' . $search . 
+													' OR a.post_data LIKE ' . $search . 
+													' OR u.name LIKE ' . $search . 
+													' OR a.hash LIKE ' . $search);
 				}
 			}
 
