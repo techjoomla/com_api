@@ -19,30 +19,28 @@ class ApiAuthenticationKey extends ApiAuthentication {
 	public function authenticate() {
 
 		$app = JFactory::getApplication();
-
-		//$key	= JRequest::getVar('key');
-		$key	= $app->input->get('key','','STRING');
-
-		$token	= $this->loadTokenByHash($key);
+		$key = $app->input->get('key','','STRING');
+		$token = $this->loadTokenByHash($key);
 
 		if (!$token) :
 			$this->setError(JText::_('COM_API_KEY_NOT_FOUND'));
 			return false;
 		endif;
 
-		if (!$token->published) :
+		if (!$token->state) :
 			$this->setError(JText::_('COM_API_KEY_DISABLED'));
 			return false;
 		endif;
 
-		return $token->user_id;
+		return $token->userid;
 	}
 
 	public function loadTokenByHash($hash) {
-		$db = JFactory::getDBO();
-		$db->setQuery("SELECT * FROM #__api_keys WHERE hash = '".$hash."'");
-		$token	= $db->loadObject();
-		return $token;
+		
+		$table = JTable::getInstance('Key', 'ApiTable');
+		$table->loadByHash($hash);
+
+		return $table;
 	}
 
 }

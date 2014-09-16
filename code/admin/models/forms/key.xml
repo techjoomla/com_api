@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset>
+
+		<field name="id" type="text" default="0" label="COM_API_FORM_LBL_KEY_ID"
+					readonly="true" class="readonly"
+					description="JGLOBAL_FIELD_ID_DESC" /> 
+
+		<field name="userid" type="user"
+					label="COM_API_FORM_LBL_KEY_USERID"
+					description="COM_API_FORM_DESC_KEY_USERID" 
+					required="true"  /> 
+
+		<field name="hash" type="hidden"
+            label="COM_API_FORM_LBL_KEY_HASH"
+            description="COM_API_FORM_DESC_KEY_HASH" 
+            filter="alnum" /> 
+
+       <field name="domain" type="text"
+                
+            label="COM_API_FORM_LBL_KEY_DOMAIN"
+            description="COM_API_FORM_DESC_KEY_DOMAIN" 
+            filter="string" /> 
+
+       <field name="created_by" type="createdby" default="" 
+            label="COM_API_FORM_LBL_KEY_CREATED_BY"
+            description="COM_API_FORM_DESC_KEY_CREATED_BY"  /> 
+
+       <field name="last_used" type="calendar" class="inputbox"
+         default="0000-00-00 00:00:00" 
+            label="COM_API_FORM_LBL_KEY_LAST_USED"
+            description="COM_API_FORM_DESC_KEY_LAST_USED" 
+        format="%Y-%m-%d %H:%M:%S"
+        filter="safehtml" /> 
+
+       <field name="per_hour" type="text"
+            label="COM_API_FORM_LBL_KEY_PER_HOUR"
+            description="COM_API_FORM_DESC_KEY_PER_HOUR" 
+					default="0" 
+            filter="int" /> 
+
+         <field
+        name="state"
+        type="list"
+        label="JSTATUS"
+        description="JFIELD_PUBLISHED_DESC"
+        class="inputbox"
+        size="1"
+        default="1">
+        <option value="1">JPUBLISHED</option>
+        <option value="0">JUNPUBLISHED</option>
+        <option value="2">JARCHIVED</option>
+        <option value="-2">JTRASHED</option>
+    </field> 
+
+                        <field name="checked_out" type="hidden" filter="unset" />
+        <field name="checked_out_time" type="hidden" filter="unset" />
+
+	</fieldset>
+
+</form>

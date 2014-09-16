@@ -11,12 +11,9 @@
 defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-if (version_compare(JVERSION, '3.0.0', 'ge')) {
-	JHtml::_('bootstrap.tooltip');
-	JHtml::_('formbehavior.chosen', 'select');
-}
+JHtml::_('bootstrap.tooltip');
 JHtml::_('behavior.multiselect');
-
+JHtml::_('formbehavior.chosen', 'select');
 
 // Import CSS
 $document = JFactory::getDocument();
@@ -30,8 +27,8 @@ $canOrder	= $user->authorise('core.edit.state', 'com_api');
 $saveOrder	= $listOrder == 'a.ordering';
 if ($saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_api&task=keys.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'keyList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+	$saveOrderingUrl = 'index.php?option=com_api&task=logs.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', 'List', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 $sortFields = $this->getSortFields();
 ?>
@@ -56,7 +53,7 @@ if (!empty($this->extra_sidebar)) {
 }
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_api&view=keys'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_api&view=logs'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if(!empty($this->sidebar)): ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -69,10 +66,10 @@ if (!empty($this->extra_sidebar)) {
 		<div id="filter-bar" class="btn-toolbar">
 			<div class="filter-search btn-group pull-left">
 				<label for="filter_search" class="element-invisible"><?php echo JText::_('JSEARCH_FILTER');?></label>
-				<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('JSEARCH_FILTER'); ?>" />
+				<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo strip_tags(JText::_('COM_API_FILTER_DESC')); ?>" />
 			</div>
 			<div class="btn-group pull-left">
-				<button class="btn hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
+				<button class="btn hasTooltip" type="submit" title="<?php echo JText::_('COM_API_FILTER_DESC'); ?>"><i class="icon-search"></i></button>
 				<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>" onclick="document.id('filter_search').value='';this.form.submit();"><i class="icon-remove"></i></button>
 			</div>
 			<div class="btn-group pull-right hidden-phone">
@@ -96,48 +93,29 @@ if (!empty($this->extra_sidebar)) {
 			</div>
 		</div>        
 		<div class="clearfix"> </div>
-		<table class="table table-striped adminlist" id="keyList">
+		<table class="table table-striped" id="List">
 			<thead>
 				<tr>
+
 					<th width="1%" class="hidden-phone">
 						<input type="checkbox" name="checkall-toggle" value="" title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)" />
 					</th>
-                <?php if (isset($this->items[0]->state)): ?>
-					<th width="1%" class="nowrap center">
-						<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
+                    
+					<th class='left' width="10%">
+					<?php echo JHtml::_('grid.sort',  'COM_API_KEYS_HASH', 'a.hash', $listDirn, $listOrder); ?> / 
+					<?php echo JHtml::_('grid.sort',  'COM_API_LOGS_USER', 'u.name', $listDirn, $listOrder); ?>
 					</th>
-                <?php endif; ?>
-                    
-				<th class='left'>
-				<?php echo JHtml::_('grid.sort',  'COM_API_KEYS_USERID', 'a.userid', $listDirn, $listOrder); ?>
-				</th>
-				<th class='left'>
-				<?php echo JHtml::_('grid.sort',  'COM_API_KEYS_DOMAIN', 'a.domain', $listDirn, $listOrder); ?>
-				</th>
-				<th class='left'>
-				<?php echo JHtml::_('grid.sort',  'COM_API_KEYS_HASH', 'a.hash', $listDirn, $listOrder); ?>
-				</th>
-				<th class='left'>
-				<?php echo JHtml::_('grid.sort',  'COM_API_KEYS_LAST_USED', 'a.last_used', $listDirn, $listOrder); ?>
-				</th>
-                    
-                    
-                <?php if (isset($this->items[0]->id)): ?>
-					<th width="1%" class="nowrap center hidden-phone">
-						<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
+					<th class='left'>
+					<?php echo JHtml::_('grid.sort',  'COM_API_LOGS_IP_ADDRESS', 'a.ip_address', $listDirn, $listOrder); ?>
 					</th>
-                <?php endif; ?>
+					<th class='left'>
+					<?php echo JHtml::_('grid.sort',  'COM_API_LOGS_TIME', 'a.time', $listDirn, $listOrder); ?>
+					</th>
+					<th class='left' width="15%"><?php echo JText::_('COM_API_LOGS_REQUEST'); ?></th>
+					<th class='left' width="25%"><?php echo JText::_('COM_API_LOGS_POST_DATA'); ?></th>
 				</tr>
 			</thead>
 			<tfoot>
-                <?php 
-                if(isset($this->items[0])){
-                    $colspan = count(get_object_vars($this->items[0]));
-                }
-                else{
-                    $colspan = 10;
-                }
-            ?>
 			<tr>
 				<td colspan="<?php echo $colspan ?>">
 					<?php echo $this->pagination->getListFooter(); ?>
@@ -145,36 +123,27 @@ if (!empty($this->extra_sidebar)) {
 			</tr>
 			</tfoot>
 			<tbody>
-			<?php foreach ($this->items as $i => $item) :
-                $canCreate	= $user->authorise('core.create',		'com_api');
-                $canEdit	= $user->authorise('core.edit',			'com_api');
-                $canCheckin	= $user->authorise('core.manage',		'com_api');
-                $canChange	= $user->authorise('core.edit.state',	'com_api');
-				?>
+			<?php foreach ($this->items as $i => $item) : ?>
 				<tr class="row<?php echo $i % 2; ?>">
                     
 					<td class="center hidden-phone">
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 					</td>
-                <?php if (isset($this->items[0]->state)): ?>
-					<td class="center">
-						<?php echo JHtml::_('jgrid.published', $item->state, $i, 'keys.', $canChange, 'cb'); ?>
+                   
+					<td>
+						<a href="index.php?option=com_api&view=logs&filter_search=<?php echo $item->hash; ?>"><?php echo $item->hash; ?></a>
+						<?php if ($item->name) : ?>
+						<br />
+						<a href="index.php?option=com_api&view=logs&filter_search=uid:<?php echo $item->uid; ?>"><?php echo $item->name; ?></a></td>
+						<?php else : echo JText::_('UNASSIGNED_HASH'); ?>
+						
+						<?php endif; ?>
+					<td>
+						<a href="index.php?option=com_api&view=logs&filter_search=ip:<?php echo $item->ip_address; ?>"><?php echo $item->ip_address; ?></a>
 					</td>
-                <?php endif; ?>
-                    
-				<td>
-					<a href="<?php echo 'index.php?option=com_api&task=key.edit&id='.(int) $item->id; ?>"><?php echo $item->userid; ?></a>
-				</td>
-				<td>
-				<?php if (isset($item->checked_out) && $item->checked_out) : ?>
-					<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'keys.', $canCheckin); ?>
-				<?php endif; ?>
-				<?php echo $item->domain; ?>
-				</td>
-				<td><?php echo $item->hash; ?></td>
-				<td><?php echo ($item->last_used == '0000-00-00 00:00:00') ? JText::_('JNEVER') : $item->last_used; ?></td>
-
-				<td class="center hidden-phone"><?php echo (int) $item->id; ?></td>
+					<td><?php echo $item->time; ?></td>
+					<td><div class="request_container"><?php echo implode('&#8203;&', explode('&', $item->request)); ?></div></td>
+					<td><?php echo $item->post_data; ?></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>

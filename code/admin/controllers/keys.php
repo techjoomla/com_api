@@ -1,110 +1,66 @@
 <?php
 /**
- * @package	API
- * @version 1.5
- * @author 	Brian Edgerton
- * @link 	http://www.edgewebworks.com
- * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @version     1.0.0
+ * @package     com_api
+ * @copyright   Copyright (C) 2014. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Parth Lawate <contact@techjoomla.com> - http://techjoomla.com
+ */
 
-defined('_JEXEC') or die( 'Restricted access' );
+// No direct access.
+defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controller');
+jimport('joomla.application.component.controlleradmin');
 
-class ApiControllerKeys extends ApiController {
-
-	public function display() {
-		parent::display();
+/**
+ * Keys list controller class.
+ */
+class ApiControllerKeys extends JControllerAdmin
+{
+	/**
+	 * Proxy for getModel.
+	 * @since	1.6
+	 */
+	public function getModel($name = 'key', $prefix = 'ApiModel')
+	{
+		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+		return $model;
 	}
+    
+    
+	/**
+	 * Method to save the submitted ordering values for records via AJAX.
+	 *
+	 * @return  void
+	 *
+	 * @since   3.0
+	 */
+	public function saveOrderAjax()
+	{
+		// Get the input
+		$input = JFactory::getApplication()->input;
+		$pks = $input->post->get('cid', array(), 'array');
+		$order = $input->post->get('order', array(), 'array');
 
-	private function checkAccess() {
-		$user	= JFactory::getUser();
+		// Sanitize the input
+		JArrayHelper::toInteger($pks);
+		JArrayHelper::toInteger($order);
 
-		if ($user->get('gid') == 25) :
-			return true;
-		endif;
+		// Get the model
+		$model = $this->getModel();
 
-		$params	= JComponentHelper::getParams('com_api');
+		// Save the ordering
+		$return = $model->saveorder($pks, $order);
 
-		if (!$params->get('key_registration')) :
-			return false;
-		endif;
+		if ($return)
+		{
+			echo "1";
+		}
 
-		$access_level = $params->get('key_registration_access');
-
-		if ($user->get('gid') < $access_level) :
-			return false;
-		endif;
-
-		return true;
+		// Close the application
+		JFactory::getApplication()->close();
 	}
-
-	public function cancel() {
-		//JRequest::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
-		JSession::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
-		$this->setRedirect(JRoute::_('index.php?option=com_api&view=keys', FALSE));
-	}
-
-	public function save() {
-		//JRequest::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
-		JSession::checkToken() or jexit(JText::_("COM_API_INVALID_TOKEN"));
-
-		$app	= JFactory::getApplication();
-
-		$id		= $app->input->post->get('id', 0, 'INT');
-		if (!$id && !$this->checkAccess()) :
-			JFactory::getApplication()->redirect('index.php', JText::_('COM_API_NOT_AUTH_MSG'));
-			exit();
-		endif;
-
-		$domain	= $app->input->post->get('domain', '', 'STRING');
-
-		$data	= array(
-			'id'		=> $id,
-			'domain'	=> $domain,
-			'user_id'	=> JFactory::getUser()->get('id'),
-			'enabled'	=> 1
-		);
-
-		$model	= JModel::getInstance('Key', 'ApiModel');
-
-		if ($model->save($data) === false) :
-			$this->setRedirect($_SERVER['HTTP_REFERER'], $model->getError(), 'error');
-			return false;
-		endif;
-
-		$this->setRedirect(JRoute::_('index.php?option=com_api&view=keys'), JText::_('COM_API_KEY_SAVED'));
-
-	}
-
-	public function delete() {
-		//JRequest::checkToken('request') or jexit(JText::_("COM_API_INVALID_TOKEN"));
-		JSession::checkToken('request') or jexit(JText::_("COM_API_INVALID_TOKEN"));
-
-		$app	= JFactory::getApplication();
-
-		if (!$this->checkAccess()) :
-			JFactory::getApplication()->redirect('index.php', JText::_('COM_API_NOT_AUTH_MSG'));
-			exit();
-		endif;
-
-		$user_id	= JFactory::getUser()->get('id');
-
-		$id 		= $app->input->post->get('id', 0 ,'INT');
-
-		$table 	= JTable::getInstance('Key', 'ApiTable');
-		$table->load($id);
-
-		if ($user_id != $table->user_id) :
-			$this->setRedirect($_SERVER['HTTP_REFERER'], JText::_("COM_API_UNAUTHORIZED_DELETE_KEY"), 'error');
-			return false;
-		endif;
-
-		$table->delete($id);
-
-		$this->setRedirect($_SERVER['HTTP_REFERER'], JText::_("COM_API_SUCCESSFUL_DELETE_KEY"));
-
-	}
-
+    
+    
+    
 }

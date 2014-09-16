@@ -11,11 +11,11 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.plugin.plugin');
+jimport('joomla.filesystem.file');
 
-class ApiPlugin extends JObject {
+class ApiPlugin extends JPlugin {
 
 	protected $user				= null;
-	protected $params			= null;
 	protected $format			= null;
 	protected $response			= null;
 	protected $request			= null;
@@ -32,32 +32,31 @@ class ApiPlugin extends JObject {
 	static	$plg_prefix		= 'plgAPI';
 	static	$plg_path		= '/plugins/api/';
 
-
 	public static function getInstance($name)
 	{
 		$app = JFactory::getApplication();
-
+		$param_path = JPATH_BASE.self::$plg_path.$name.'.xml';
+		$plugin	= JPluginHelper::getPlugin('api', $name);		
+		
 		if (isset(self::$instances[$name])) :
 			return self::$instances[$name];
 		endif;
 
-		$plugin	= JPluginHelper::getPlugin('api', $name);
+		if (version_compare(JVERSION, "3.0", "l"))
+		{
+			$dispatcher = JDispatcher::getInstance();
+		}
+		else
+		{
+			$dispatcher = JEventDispatcher::getInstance();
+			self::$plg_path = self::$plg_path.$plugin->name.'/';
+		}
 
 		if (empty($plugin)) :
 			ApiError::raiseError(400, JText::_('COM_API_PLUGIN_CLASS_NOT_FOUND'));
 		endif;
-
-		jimport('joomla.filesystem.file');
-		/* vishal - for j3.2 plugin */
-		if((float)JVERSION > 2.5)
-		{
-			self::$plg_path = self::$plg_path.$plugin->name.'/';
-
-		}
-
+		
 		$plgfile	= JPATH_BASE.self::$plg_path.$name.'.php';
-		$param_path = JPATH_BASE.self::$plg_path.$name.'.xml';
-
 		if (!JFile::exists($plgfile)) :
 			ApiError::raiseError(400, JText::_('COM_API_FILE_NOT_FOUND'));
 		endif;
@@ -69,19 +68,10 @@ class ApiPlugin extends JObject {
 			ApiError::raiseError(400, JText::_('COM_API_PLUGIN_CLASS_NOT_FOUND'));
 		endif;
 
-		$handler	=  new $class();
-
-		$cparams	= JComponentHelper::getParams('com_api');
-		//$params		= new JParameter($plugin->params, $param_path);
-		$params		= new JRegistry($plugin->params, $param_path);
-		$cparams->merge($params);
-
+		$cparams = JComponentHelper::getParams('com_api');
+		$handler = new $class($dispatcher, array('params'=>$cparams));
 		$handler->set('params', $cparams);
 
-		/*$handler->set('component', JRequest::getCmd('app'));
-		$handler->set('resource', JRequest::getCmd('resource'));
-		$handler->set('format', $handler->negotiateContent(JRequest::getCmd('output', null)));
-		$handler->set('request_method', JRequest::getMethod());*/
 		$call_methd = $app->input->server->get('REQUEST_METHOD','','STRING');
 
 		//switch case for differ calling method
@@ -94,21 +84,21 @@ class ApiPlugin extends JObject {
 							break;
 
 			case 'POST' :
-							$handler->set('component', $app->input->post->get('app','','CMD'));
-							$handler->set('resource', $app->input->post->get('resource','','CMD'));
-							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							$handler->set('component', $app->input->get('app','','CMD'));
+							$handler->set('resource', $app->input->get('resource','','CMD'));
+							$handler->set('format', $handler->negotiateContent($app->input->get('output',null,'CMD')));
 							break;
 
 			case 'PUT' :
 							$handler->set('component', $app->input->get('app','','CMD'));
 							$handler->set('resource', $app->input->get('resource','','CMD'));
-							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							$handler->set('format', $handler->negotiateContent($app->input->get('output',null,'CMD')));
 							break;
 
 			case 'DELETE':
 							$handler->set('component', $app->input->get('app','','CMD'));
 							$handler->set('resource', $app->input->get('resource','','CMD'));
-							$handler->set('format', $handler->negotiateContent($app->input->post->get('output',null,'CMD')));
+							$handler->set('format', $handler->negotiateContent($app->input->get('output',null,'CMD')));
 							break;
 
 			case 'PATCH':
@@ -120,21 +110,16 @@ class ApiPlugin extends JObject {
 
 		$handler->set('request_method', $app->input->server->get('REQUEST_METHOD','','STRING'));
 
-
 		self::$instances[$name] = $handler;
 
 		return self::$instances[$name];
 	}
-
-	public function __construct()
+	
+	public function __construct(&$subject, $config = array())
 	{
-
+		parent::__construct($subject, $config);
 	}
-
-	//public function __call($name, $arguments) {
-	//	ApiError::raiseError(400, JText::_('COM_API_PLUGIN_METHOD_UNREACHABLE'));
-	//}
-
+	
 	/**
 	 * Intelligently negotiates the content type based on explicit declaration or header (HTTP_ACCEPT) declaration. If neither is present, it will default to the component parameter default.
 	 * @param	string	$output	String content declaration (usually 'json' or 'xml')
@@ -236,6 +221,9 @@ class ApiPlugin extends JObject {
 			}
 
 			$this->set('user', $user);
+			$session = JFactory::getSession();			
+			$session->set('user', $user);
+
 		}
 
 		if (!$this->checkRequestLimit())
@@ -244,6 +232,7 @@ class ApiPlugin extends JObject {
 		}
 
 		$this->log();
+		$this->lastUsed();
 
 		if ($resource_obj !== false)
 		{
@@ -294,10 +283,7 @@ class ApiPlugin extends JObject {
 			return true;
 		}
 
-		//$hash = JRequest::getVar('key', '');
-		//$ip_address = JRequest::getVar('REMOTE_ADDR', '', 'server');
-
-		$hash = $app->input->post->get('key', '','STRING');
+		$hash = $app->input->get('key', '','STRING');
 		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 
 		$time = $this->params->get('request_limit_time', 'hour');
@@ -344,19 +330,30 @@ class ApiPlugin extends JObject {
 	 */
 	final private function log()
 	{
+		if (!$this->params->get('log_requests')) { return; }
+		
 		$app = JFactory::getApplication();
-
 		$table = JTable::getInstance('Log', 'ApiTable');
-
-		//$table->hash = JRequest::getVar('key', '');
-		//$table->ip_address = JRequest::getVar('REMOTE_ADDR', '', 'server');
-
-		$table->hash = $app->input->post->get('key', '','STRING');
+		$date = JFactory::getDate();
+		
+		$table->hash = $app->input->get('key', '','STRING');
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
-
-		$table->time = time();
+		$table->time = $date->toSql();
 		$table->request = JFactory::getURI()->getQuery();
+		$table->post_data = $app->input->post->getArray(array());
 		$table->store();
+	}
+	
+	/**
+	 * Sets the last updated time for a key
+	 */
+	final private function lastUsed()
+	{
+		$app = JFactory::getApplication();
+		$table = JTable::getInstance('Key', 'ApiTable');
+
+		$hash = $app->input->get('key', '','STRING');
+		$table->setLastUsed($hash);
 	}
 
 	/**
