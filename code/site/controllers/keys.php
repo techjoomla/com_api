@@ -15,7 +15,7 @@ jimport('joomla.application.component.controller');
 class ApiControllerKeys extends ApiController {
 
 
-	public function display() {
+	public function display($cachable = false, $urlparams = array()) {
 		parent::display();
 	}
 

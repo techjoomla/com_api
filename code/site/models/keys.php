@@ -70,7 +70,7 @@ class ApiModelKeys extends ApiModel
 
 		$query	= "SELECT k.*, u.name, u.username "
 				."FROM #__api_keys AS k "
-				."LEFT JOIN #__users AS u ON u.id = k.user_id "
+				."LEFT JOIN #__users AS u ON u.id = k.userid "
 				.$where
 				.$order
 				;
@@ -91,7 +91,7 @@ class ApiModelKeys extends ApiModel
 			$row				= $list[$i];
 			$row->checked_out	= false;
 			$row->checked 		= JHTML::_('grid.checkedout', $row, $i );
-			$row->published_html = JHTML::_('grid.published', $row, $i);
+			$row->published_html = JHTML::_('grid.state', $row, $i);
 			$row->admin_link 	= 'index.php?option='.$this->get('option').'&view=key&cid[]='.$row->id;
 		}
 	}
