@@ -19,11 +19,9 @@ class ApiModelKey extends ApiModel
 
 		$app	= JFactory::getApplication();
 
-		//$id = JRequest::getInt( 'id', false );
 		$id = $app->input->get( 'id', false,'INT' );
 
 		if ( !$id ) {
-			//$cid = JRequest::getVar( 'cid', array() );
 			$cid = $app->input->post->get( 'cid', array(),'ARRAY' );
 
 			$id = @$cid[0];
@@ -39,10 +37,10 @@ class ApiModelKey extends ApiModel
 	{
 		$where = null;
 		if($user_id	= $this->getState('user_id')) :
-			$where = 'WHERE user_id = '.$this->_db->Quote($user_id);
+			$where = 'WHERE userid = '.$this->_db->Quote($user_id);
 		endif;
 
-		$query = "SELECT id, hash, domain, published, created "
+		$query = "SELECT id, hash, domain, state, created "
 				."FROM #__api_keys "
 				.$where
 				;
