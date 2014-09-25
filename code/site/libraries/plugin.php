@@ -28,9 +28,11 @@ class ApiPlugin extends JPlugin {
 									'application/xml'	=> 'xml'
 								);
 
-	static	$instances		= array();
-	static	$plg_prefix		= 'plgAPI';
-	static	$plg_path		= '/plugins/api/';
+	static $instances		= array();
+	static $plg_prefix		= 'plgAPI';
+	static $plg_path		= '/plugins/api/';
+	
+	public $callbackname = 'callback';
 
 	public static function getInstance($name)
 	{
@@ -392,11 +394,19 @@ class ApiPlugin extends JPlugin {
 
 	/**
 	 * Transforms the plugin response to a JSON-encoded string
+	 * Can also return JSONP if the callback is set
 	 * @return string
 	 */
 	protected function toJson()
 	{
-		return json_encode($this->get('response'));
+		$app = JFactory::getApplication();
+		$callback = $app->input->get($this->callbackname, '');
+		
+		if ($callback) {
+			return $callback . '(' . json_encode($this->get('response')) . ')';
+		} else {
+			return json_encode($this->get('response'));
+		}
 	}
 
 	/**

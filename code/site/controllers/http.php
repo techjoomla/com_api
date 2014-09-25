@@ -11,6 +11,7 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.application.component.controller');
+jimport('joomla.plugin.helper');
 
 class ApiControllerHttp extends ApiController
 {
@@ -22,14 +23,7 @@ class ApiControllerHttp extends ApiController
 	public function display( $cachable = false, $urlparams = array() )
 	{
 		$this->resetDocumentType();
-
-		jimport( 'joomla.plugin.helper' );
-
-		//vishal - for j3.2
 		$app = JFactory::getApplication();
-
-		//$name = JRequest::getCmd( 'app' );
-
 		$name = $app->input->get('app','','CMD');
 
 		try {
