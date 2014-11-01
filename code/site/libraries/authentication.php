@@ -45,9 +45,9 @@ abstract class ApiAuthentication extends JObject {
 		$key = $app->input->get('key');
 
 		if(!empty($key))
-			$method			= $params->get('auth_method', 'key');
+		$method			= 'key';
 		else
-			$method			= $params->get('auth_method', 'login');
+		$method			= 'login';
 
 		$className 		= 'APIAuthentication'.ucwords($method);
 
