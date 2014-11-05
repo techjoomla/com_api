@@ -119,7 +119,7 @@ class ApiPlugin extends JPlugin {
 	
 	public function __construct(&$subject, $config = array())
 	{
-		parent::__construct($subject, $config);
+		//parent::__construct($subject, $config);
 	}
 	
 	/**
@@ -211,21 +211,13 @@ class ApiPlugin extends JPlugin {
 			$this->checkInternally($resource_name);
 		}
 
-		$access		= $this->getResourceAccess($resource_name, $this->request_method);
+		$user = APIAuthentication::authenticateRequest();
+		$this->set('user', $user);
 
-		if ($access == 'protected')
+		$access = $this->getResourceAccess($resource_name, $this->request_method);
+		if ($access == 'protected' && $user === false)
 		{
-			$user = APIAuthentication::authenticateRequest();
-
-			if ($user === false)
-			{
-				ApiError::raiseError(403, APIAuthentication::getAuthError());
-			}
-
-			$this->set('user', $user);
-			$session = JFactory::getSession();			
-			$session->set('user', $user);
-
+			ApiError::raiseError(403, APIAuthentication::getAuthError());
 		}
 
 		if (!$this->checkRequestLimit())
@@ -332,6 +324,7 @@ class ApiPlugin extends JPlugin {
 	 */
 	final private function log()
 	{
+	
 		if (!$this->params->get('log_requests')) { return; }
 		
 		$app = JFactory::getApplication();
