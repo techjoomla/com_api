@@ -91,7 +91,7 @@ class ApiModelKeys extends ApiModel
 			$row				= $list[$i];
 			$row->checked_out	= false;
 			$row->checked 		= JHTML::_('grid.checkedout', $row, $i );
-			$row->published_html = JHTML::_('grid.state', $row, $i);
+			//$row->published_html = JHTML::_('grid.state', $row, $i);
 			$row->admin_link 	= 'index.php?option='.$this->get('option').'&view=key&cid[]='.$row->id;
 		}
 	}

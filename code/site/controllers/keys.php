@@ -53,7 +53,6 @@ class ApiControllerKeys extends ApiController {
 
 		JSession::checkToken('default') or jexit(JText::_("COM_API_INVALID_TOKEN"));
 
-		//$id		= JRequest::getInt('id', 0, 'post');
 		//vishal - for j3.2
 		$app = JFactory::getApplication();
 		$id 	= $app->input->post->get('id',0,'INT');

@@ -19,8 +19,6 @@ class ApiAuthenticationLogin extends ApiAuthentication
 	{
 		$app = JFactory::getApplication();
 
-		//$username = JRequest::getVar( 'username' );
-		//$password = JRequest::getVar( 'password' );
 		$username = $app->input->post->get('username','','STRING');
 		$password = $app->input->post->get('password','','STRING');
 

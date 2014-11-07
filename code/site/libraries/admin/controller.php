@@ -120,7 +120,6 @@ class ApiControllerAdmin extends ApiController {
 		$app = JFactory::getApplication();
 
 		$name	= $this->getEntityName();
-		//$post 	= JRequest::get('post');
 
 		//vishal- add for create new key
 
