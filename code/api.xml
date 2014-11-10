@@ -7,7 +7,7 @@
     <author>Techjoomla</author>
     <authorEmail>contact@techjoomla.com</authorEmail>
     <authorUrl>http://techjoomla.com</authorUrl>
-    <version>1.0.0</version>
+    <version>1.5.2</version>
     <description>Multi-purpose REST API framework for Joomla</description>
     
     <scriptfile>script.php</scriptfile>

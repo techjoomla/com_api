@@ -213,6 +213,8 @@ class ApiPlugin extends JPlugin {
 
 		$user = APIAuthentication::authenticateRequest();
 		$this->set('user', $user);
+		$session = JFactory::getSession();
+		$session->set('user', $user);
 
 		$access = $this->getResourceAccess($resource_name, $this->request_method);
 		if ($access == 'protected' && $user === false)
