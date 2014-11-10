@@ -1,11 +1,11 @@
 <?php
 /**
- * @package	API
- * @version 1.5
- * @author 	Brian Edgerton
- * @link 	http://www.edgewebworks.com
- * @copyright Copyright (C) 2011 Edge Web Works, LLC. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package com_api
+ * @copyright Copyright (C) 2009 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
+ * @license GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
+ * @link http://techjoomla.com
+ * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API) 
+ * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
 */
 
 defined('_JEXEC') or die( 'Restricted access' );
@@ -13,6 +13,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
 
+/**
+ * @API_plugin base class
+ * API resource class 
+*/
 class ApiPlugin extends JPlugin {
 
 	protected $user				= null;
@@ -213,6 +217,7 @@ class ApiPlugin extends JPlugin {
 
 		$user = APIAuthentication::authenticateRequest();
 		$this->set('user', $user);
+
 		$session = JFactory::getSession();
 		$session->set('user', $user);
 
@@ -432,8 +437,9 @@ class ApiPlugin extends JPlugin {
 			$this->_handleMultiDimensions($key, $value, $xml);
 		endforeach;
 	}
-
-	protected function _handleMultiDimensions($key, $value, &$xml) {
+	
+	protected function _handleMultiDimensions($key, $value, &$xml)
+	{
 		if (is_array($value) || is_object($value)) :
 			$node = $xml->addChild($key);
 			$this->_toXMLRecursive($value, $node);
@@ -442,10 +448,10 @@ class ApiPlugin extends JPlugin {
 		endif;
 	}
 
-	/**
-	 * Method to get current logged in API user
-	 * @return JUser
-	 */
+/**
+	* Method to get current logged in API user
+	* @return JUser
+ */
 	public function getUser()
 	{
 		return $this->user;

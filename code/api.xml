@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.0" method="upgrade">
     <name>com_api</name>
-    <creationDate>2014-09-09</creationDate>
-    <copyright>Copyright (C) 2014. All rights reserved.</copyright>
-    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-    <author>Techjoomla</author>
-    <authorEmail>contact@techjoomla.com</authorEmail>
-    <authorUrl>http://techjoomla.com</authorUrl>
+    <creationDate>09/09/2014</creationDate>
+    <author>Techjoomla</author> 
+    <authorEmail>extensions@techjoomla.com</authorEmail> 
+    <authorUrl>www.techjoomla.com</authorUrl> 
+    <copyright>Techjoomla. All rights reserved.</copyright> 
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <version>1.5.2</version>
-    <description>Multi-purpose REST API framework for Joomla</description>
+    <description>Multi-purpose REST API framework for Joomla.</description>
     
     <scriptfile>script.php</scriptfile>
     
