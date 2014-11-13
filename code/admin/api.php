@@ -1,21 +1,22 @@
 <?php
 /**
- * @version     1.0.0
- * @package     com_api
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Parth Lawate <contact@techjoomla.com> - http://techjoomla.com
+ * @version    SVN: <svn_id>
+ * @package    Api
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
-
-// no direct access
-defined('_JEXEC') or die;
+// No direct access.
+defined('_JEXEC') or die();
 
 // Access check.
-if (!JFactory::getUser()->authorise('core.manage', 'com_api')) 
+if (!JFactory::getUser()->authorise('core.manage', 'com_api'))
 {
 	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
 }
+
+require_once JPATH_SITE . '/components/com_api/defines.php';
 
 // Include dependancies
 jimport('joomla.application.component.controller');

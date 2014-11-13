@@ -1,95 +1,135 @@
 <?php
-
 /**
- * @version     1.0.0
- * @package     com_api
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      Parth Lawate <contact@techjoomla.com> - http://techjoomla.com
+ * @version    SVN: <svn_id>
+ * @package    Api
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
-// No direct access
-defined('_JEXEC') or die;
+
+// No direct access.
+defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
 /**
- * View class for a list of Api.
+ * View class for a list of log.
+ *
+ * @package     Api
+ * @subpackage  com_api
+ * @since       1.0
  */
-class ApiViewLogs extends JViewLegacy {
+class ApiViewLogs extends JViewLegacy
+{
+	protected $items;
 
-    protected $items;
-    protected $pagination;
-    protected $state;
+	protected $pagination;
 
-    /**
-     * Display the view
-     */
-    public function display($tpl = null) {
-        $this->state = $this->get('State');
-        $this->items = $this->get('Items');
-        $this->pagination = $this->get('Pagination');
+	protected $state;
 
-        // Check for errors.
-        if (count($errors = $this->get('Errors'))) {
-            throw new Exception(implode("\n", $errors));
-        }
+	/**
+	 * Display the view
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  void
+	 */
+	public function display($tpl = null)
+	{
+		$this->state = $this->get('State');
+		$this->items = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
 
-        ApiHelper::addSubmenu('logs');
+		// Check for errors.
+		if (count($errors = $this->get('Errors')))
+		{
+			throw new Exception(implode("\n", $errors));
+		}
 
-        $this->addToolbar();
+		ApiHelper::addSubmenu('logs');
 
-        $this->sidebar = JHtmlSidebar::render();
-        parent::display($tpl);
-    }
+		$this->addToolbar();
 
-    /**
-     * Add the page title and toolbar.
-     *
-     * @since	1.6
-     */
-    protected function addToolbar() {
-        require_once JPATH_COMPONENT . '/helpers/api.php';
+		if (JVERSION >= '3.0')
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
 
-        $state = $this->get('State');
-        $canDo = ApiHelper::getActions($state->get('filter.category_id'));
+		parent::display($tpl);
+	}
 
-        JToolBarHelper::title(JText::_('COM_API_TITLE_LOGS'), 'logs.png');
+	/**
+	 * Add the page title and toolbar.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.6
+	 */
+	protected function addToolbar()
+	{
+		require_once JPATH_COMPONENT . '/helpers/api.php';
 
-        if ($canDo->get('core.edit.state')) {
-					//If this component does not use state then show a direct delete button as we can not trash
-					JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_DELETE');
-        }
+		$state = $this->get('State');
+		$canDo = ApiHelper::getActions($state->get('filter.category_id'));
 
-        //Show trash and delete for components that uses the state field
-        if (isset($this->items[0]->state)) {
-            if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
-                JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_EMPTY_TRASH');
-                JToolBarHelper::divider();
-            } else if ($canDo->get('core.edit.state')) {
-                JToolBarHelper::trash('logs.trash', 'JTOOLBAR_TRASH');
-                JToolBarHelper::divider();
-            }
-        }
+		if (JVERSION >= '3.0')
+		{
+			JToolBarHelper::title(JText::_('COM_API_TITLE_LOGS'), 'list');
+		}
+		else
+		{
+			JToolBarHelper::title(JText::_('COM_API_TITLE_LOGS'), 'logs.png');
+		}
 
-        if ($canDo->get('core.admin')) {
-            JToolBarHelper::preferences('com_api');
-        }
+		if ($canDo->get('core.edit.state'))
+		{
+			// If this component does not use state then show a direct delete button as we can not trash
+			JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_DELETE');
+		}
 
-        //Set sidebar action - New in 3.0
-        JHtmlSidebar::setAction('index.php?option=com_api&view=logs');
+		// Show trash and delete for components that uses the state field
+		if (isset($this->items[0]->state))
+		{
+			if ($state->get('filter.state') == -2 && $canDo->get('core.delete'))
+			{
+				JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_EMPTY_TRASH');
+				JToolBarHelper::divider();
+			}
+			elseif ($canDo->get('core.edit.state'))
+			{
+				JToolBarHelper::trash('logs.trash', 'JTOOLBAR_TRASH');
+				JToolBarHelper::divider();
+			}
+		}
 
-        $this->extra_sidebar = '';
-        
-    }
+		if ($canDo->get('core.admin'))
+		{
+			JToolBarHelper::preferences('com_api');
+		}
 
+		if (JVERSION >= '3.0')
+		{
+			// Set sidebar action - New in 3.0
+			JHtmlSidebar::setAction('index.php?option=com_api&view=logs');
+		}
+
+		$this->extra_sidebar = '';
+	}
+
+	/**
+	 * Returns an array of fields the table can be sorted by
+	 *
+	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 *
+	 * @since   3.0
+	 */
 	protected function getSortFields()
 	{
 		return array(
-		'u.name' => JText::_('COM_API_LOGS_USER'),
-		'a.hash' => JText::_('COM_API_KEYS_HASH'),
-		'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'),
-		'a.time' => JText::_('COM_API_LOGS_TIME'),
+			'u.name' => JText::_('COM_API_LOGS_USER'),
+			'a.hash' => JText::_('COM_API_KEYS_HASH'),
+			'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'),
+			'a.time' => JText::_('COM_API_LOGS_TIME'),
 		);
 	}
-
 }
