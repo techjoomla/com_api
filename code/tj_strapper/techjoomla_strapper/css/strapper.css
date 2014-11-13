@@ -1,0 +1,136 @@
+/* 
+    Document   : strapper
+    Created on : Aug 18, 2012, 10:01:53 PM
+    Author     : nicholas
+    Description:
+        Special overrides
+*/
+
+/**
+ * Selective reset of Bootstrap styling
+ */
+.techjoomla-bootstrap { font-size: 10pt; }
+div.techjoomla-bootstrap { background: transparent; }
+div.icon a.modal { position: relative; top: inherit; left: inherit; z-index: inherit; margin: 0 !important; box-shadow: none;  }
+div.ak_clr_left { clear: left; }
+div.ak_clr { clear: both; }
+div.icon-wrapper, .techjoomla-bootstrap [class^="icon-wrapper"] { display: inline; }
+
+div.techjoomla-bootstrap form.form-horizontal-wide label.control-label { width: 300px }
+div.techjoomla-bootstrap form.form-horizontal-wide div.controls { margin-left: 320px }
+div.techjoomla-bootstrap form.form-horizontal-wide textarea { width: 450px }
+
+td.order span { line-height: 16px; height: 16px; margin: 0; padding: 0; }
+td.order a.jgrid span.state { background-repeat: no-repeat; height: 12px; margin-bottom: 2px }
+td.order a.jgrid span.state span.text { line-height: 16px; }
+td.order input.text_area { width: 20px; }
+
+/**
+ * Popovers
+ */
+.popover{position:absolute;top:0;left:0;z-index:1010;display:none;padding:5px}
+.popover.top{margin-top:-5px}
+.popover.right{margin-left:5px}
+.popover.bottom{margin-top:5px}
+.popover.left{margin-left:-5px}
+.popover.top .arrow{bottom:0;left:50%;margin-left:-5px;border-top:5px solid #000;border-right:5px solid transparent;border-left:5px solid transparent}
+.popover.right .arrow{top:50%;left:0;margin-top:-5px;border-top:5px solid transparent;border-right:5px solid #000;border-bottom:5px solid transparent}
+.popover.bottom .arrow{top:0;left:50%;margin-left:-5px;border-right:5px solid transparent;border-bottom:5px solid #000;border-left:5px solid transparent}
+.popover.left .arrow{top:50%;right:0;margin-top:-5px;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid #000}
+.popover .arrow{position:absolute;width:0;height:0}
+.popover-inner{width:280px;padding:3px;overflow:hidden;background:#000;background:rgba(0,0,0,0.8);-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;-webkit-box-shadow:0 3px 7px rgba(0,0,0,0.3);-moz-box-shadow:0 3px 7px rgba(0,0,0,0.3);box-shadow:0 3px 7px rgba(0,0,0,0.3)}
+.popover-title{padding:9px 15px;line-height:1;background-color:#f5f5f5;border-bottom:1px solid #eee;-webkit-border-radius:3px 3px 0 0;-moz-border-radius:3px 3px 0 0;border-radius:3px 3px 0 0; margin:0}
+.popover-content{padding:14px;background-color:#fff;-webkit-border-radius:0 0 3px 3px;-moz-border-radius:0 0 3px 3px;border-radius:0 0 3px 3px;-webkit-background-clip:padding-box;-moz-background-clip:padding-box;background-clip:padding-box}
+.popover-content p,.popover-content ul,.popover-content ol{margin-bottom:0}
+
+/**
+ * Beez2 overrides for front-end link bars
+ */
+div.techjoomla-bootstrap ul.nav-tabs li { list-style: none }
+
+/**
+ * RocketTheme templates force a background image in alerts
+ */
+.techjoomla-bootstrap .alert { background-image: none; }
+
+/**
+ * Backport of Joomla! 1.x/2.x cpanel icons to Joomla! 3.x
+ */
+.techjoomla-bootstrap .cpanel div.icon,
+.techjoomla-bootstrap #cpanel div.icon {
+	text-align: center;
+	margin-right: 15px;
+	float: left;
+	margin-bottom: 15px;
+	font-size: 0.9em;
+}
+
+.techjoomla-bootstrap .cpanel div.icon a,
+.techjoomla-bootstrap #cpanel div.icon a {
+	padding: 7px 5px 5px;
+	background-color: white;
+	background-position: -30px;
+	display: block;
+	float: left;
+	height: 97px;
+	width: 108px;
+	color: #565656;
+	vertical-align: middle;
+	text-decoration: none;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	transition-property: none;
+	box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.1), inset 5px 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+.techjoomla-bootstrap .cpanel div.icon a:hover,
+.techjoomla-bootstrap .cpanel div.icon a:focus,
+.techjoomla-bootstrap .cpanel div.icon a:active,
+.techjoomla-bootstrap #cpanel div.icon a:hover,
+.techjoomla-bootstrap #cpanel div.icon a:focus,
+.techjoomla-bootstrap #cpanel div.icon a:active {
+	background-position: 0;
+	-webkit-border-bottom-left-radius: inherit;
+	-moz-border-radius-bottomleft: inherit;
+	border-bottom-left-radius: inherit;
+	box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1), inset -5px -5px 10px rgba(0, 0, 0, 0.05);
+	position: relative;
+	z-index: 10;
+}
+
+.techjoomla-bootstrap .cpanel div.icon span,
+.techjoomla-bootstrap #cpanel div.icon span {
+	display: block;
+	text-align: center;
+}
+
+/**
+ * techjoomla Live Update button stling
+ */
+span.liveupdate-icon-notsupported { color: gray; }
+span.liveupdate-icon-crashed { color: gray; }
+span.liveupdate-icon-updates { font-weight: bold; color: red; font-size: 0.87em; }
+span.liveupdate-icon-noupdates { color: green; }
+
+/**
+ * Joomla! 3.x workarounds for missing icon classes
+ */
+div#toolbar div#toolbar-back button.btn span.icon-back::before {
+	content: "";
+}
+
+/**
+ * Joomla! 3.x workarounds for sort icons
+ */
+.techjoomla-bootstrap .icon-downarrow::before, .techjoomla-bootstrap .icon-arrow-down::before {content:""}
+.techjoomla-bootstrap .icon-uparrow::before, .techjoomla-bootstrap .icon-arrow-up::before {content:""}
+
+/**
+ * Joomla! 2.5+ workaround for booleanlist controls
+ */
+.techjoomla-bootstrap label.radiobtn { display: inline-block }
+/**
+ * Joomla! 3.0+ workaround for booleanlist controls
+ */
+.techjoomla-bootstrap label.radio { display: inline-block }
+.techjoomla-bootstrap div.controls>div.controls {margin: 0}

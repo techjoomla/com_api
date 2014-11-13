@@ -9,7 +9,6 @@
 	<authorUrl>http://techjoomla.com</authorUrl>
 	<version>1.5.2</version>
 	<description>Multi-purpose REST API framework for Joomla</description>
-	<scriptfile>script.php</scriptfile>
 	<install>
 		<!-- Runs on install -->
 		<sql>
@@ -62,4 +61,5 @@
 			<language tag="en-GB">language/en-GB/en-GB.com_api.sys.ini</language>
 		</languages>
 	</administration>
+	<scriptfile>script.api.php</scriptfile>
 </extension>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="file" version="2.5" method="upgrade">
+    <!-- Generic Metadata -->
+    <name>TechjoomlaStrapper- Based on AkeebaStrapper</name>
+   <name>TechjoomlaStrapper- Based on AkeebaStrapper</name>
+    <author>Techjoomla</author>
+    <authorEmail>extensions@techjoomla.com</authorEmail>
+    <authorUrl>http://techjoomla.com</authorUrl>
+    <copyright>(C) 2012 Akeeba Ltd.</copyright>
+    <license>GNU GPL v3 or later</license>
+    <version>1.0.0</version>
+    <creationDate>7th Nov 2012</creationDate>
+    <description>Namespaced jQuery, jQuery UI and Bootstrap for Techjoomla products. Based on AkeebaStrapper</description>
+
+    <!-- Fileset definition -->
+    <fileset>
+        <files folder="techjoomla_strapper" target="media/techjoomla_strapper">
+            <folder>css</folder>
+            <folder>img</folder>
+            <folder>js</folder>
+            <folder>less</folder>
+            <filename>index.html</filename>
+            <filename>strapper.ini</filename>
+            <filename>strapper.php</filename>
+        </files>
+		<files target="media/techjoomla_strapper">
+			<filename>version.txt</filename>
+		</files>
+    </fileset>
+</extension>
