@@ -24,6 +24,7 @@
 	<files folder="site">
 		<filename>index.html</filename>
 		<filename>api.php</filename>
+		<filename>defines.php</filename>
 		<filename>router.php</filename>
 		<folder>views</folder>
 		<folder>models</folder>
@@ -56,7 +57,7 @@
 			<folder>views</folder>
 			<folder>language</folder>
 		</files>
-		<languages folder="administrator">
+		<languages folder="admin">
 			<language tag="en-GB">language/en-GB/en-GB.com_api.ini</language>
 			<language tag="en-GB">language/en-GB/en-GB.com_api.sys.ini</language>
 		</languages>
