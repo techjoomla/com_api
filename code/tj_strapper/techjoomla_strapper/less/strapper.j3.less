@@ -1,0 +1,75 @@
+/**
+ * Akeeba Strapper
+ * A handy distribution of namespaced jQuery, jQuery UI and Twitter
+ * Bootstrapper for use with Akeeba components.
+ *
+ * This file defines Akeeba Strapper specific styling overrides
+ */
+
+
+.techjoomla-bootstrap {
+	// Backport of Joomla! 1.x/2.x cpanel icons to Joomla! 3.x
+	.cpanel div.icon,
+	#cpanel div.icon {
+		text-align: center;
+		margin-right: 15px;
+		float: left;
+		margin-bottom: 15px;
+		font-size: 0.9em;
+		
+		a {
+			padding: 7px 5px 5px;
+			background-color: white;
+			background-position: -30px;
+			display: block;
+			float: left;
+			height: 97px;
+			width: 108px;
+			color: #565656;
+			vertical-align: middle;
+			text-decoration: none;
+			border: 1px solid #CCC;
+			border-radius: 5px;
+			transition-property: none;
+			box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.1), inset 5px 5px 10px rgba(0, 0, 0, 0.05);
+			
+			&:hover, &:focus, &:active {
+				background-position: 0;
+				-webkit-border-bottom-left-radius: inherit;
+				-moz-border-radius-bottomleft: inherit;
+				border-bottom-left-radius: inherit;
+				box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1), inset -5px -5px 10px rgba(0, 0, 0, 0.05);
+				position: relative;
+				z-index: 10;
+			}
+		}
+		
+		span {
+			display: block;
+			text-align: center;
+		}
+	}
+	
+	// Joomla! 3.x workarounds for missing icon classes
+	div#toolbar div#toolbar-back button.btn span.icon-back::before {
+		content: "";
+	}
+
+	// Joomla! 3.x workarounds for sort icons
+	.icon-downarrow::before, .techjoomla-bootstrap .icon-arrow-down::before {
+		content:""
+	}
+	.icon-uparrow::before, .techjoomla-bootstrap .icon-arrow-up::before {
+		content:""
+	}
+	
+	// Joomla! 3.0+ workaround for booleanlist controls
+	label.radio {
+		display: inline-block;
+	}
+	
+	div.controls>div.controls {
+		margin: 0;
+	}
+} 
+

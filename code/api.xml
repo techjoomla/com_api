@@ -1,69 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.0" method="upgrade">
-    <name>com_api</name>
-    <creationDate>09/09/2014</creationDate>
-    <author>Techjoomla</author> 
-    <authorEmail>extensions@techjoomla.com</authorEmail> 
-    <authorUrl>www.techjoomla.com</authorUrl> 
-    <copyright>Techjoomla. All rights reserved.</copyright> 
-    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>1.5.2</version>
-    <description>Multi-purpose REST API framework for Joomla.</description>
-    
-    <scriptfile>script.php</scriptfile>
-    
-    <install> <!-- Runs on install -->
-        <sql>
-            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
-        </sql>
-    </install>
-    <uninstall> <!-- Runs on uninstall -->
-        <sql>
-            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
-        </sql>
-    </uninstall>
-
-    <files folder="site">
-				<filename>index.html</filename>			
-        <filename>api.php</filename>
-        <filename>router.php</filename>
-        <folder>views</folder>
-        <folder>models</folder>
-        <folder>controllers</folder>
-        <folder>helpers</folder>
-        <folder>assets</folder>
-        <folder>libraries</folder>
-				<folder>language</folder>
-    </files>
-    <languages folder="site">
+	<name>com_api</name>
+	<creationDate>2014-09-09</creationDate>
+	<copyright>Copyright (C) 2014. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<author>Techjoomla</author>
+	<authorEmail>contact@techjoomla.com</authorEmail>
+	<authorUrl>http://techjoomla.com</authorUrl>
+	<version>1.5.2</version>
+	<description>Multi-purpose REST API framework for Joomla</description>
+	<install>
+		<!-- Runs on install -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<!-- Runs on uninstall -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+	<files folder="site">
+		<filename>index.html</filename>
+		<filename>api.php</filename>
+		<filename>defines.php</filename>
+		<filename>router.php</filename>
+		<folder>views</folder>
+		<folder>models</folder>
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>assets</folder>
+		<folder>libraries</folder>
+		<folder>language</folder>
+	</files>
+	<languages folder="site">
+		<language tag="en-GB">language/en-GB/en-GB.com_api.ini</language>
+	</languages>
+	<administration>
+		<menu img="components/com_api/assets/images/s_com_api.png">COM_API</menu>
+		<submenu>
+			<menu link="option=com_api&amp;view=keys" view="keys" img="components/com_api/assets/images/s_keys.png" alt="Api/Keys">COM_API_TITLE_KEYS</menu>
+		</submenu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>api.php</filename>
+			<folder>controllers</folder>
+			<folder>assets</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+			<folder>language</folder>
+		</files>
+		<languages folder="admin">
 			<language tag="en-GB">language/en-GB/en-GB.com_api.ini</language>
-    </languages>
-
-    <administration>
-        <menu img="components/com_api/assets/images/s_com_api.png" >COM_API</menu>
-        <submenu>
-					<menu link="option=com_api&amp;view=keys" view="keys" img="components/com_api/assets/images/s_keys.png" alt="Api/Keys">COM_API_TITLE_KEYS</menu>
-        </submenu>
-
-        <files folder="admin">
-            <filename>access.xml</filename>
-            <filename>config.xml</filename>
-            <filename>controller.php</filename>
-            <filename>index.html</filename>
-            <filename>api.php</filename>
-            <folder>controllers</folder>
-            <folder>assets</folder>
-            <folder>helpers</folder>
-            <folder>models</folder>
-            <folder>sql</folder>
-            <folder>tables</folder>
-            <folder>views</folder>
-            <folder>language</folder>
-        </files>
-        
-        <languages folder="administrator">
-					<language tag="en-GB">language/en-GB/en-GB.com_api.ini</language>
-					<language tag="en-GB">language/en-GB/en-GB.com_api.sys.ini</language>
-        </languages>
-    </administration>
+			<language tag="en-GB">language/en-GB/en-GB.com_api.sys.ini</language>
+		</languages>
+	</administration>
+	<scriptfile>script.api.php</scriptfile>
 </extension>

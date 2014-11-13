@@ -1,0 +1,111 @@
+/**
+ * Akeeba Strapper
+ * A handy distribution of namespaced jQuery, jQuery UI and Twitter
+ * Bootstrapper for use with Akeeba components.
+ *
+ * This file defines Akeeba Strapper specific styling overrides
+ */
+
+div.techjoomla-bootstrap {
+	font-size: 10pt;
+	background: transparent;
+	
+	// RocketTheme templates force a background image in alerts
+	.alert {
+		background-image: none;
+	}
+	
+	// Wide form layout
+	form.form-horizontal-wide {
+		label.control-label {
+			width: 300px;
+		}
+
+		div.controls {
+			margin-left: 320px;
+		}
+
+		textarea {
+			width: 450px;
+		}
+	}
+	
+	// Table layout fixes
+	td.order {
+		span {
+			line-height: 16px;
+			height: 16px;
+			margin: 0;
+			padding: 0;
+		}
+		
+		a.jgrid span.state {
+			background-repeat: no-repeat;
+			height: 12px;
+			margin-bottom: 2px;
+			
+			span.text {
+				line-height: 16px;
+			}
+		}
+		
+		input.text_area {
+			width: 20px;
+		}
+	}
+	
+	div {
+		// Clear fixes
+		&.ak_clr_left {
+			clear: left;
+		}
+		
+		&.ak_clr {
+			clear: both;
+		}
+
+		// Modal toolbar button fix
+		&.icon a.modal {
+			position: relative;
+			top: inherit;
+			left: inherit;
+			z-index: inherit;
+			margin: 0 !important;
+			box-shadow: none;
+		}
+		
+		// Icon wrapper fix
+		[class^="icon-wrapper"] {
+			display: inline;
+		}
+	}
+}
+
+// Icon wrapper fix
+div.icon-wrapper {
+	display: inline;
+}
+
+/**
+ * Akeeba Live Update button styling
+ */
+span.liveupdate-icon-
+{
+	&notsupported {
+		color: @gray;
+	}
+
+	&crashed {
+		color: @gray;
+	}
+
+	&updates {
+		font-weight: bold;
+		color: @red;
+		font-size: 0.87em;
+	}
+
+	&noupdates {
+		color: @green;
+	}
+}

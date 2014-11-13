@@ -10,5 +10,4 @@
 		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
 		<action name="logs.manage" title="JACTION_MANAGELOGS" description="JACTION_MANAGELOGS_DESC" />
 	</section>
-    
 </access>

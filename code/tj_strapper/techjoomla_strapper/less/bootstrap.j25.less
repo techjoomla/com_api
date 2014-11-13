@@ -1,0 +1,27 @@
+/**
+ * techjoomla Strapper
+ * A handy distribution of namespaced jQuery, jQuery UI and Twitter
+ * Bootstrapper for use with techjoomla components.
+ *
+ * This file includes the default Bootstrap classes (minus the modal dialog)
+ * and our Joomla! 2.5-specific style overrides
+ */
+
+/*
+ * Bootstrap (namespaced)
+ */
+div.techjoomla-bootstrap
+{
+	@import "bootstrap.full.less";
+}
+
+// Popovers must not be namespaced
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+@import "bootstrap/popovers";
+
+/*
+ * techjoomla Strapper overrides
+ */
+@import "strapper.less";
+@import "strapper.j25.less";
