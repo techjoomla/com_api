@@ -59,19 +59,19 @@ class ApiPlugin extends JPlugin {
 		}
 
 		if (empty($plugin)) :
-			ApiError::raiseError(400, JText::_('COM_API_PLUGIN_CLASS_NOT_FOUND'));
+			ApiError::raiseError(400, JText::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)));
 		endif;
 		
 		$plgfile	= JPATH_BASE.self::$plg_path.$name.'.php';
 		if (!JFile::exists($plgfile)) :
-			ApiError::raiseError(400, JText::_('COM_API_FILE_NOT_FOUND'));
+			ApiError::raiseError(400, JText::sprintf('COM_API_FILE_NOT_FOUND', ucfirst($name)));
 		endif;
 
 		include_once $plgfile;
 		$class 	= self::$plg_prefix.ucwords($name);
 
 		if (!class_exists($class)) :
-			ApiError::raiseError(400, JText::_('COM_API_PLUGIN_CLASS_NOT_FOUND'));
+			ApiError::raiseError(400, JText::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)));
 		endif;
 
 		$cparams = JComponentHelper::getParams('com_api');
@@ -257,12 +257,12 @@ class ApiPlugin extends JPlugin {
 	{
 		if (!method_exists($this, $resource_name))
 		{
-			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_METHOD_NOT_FOUND'));
+			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_FOUND', ucfirst($resource_name)));
 		}
 
 		if (!is_callable(array($this, $resource_name)))
 		{
-			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_METHOD_NOT_CALLABLE'));
+			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_CALLABLE', ucfirst($resource_name)));
 		}
 
 		return true;
