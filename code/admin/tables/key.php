@@ -187,11 +187,15 @@ class ApiTablekey extends JTable {
     }
     
     public function store($updateNulls = false) {
+		if($this->userid)
+		{
 			if (!$this->hash) {
 				$string = $this->userid . time();
 				$this->hash = md5($string); //@TODO : Better hashing algo
 			}
 			return parent::store($updateNulls = false);
+		}
+		
 		}
 		
 		public function setLastUsed($hash) {
