@@ -12,6 +12,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
+jimport('joomla.application.component.helper');
 
 /**
  * @API_plugin base class
@@ -42,7 +43,7 @@ class ApiPlugin extends JPlugin {
 	{
 		$app = JFactory::getApplication();
 		$param_path = JPATH_BASE.self::$plg_path.$name.'.xml';
-		$plugin	= JPluginHelper::getPlugin('api', $name);		
+		$plugin	= JPluginHelper::getPlugin('api', $name);
 		
 		if (isset(self::$instances[$name])) :
 			return self::$instances[$name];
@@ -330,10 +331,24 @@ class ApiPlugin extends JPlugin {
 	 */
 	final private function log()
 	{
-	
 		if (!$this->params->get('log_requests')) { return; }
 		
 		$app = JFactory::getApplication();
+		//vg - for exclude password from log
+		$params = JComponentHelper::getParams('com_api');
+		$excludes = $params->get('exclude_log');
+		$pst_dt = $app->input->post->getArray(array());
+		$exld_arr = explode(",",$excludes);
+		foreach($exld_arr as $val)
+		{
+			if(!empty($pst_dt[$val]))
+			{
+				//unset($pst_dt[$val]);
+				$pst_dt[$val] = md5($pst_dt[$val]);
+			}
+		}
+		//end
+
 		$table = JTable::getInstance('Log', 'ApiTable');
 		$date = JFactory::getDate();
 		
@@ -341,7 +356,9 @@ class ApiPlugin extends JPlugin {
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
 		$table->request = JFactory::getURI()->getQuery();
-		$table->post_data = $app->input->post->getArray(array());
+		
+		//$table->post_data = $app->input->post->getArray(array());
+		$table->post_data = $pst_dt;
 		$table->store();
 	}
 	

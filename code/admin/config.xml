@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-	<fieldset label="COM_API" name="api">
-		<field name="force_output" type="text" label="COM_API_FORM_LBL_FORCE_OUTPUT" description="COM_API_FORM_DESC_FORCE_OUTPUT" />
-		<field name="request_limit" type="text" label="COM_API_FORM_LBL_RATE_LIMIT" description="COM_API_FORM_DESC_RATE_LIMIT" />
-		<field name="log_requests" type="list" default="0" label="COM_API_CONFIG_LOG_LBL" description="COM_API_CONFIG_LOG_DESC">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-	</fieldset>
-	<fieldset name="permissions" description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL">
-		<field name="rules" type="rules" component="com_api" class="inputbox" filter="rules" validate="rules" label="JCONFIG_PERMISSIONS_LABEL" section="component" />
+    <fieldset label="COM_API" name="api">
+			<field name="force_output" type="text"
+            label="COM_API_FORM_LBL_FORCE_OUTPUT"
+            description="COM_API_FORM_DESC_FORCE_OUTPUT" />
+			<field name="request_limit" type="text"
+            label="COM_API_FORM_LBL_RATE_LIMIT"
+            description="COM_API_FORM_LBL_RATE_LIMIT_DESC" />
+			<field name="log_requests" type="list" default="0" label="COM_API_CONFIG_LOG_LBL" description="COM_API_CONFIG_LOG_DESC">
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</field>
+			<field name="exclude_log" type="text"
+            label="COM_API_EXCLD_WORDS"
+            description="COM_API_EXCLD_WORDS_DESC" />
+    </fieldset>
+    <fieldset 
+        name="permissions"
+	description="JCONFIG_PERMISSIONS_DESC"
+	label="JCONFIG_PERMISSIONS_LABEL">
+
+		<field 
+                    name="rules" type="rules" component="com_api"
+                    class="inputbox" filter="rules" validate="rules"
+                    label="JCONFIG_PERMISSIONS_LABEL"
+                    section="component" />
 	</fieldset>
 </config>
