@@ -339,12 +339,28 @@ class ApiPlugin extends JPlugin {
 		$excludes = $params->get('exclude_log');
 		$pst_dt = $app->input->post->getArray(array());
 		$exld_arr = explode(",",$excludes);
+		$req_url = JFactory::getURI()->getQuery();
+
 		foreach($exld_arr as $val)
 		{
 			if(!empty($pst_dt[$val]))
 			{
 				//unset($pst_dt[$val]);
-				$pst_dt[$val] = md5($pst_dt[$val]);
+				$pst_dt[$val] = '******';
+			}
+			//for get call
+			if(strpos($req_url,$val))
+			{
+				$req_arr = explode("&",$req_url);
+				foreach($req_arr as $ky => $re_nd)
+				{
+					$pos = strpos($re_nd,$val);
+					if($pos === 0)
+					{
+						$req_arr[$ky] = $val.'=******';
+					}
+				}
+				$req_url = implode('&',$req_arr);
 			}
 		}
 		//end
@@ -355,8 +371,8 @@ class ApiPlugin extends JPlugin {
 		$table->hash = $app->input->get('key', '','STRING');
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
-		$table->request = JFactory::getURI()->getQuery();
-		
+		$table->request = $req_url;
+
 		//$table->post_data = $app->input->post->getArray(array());
 		$table->post_data = $pst_dt;
 		$table->store();

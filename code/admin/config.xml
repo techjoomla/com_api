@@ -11,7 +11,7 @@
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>
-			<field name="exclude_log" type="text"
+			<field name="exclude_log" type="text" default="password,pass,passwd,pwd"
             label="COM_API_EXCLD_WORDS"
             description="COM_API_EXCLD_WORDS_DESC" />
     </fieldset>
