@@ -58,12 +58,13 @@ class ApiPlugin extends JPlugin {
 			$dispatcher = JEventDispatcher::getInstance();
 			self::$plg_path = self::$plg_path.$plugin->name.'/';
 		}
-
+		//vishal -removed for due to create false error for some plugins
+		/*
 		if (empty($plugin)) :
 			ApiError::raiseError(400, JText::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)));
 		endif;
-		
-		$plgfile	= JPATH_BASE.self::$plg_path.$name.'.php';
+		*/
+		$plgfile	= JPATH_BASE.self::$plg_path.$name.'/'.$name.'.php';
 		if (!JFile::exists($plgfile)) :
 			ApiError::raiseError(400, JText::sprintf('COM_API_FILE_NOT_FOUND', ucfirst($name)));
 		endif;
