@@ -65,7 +65,7 @@ abstract class ApiAuthentication extends JObject {
 		$auth_handler 	= new $className($params);
 
 		$user_id		= $auth_handler->authenticate();
-
+		
 		if ($user_id === false) :
 			self::setAuthError($auth_handler->getError());
 			return false;
@@ -80,13 +80,24 @@ abstract class ApiAuthentication extends JObject {
 				self::setAuthError(JText::_("COM_API_BLOCKED_USER"));
 				return false;
 			endif;
+			
+			// v 1.8.1 - to set admin info headers
+			//$log_user = JFactory::getUser();
+			$isroot = $user->authorise('core.admin');
 
+			if($isroot)
+			{
+				JResponse::setHeader( 'x-api', self::getCom_apiVersion());
+				JResponse::setHeader( 'x-plugins', implode(',',self::getPluginsList()) );
+			}
+			//
+			
 			return $user;
 
 		endif;
 
 	}
-
+	
 	public static function setAuthError($msg) {
 		self::$auth_errors[] = $msg;
 		return true;
@@ -97,6 +108,27 @@ abstract class ApiAuthentication extends JObject {
 			return false;
 		endif;
 		return array_pop(self::$auth_errors);
+	}
+	
+	//v- 1.8.1 get all api type plugin versions
+	public static function getPluginsList()
+	{
+		$plgs = JPluginHelper::getPlugin('api');
+		$plg_arr = array();
+		foreach($plgs as $plg)
+		{
+			$xml = JFactory::getXML(JPATH_SITE.'/plugins/api/'.$plg->name.'/'.$plg->name.'.xml');
+			$version = (string)$xml->version;
+			$plg_arr[] = $plg->name.'-'.$version;
+		}
+		return $plg_arr;
+	}
+	
+	//get com_api version
+	public static function getCom_apiVersion()
+	{
+		$xml = JFactory::getXML(JPATH_ADMINISTRATOR.'/components/com_api/api.xml');
+		return $version = (string)$xml->version;
 	}
 
 }

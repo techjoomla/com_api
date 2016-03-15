@@ -27,6 +27,7 @@ class ApiControllerHttp extends ApiController
 		$name = $app->input->get('app','','CMD');
 
 		try {
+			
 			echo ApiPlugin::getInstance( $name )->fetchResource();
 
 		}  catch ( Exception $e ) {
@@ -41,6 +42,7 @@ class ApiControllerHttp extends ApiController
 		JFactory::getDocument()->setMimeEncoding( 'application/json' );
 		return json_encode( $error->toArray() );
 	}
+
 
 	/**
 	 * Resets the document type to format=raw
