@@ -7,11 +7,12 @@
 			<field name="request_limit" type="text"
             label="COM_API_FORM_LBL_RATE_LIMIT"
             description="COM_API_FORM_LBL_RATE_LIMIT_DESC" />
-			<field name="log_requests" type="list" default="0" label="COM_API_CONFIG_LOG_LBL" description="COM_API_CONFIG_LOG_DESC">
+			<field name="log_requests" type="radio" default="0" label="COM_API_CONFIG_LOG_LBL" description="COM_API_CONFIG_LOG_DESC" class="btn-group">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>
-			<field name="exclude_log" type="text" default="password,pass,passwd,pwd"
+			<field name="cors" type="textarea" default="" columns="5" label="COM_API_CONFIG_CORS_LBL" description="COM_API_CONFIG_CORS_DESC" />
+			<field name="exclude_log" type="text" default="password,pass,passwd,pwd,key"
             label="COM_API_EXCLD_WORDS"
             description="COM_API_EXCLD_WORDS_DESC" />
     </fieldset>

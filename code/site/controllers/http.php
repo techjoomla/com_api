@@ -25,6 +25,13 @@ class ApiControllerHttp extends ApiController
 		$this->resetDocumentType();
 		$app = JFactory::getApplication();
 		$name = $app->input->get('app','','CMD');
+		
+		// Set CORS header
+		$cors_urls = explode("\n", JComponentHelper::getParams('com_api')->get('cors'));
+		foreach ($cors_urls as $cors_url)
+		{
+			JResponse::setHeader( 'Access-Control-Allow-Origin', $cors_url );
+		}
 
 		try {
 			
