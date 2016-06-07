@@ -25,11 +25,6 @@ abstract class ApiAuthentication extends JObject {
 		$app = JFactory::getApplication();
 		$key = $app->input->get('key','','STRING');
 		
-		//used core code - resuest header method not found
-		$headers = apache_request_headers();
-		$this->x_auth = $headers['x-auth'];
-		
-		
 		if(empty($key))
 		{
 			$key = $app->input->post->get('key','','STRING');
@@ -61,8 +56,8 @@ abstract class ApiAuthentication extends JObject {
 		$key = $app->input->get('key','','STRING');
 		
 		//used core code
-		$headers = apache_request_headers();
-		$head_auth = $headers['x-auth'];
+		$headers = getallheaders();
+		$head_auth = (isset($headers['x-auth']))?$headers['x-auth']:0;
 		
 		if(empty($key))
 		{
