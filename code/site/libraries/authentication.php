@@ -15,7 +15,6 @@ abstract class ApiAuthentication extends JObject {
 
 	protected	$auth_method		= null;
 	protected	$domain_checking	= null;
-	protected	$x_auth	= null;
 	static		$auth_errors		= array();
 
 	public function __construct($params) {
@@ -25,20 +24,23 @@ abstract class ApiAuthentication extends JObject {
 		$app = JFactory::getApplication();
 		$key = $app->input->get('key','','STRING');
 		
+		//used core code
+		$headers = getallheaders();
+		$auth_method = (isset($headers['x-auth'])) ? $headers['x-auth'] : $params->get('auth_method');
+		$this->set('auth_method', $auth_method);
+
 		if(empty($key))
 		{
 			$key = $app->input->post->get('key','','STRING');
 		}
 
-		if(empty($key))
+		if(empty($key) && empty($auth_method))
 		{
-			$this->set('auth_method',$params->get('auth_method','username'));
-			$this->set('auth_method',$params->get('auth_method','password'));
 			$this->set('auth_method', $params->get('auth_method', 'login'));
 		}
-		else if($this->x_auth)
+		else if($auth_method)
 		{
-			$this->set('auth_method', $params->get('auth_method', 'session'));
+			$this->set('auth_method', $auth_method);
 		}
 		else
 		{
