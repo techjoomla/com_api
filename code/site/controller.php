@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @version    CVS: 1.0.0
  * @package    Com_Api
@@ -17,7 +16,7 @@ jimport('joomla.application.component.controller');
  *
  * @since  1.6
  */
-class apiFrontendController extends JControllerLegacy
+class ApiFrontendController extends JControllerLegacy
 {
 	/**
 	 * Method to display a view.
