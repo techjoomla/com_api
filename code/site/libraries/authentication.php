@@ -24,16 +24,23 @@ abstract class ApiAuthentication extends JObject {
 		$app = JFactory::getApplication();
 		$key = $app->input->get('key','','STRING');
 		
+		//used core code
+		$headers = getallheaders();
+		$auth_method = (isset($headers['x-auth'])) ? $headers['x-auth'] : $params->get('auth_method');
+		$this->set('auth_method', $auth_method);
+
 		if(empty($key))
 		{
 			$key = $app->input->post->get('key','','STRING');
 		}
 
-		if(empty($key))
+		if(empty($key) && empty($auth_method))
 		{
-			$this->set('auth_method',$params->get('auth_method','username'));
-			$this->set('auth_method',$params->get('auth_method','password'));
 			$this->set('auth_method', $params->get('auth_method', 'login'));
+		}
+		else if($auth_method)
+		{
+			$this->set('auth_method', $auth_method);
 		}
 		else
 		{
@@ -50,15 +57,28 @@ abstract class ApiAuthentication extends JObject {
 		
 		$key = $app->input->get('key','','STRING');
 		
+		//used core code
+		$headers = getallheaders();
+		$head_auth = (isset($headers['x-auth']))?$headers['x-auth']:0;
+		
 		if(empty($key))
 		{
 			$key = $app->input->post->get('key','','STRING'); 
 		}
 
 		if(!empty($key))
-		$method			= 'key';
+		{
+			$method			= 'key';
+		}
 		else
-		$method			= 'login';
+		{
+			$method			= 'login';
+		}
+		
+		if($head_auth)
+		{
+			$method			= 'session';
+		}
 
 		$className 		= 'APIAuthentication'.ucwords($method);
 
