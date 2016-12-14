@@ -4,7 +4,7 @@
  * @copyright Copyright (C) 2009 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
  * @license GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
  * @link http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API) 
+ * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
 */
 
@@ -25,6 +25,7 @@ JLoader::register('APIResource', $library_path.'/resource.php');
 JLoader::register('APIAuthentication', $library_path.'/authentication.php');
 JLoader::register('APIAuthenticationKey', $library_path.'/authentication/key.php');
 JLoader::register('APIAuthenticationLogin', $library_path.'/authentication/login.php');
+JLoader::register('APIAuthenticationSession', $library_path.'/authentication/session.php');
 JLoader::register('APIHelper', $library_path.'/helper.php');
 JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_api/tables');
 
