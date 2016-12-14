@@ -21,39 +21,9 @@ abstract class ApiAuthentication extends JObject {
 
 		parent::__construct();
 
-		$app = JFactory::getApplication();
-		$key = $app->input->get('key','','STRING');
-
-		//used core code
-		/*$headers = getallheaders();
-		$auth_method = (isset($headers['x-auth'])) ? $headers['x-auth'] : $params->get('auth_method');
-		$this->set('auth_method', $auth_method);*/
-
-		// Added By Sudhir
-		$auth_method = (isset($_SERVER['HTTP_X_AUTH'])) ? $_SERVER['HTTP_X_AUTH'] : $params->get('auth_method');
-		$this->set('auth_method', $auth_method);
-
-		if(empty($key))
-		{
-			$key = $app->input->post->get('key','','STRING');
-		}
-
-
-		/*if(empty($key) && empty($auth_method))
-		{
-			$this->set('auth_method', $params->get('auth_method', 'login'));
-		}
-		else if($auth_method)
-		{
-			$this->set('auth_method', $auth_method);
-		}
-		else
-		{
-			$this->set('auth_method', $params->get('auth_method', 'key'));
-		}*/
-
+		$this->set('auth_method', self::getAuthMethod());
 		$this->set('domain_checking', $params->get('domain_checking', 1));
-  }
+  	}
 
 	abstract public function authenticate();
 
@@ -61,38 +31,9 @@ abstract class ApiAuthentication extends JObject {
 		$params			= JComponentHelper::getParams('com_api');
 		$app = JFactory::getApplication();
 
-		$key = $app->input->get('key','','STRING');
-
-		//Need some improvement here , should be get('auth_method');
-		$auth_method = (isset($_SERVER['HTTP_X_AUTH'])) ? $_SERVER['HTTP_X_AUTH'] : $params->get('auth_method');
-
-		//used core code
-		/*$headers = getallheaders();
-		$head_auth = (isset($headers['x-auth']))?$headers['x-auth']:0;*/
-
-		if(empty($key))
-		{
-			$key = $app->input->post->get('key','','STRING');
-		}
-
-		/*if(!empty($key))
-		{
-			$method			= 'key';
-		}
-		else
-		{
-			$method			= 'login';
-		}
-
-		if($head_auth)
-		{
-			$method			= 'session';
-		}*/
-
-		$className 		= 'APIAuthentication'.ucwords($method);
+		$className 		= 'APIAuthentication'.ucwords(self::getAuthMethod());
 
 		$auth_handler 	= new $className($params);
-
 		$user_id		= $auth_handler->authenticate();
 
 		if ($user_id === false) :
@@ -157,6 +98,22 @@ abstract class ApiAuthentication extends JObject {
 	{
 		$xml = JFactory::getXML(JPATH_ADMINISTRATOR.'/components/com_api/api.xml');
 		return $version = (string)$xml->version;
+	}
+	
+	private function getAuthMethod() {
+		
+		$app = JFactory::getApplication();
+		$key = $app->input->get('key');	
+		
+		if (isset($_SERVER['HTTP_X_AUTH'])&& $_SERVER['HTTP_X_AUTH'])
+		{
+			$auth_method = $_SERVER['HTTP_X_AUTH'];		
+		} else if ($key) {
+			$auth_method = 'key';
+		} else {
+			$auth_method = 'login';
+		}
+		return $auth_method;
 	}
 
 }
