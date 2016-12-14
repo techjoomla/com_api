@@ -89,7 +89,7 @@ abstract class ApiAuthentication extends JObject {
 			$method			= 'session';
 		}*/
 
-		$className 		= 'APIAuthentication'.ucwords($method);
+		$className 		= 'APIAuthentication'.ucwords($auth_method);
 
 		$auth_handler 	= new $className($params);
 
