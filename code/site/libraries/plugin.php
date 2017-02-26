@@ -56,7 +56,6 @@ class ApiPlugin extends JPlugin {
 		else
 		{
 			$dispatcher = JEventDispatcher::getInstance();
-			self::$plg_path = self::$plg_path.$plugin->name.'/';
 		}
 
 		if (empty($plugin)) :
