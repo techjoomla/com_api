@@ -171,6 +171,120 @@ class Com_ApiInstallerScript
 	 */
 	private function _renderPostInstallation($status, $straperStatus, $parent, $msgBox = array())
 	{
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			$document = JFactory::getDocument();
+			$document->addStyleSheet(JUri::root() . '/media/techjoomla_strapper/css/bootstrap.min.css');
+		}
+
+		$enable = "<span class=\"label label-success\">Enabled</span>";
+		$disable = "<span class=\"label label-important\">Disabled</span>";
+		$updatemsg = "Updated Successfully";
+		?>
+		<?php $rows = 1;?>
+		<div class="techjoomla-bootstrap">
+			<table class="table-condensed table">
+				<thead>
+					<tr class="row1">
+						<th class="title" colspan="2">Extension</th>
+						<th width="30%">Status</th>
+					</tr>
+				</thead>
+
+				<tfoot>
+					<tr>
+						<td colspan="3"></td>
+					</tr>
+				</tfoot>
+
+				<tbody>
+					<tr class="row2">
+						<td class="key" colspan="2"><strong>TJFields component</strong></td>
+						<td><strong style="color: green">Installed</strong></td>
+					</tr>
+					<tr class="row2">
+						<td class="key" colspan="2"><strong>TechJoomla Strapper <?php echo $straperStatus['version']?></strong> [<?php echo $straperStatus['date'] ?>]
+								</td>
+						<td><strong> <span style="color: <?php echo $straperStatus['required'] ? ($straperStatus['installed']?'green':'red') : '#660' ?>; font-weight: bold;">
+											<?php echo $straperStatus['required'] ? ($straperStatus['installed'] ?'Installed':'Not Installed') : 'Already up-to-date'; ?>
+										</span>
+						</strong></td>
+					</tr>
+
+							<?php if (count($status->modules)) : ?>
+								<tr class="row1">
+						<th>Module</th>
+						<th>Client</th>
+						<th></th>
+					</tr>
+
+								<?php foreach ($status->modules as $module) : ?>
+									<tr class="row2 <?php //echo ($rows++ % 2); ?>">
+						<td class="key"><?php echo ucfirst($module['name']); ?></td>
+						<td class="key"><?php echo ucfirst($module['client']); ?></td>
+						<td><strong style="color: <?php echo ($module['result'])? "green" : "red"?>"><?php echo ($this->componentStatus=="install") ?(($module['result'])?'Installed':'Not installed'):$updatemsg; ?></strong>
+
+										<?php
+						if ($this->componentStatus == "install")
+						{
+							if (! empty($module['result'])) // if installed then only show msg
+							{
+								echo $mstat = ($module['status'] ? $enable : $disable);
+							}
+						}
+						?>
+										</td>
+					</tr>
+								<?php endforeach;?>
+							<?php endif;?>
+
+							<!-- pLUGIN DETAILS -->
+							<?php if (count($status->plugins)) : ?>
+								<tr class="row1">
+						<th colspan="2">Plugin</th>
+						<!--<th>Group</th>-->
+						<th></th>
+					</tr>
+
+								<?php
+					$oldplugingroup = "";
+					foreach ($status->plugins as $plugin)
+					:
+						if ($oldplugingroup != $plugin['group'])
+						{
+							$oldplugingroup = $plugin['group'];
+							?>
+										<tr class="row0">
+						<th colspan="2"><strong><?php echo ucfirst($oldplugingroup)." Plugins";?></strong></th>
+						<th></th>
+						<!--<td></td>-->
+					</tr>
+										<?php
+						}
+						?>
+									<tr class="row2 <?php //echo ($rows++ % 2); ?>">
+						<td colspan="2" class="key"><?php echo ucfirst($plugin['name']); ?></td>
+						<!--<td class="key"><?php //echo ucfirst($plugin['group']); ?></td> -->
+						<td><strong style="color: <?php echo ($plugin['result'])? "green" : "red"?>"><?php echo ($this->componentStatus=="install") ?(($plugin['result'])?'Installed':'Not installed'):$updatemsg; ?></strong>
+
+											<?php
+						if ($this->componentStatus == "install")
+						{
+							if (! empty($plugin['result']))
+							{
+								echo $pstat = ($plugin['status'] ? "<span class=\"label label-success\">Enabled</span>" : "<span class=\"label label-important\">Disabled</span>");
+							}
+						}
+						?>
+										</td>
+					</tr>
+								<?php endforeach; ?>
+							<?php endif;?>
+						</tbody>
+			</table>
+		</div>
+		<!-- end akeeba bootstrap -->
+		<?php
 	}
 
 	/**
