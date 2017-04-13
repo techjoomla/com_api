@@ -1,25 +1,24 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  Com_api
- *
- * @copyright   Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license     GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link        http://techjoomla.com
+ * @package    Com_Api
+ * @copyright  Copyright (C) 2009-2017 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
+ * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
+ * @link       http://techjoomla.com
  * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
  */
-defined('_JEXEC') or die();
+
+defined('_JEXEC') or die;
 jimport('joomla.application.component.model');
 
 /**
- * API user authentication
+ * Class for API authetication
  *
  * @since  1.0
  */
 abstract class ApiAuthentication extends JObject
 {
-	protected $auth_method = null;
+	protected $auth_method     = null;
 
 	protected $domain_checking = null;
 
@@ -27,8 +26,8 @@ abstract class ApiAuthentication extends JObject
 
 	/**
 	 * Constructor
-	 * 
-	 * @param   array  $params  config
+	 *
+	 * @param   object  $params  config
 	 *
 	 * @since 1.0
 	 */
@@ -41,16 +40,16 @@ abstract class ApiAuthentication extends JObject
 	}
 
 	/**
-	 * Method description
+	 * Authenticate
 	 *
-	 * @return  mixed
+	 * @return  void
 	 *
 	 * @since 1.0
 	 */
 	abstract public function authenticate();
 
 	/**
-	 * Method description
+	 * Authenticate Request
 	 *
 	 * @return  mixed
 	 *
@@ -58,13 +57,13 @@ abstract class ApiAuthentication extends JObject
 	 */
 	public static function authenticateRequest()
 	{
-		$params = JComponentHelper::getParams('com_api');
-		$app = JFactory::getApplication();
+		$params       = JComponentHelper::getParams('com_api');
+		$app          = JFactory::getApplication();
 
-		$className = 'APIAuthentication' . ucwords(self::getAuthMethod());
+		$className    = 'APIAuthentication' . ucwords(self::getAuthMethod());
 
 		$auth_handler = new $className($params);
-		$user_id = $auth_handler->authenticate();
+		$user_id      = $auth_handler->authenticate();
 
 		if ($user_id === false)
 		{
@@ -76,7 +75,7 @@ abstract class ApiAuthentication extends JObject
 		{
 			$user = JFactory::getUser($user_id);
 
-			if (! $user->id)
+			if (!$user->id)
 			{
 				self::setAuthError(JText::_("COM_API_USER_NOT_FOUND"));
 
@@ -90,7 +89,7 @@ abstract class ApiAuthentication extends JObject
 				return false;
 			}
 
-			/* V 1.8.1 - to set admin info headers
+			/* V1.8.1 - to set admin info headers
 			$log_user = JFactory::getUser(); */
 			$isroot = $user->authorise('core.admin');
 
@@ -105,11 +104,11 @@ abstract class ApiAuthentication extends JObject
 	}
 
 	/**
-	 * Method description
+	 * Set Auth Error
 	 *
 	 * @param   STRING  $msg  Message
-	 * 
-	 * @return  mixed
+	 *
+	 * @return  boolean
 	 *
 	 * @since 1.0
 	 */
@@ -121,7 +120,7 @@ abstract class ApiAuthentication extends JObject
 	}
 
 	/**
-	 * Method description
+	 * Get Auth Error
 	 *
 	 * @return  mixed
 	 *
@@ -146,21 +145,21 @@ abstract class ApiAuthentication extends JObject
 	 */
 	public static function getPluginsList()
 	{
-		$plgs = JPluginHelper::getPlugin('api');
-		$plg_arr = array();
+		$plugins    = JPluginHelper::getPlugin('api');
+		$pluginsArr = array();
 
-		foreach ($plgs as $plg)
+		foreach ($plugins as $plg)
 		{
-			$xml = JFactory::getXML(JPATH_SITE . '/plugins/api/' . $plg->name . '/' . $plg->name . '.xml');
-			$version = (string) $xml->version;
-			$plg_arr[] = $plg->name . '-' . $version;
+			$xml          = JFactory::getXML(JPATH_SITE . '/plugins/api/' . $plg->name . '/' . $plg->name . '.xml');
+			$version      = (string) $xml->version;
+			$pluginsArr[] = $plg->name . '-' . $version;
 		}
 
-		return $plg_arr;
+		return $pluginsArr;
 	}
 
 	/**
-	 * get com_api version
+	 * Get com_api version
 	 *
 	 * @return string
 	 *
@@ -174,30 +173,30 @@ abstract class ApiAuthentication extends JObject
 	}
 
 	/**
-	 * Method description
+	 * Get Auth Method
 	 *
-	 * @return string|unknown
+	 * @return  string  Auth method
 	 *
 	 * @since 1.0
 	 */
-	private function getAuthMethod()
+	private static function getAuthMethod()
 	{
 		$app = JFactory::getApplication();
 		$key = $app->input->get('key');
 
 		if (isset($_SERVER['HTTP_X_AUTH']) && $_SERVER['HTTP_X_AUTH'])
 		{
-			$auth_method = $_SERVER['HTTP_X_AUTH'];
+			$authMethod = $_SERVER['HTTP_X_AUTH'];
 		}
 		elseif ($key)
 		{
-			$auth_method = 'key';
+			$authMethod = 'key';
 		}
 		else
 		{
-			$auth_method = 'login';
+			$authMethod = 'login';
 		}
 
-		return $auth_method;
+		return $authMethod;
 	}
 }
