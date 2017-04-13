@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    Com_Api
- * @copyright  Copyright (C) 2009-2016 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2009-2017 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
  * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
  * @link       http://techjoomla.com
  * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
@@ -22,12 +22,14 @@ abstract class ApiAuthentication extends JObject
 
 	protected $domain_checking = null;
 
-	static $auth_errors        = array();
+	public static $auth_errors = array();
 
 	/**
 	 * Constructor
 	 *
-	 * @param   object  $params  Params
+	 * @param   object  $params  config
+	 *
+	 * @since 1.0
 	 */
 	public function __construct($params)
 	{
@@ -41,6 +43,8 @@ abstract class ApiAuthentication extends JObject
 	 * Authenticate
 	 *
 	 * @return  void
+	 *
+	 * @since 1.0
 	 */
 	abstract public function authenticate();
 
@@ -48,6 +52,8 @@ abstract class ApiAuthentication extends JObject
 	 * Authenticate Request
 	 *
 	 * @return  mixed
+	 *
+	 * @since 1.0
 	 */
 	public static function authenticateRequest()
 	{
@@ -55,8 +61,8 @@ abstract class ApiAuthentication extends JObject
 		$app          = JFactory::getApplication();
 
 		$className    = 'APIAuthentication' . ucwords(self::getAuthMethod());
-		$auth_handler = new $className($params);
 
+		$auth_handler = new $className($params);
 		$user_id      = $auth_handler->authenticate();
 
 		if ($user_id === false)
@@ -83,8 +89,8 @@ abstract class ApiAuthentication extends JObject
 				return false;
 			}
 
-			// @v1.8.1 - to set admin info headers
-			// $log_user = JFactory::getUser();
+			/* V1.8.1 - to set admin info headers
+			$log_user = JFactory::getUser(); */
 			$isroot = $user->authorise('core.admin');
 
 			if ($isroot)
@@ -100,9 +106,11 @@ abstract class ApiAuthentication extends JObject
 	/**
 	 * Set Auth Error
 	 *
-	 * @param   string  $msg  Error message
+	 * @param   STRING  $msg  Message
 	 *
 	 * @return  boolean
+	 *
+	 * @since 1.0
 	 */
 	public static function setAuthError($msg)
 	{
@@ -115,6 +123,8 @@ abstract class ApiAuthentication extends JObject
 	 * Get Auth Error
 	 *
 	 * @return  mixed
+	 *
+	 * @since 1.0
 	 */
 	public static function getAuthError()
 	{
@@ -129,9 +139,9 @@ abstract class ApiAuthentication extends JObject
 	/**
 	 * Get all api type plugin versions
 	 *
-	 * @since   1.8.1
+	 * @return  mixed
 	 *
-	 * @return  array  [description]
+	 * @since 1.8.1
 	 */
 	public static function getPluginsList()
 	{
@@ -151,7 +161,9 @@ abstract class ApiAuthentication extends JObject
 	/**
 	 * Get com_api version
 	 *
-	 * @return  string  Version
+	 * @return string
+	 *
+	 * @since 1.0
 	 */
 	public static function getCom_apiVersion()
 	{
@@ -164,13 +176,15 @@ abstract class ApiAuthentication extends JObject
 	 * Get Auth Method
 	 *
 	 * @return  string  Auth method
+	 *
+	 * @since 1.0
 	 */
 	private static function getAuthMethod()
 	{
 		$app = JFactory::getApplication();
 		$key = $app->input->get('key');
 
-		if (isset($_SERVER['HTTP_X_AUTH'])&& $_SERVER['HTTP_X_AUTH'])
+		if (isset($_SERVER['HTTP_X_AUTH']) && $_SERVER['HTTP_X_AUTH'])
 		{
 			$authMethod = $_SERVER['HTTP_X_AUTH'];
 		}
