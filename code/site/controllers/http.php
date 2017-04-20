@@ -70,7 +70,19 @@ class ApiControllerHttp extends ApiController
 		$error = new APIException($exception->getMessage(), $exception->getCode());
 		JFactory::getDocument()->setMimeEncoding('application/json');
 
-		return json_encode($error->toArray());
+		require_once JPATH_SITE.'/components/com_api/views/view.json.php';
+
+		$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
+		$version = (string)$xml->version;
+
+		if($version >= 2.0) {
+			$res = array();	
+			$res['responseCode'] = $error->getCode();
+			$res['errorMsg'] = $error->getMessage();
+			return APIViewJSON :: display($res);
+		} else {
+			return json_encode($error->toArray());
+		}
 	}
 
 	/**

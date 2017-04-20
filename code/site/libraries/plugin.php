@@ -526,7 +526,16 @@ class ApiPlugin extends JPlugin
 		}
 		else
 		{
-			return json_encode($this->get('response'));
+			require_once JPATH_SITE.'/components/com_api/views/view.json.php';
+						
+			$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
+			$version = (string)$xml->version;
+
+			if($version >= 2.0) {
+				return APIViewJSON :: display($this->get('response'));
+			} else {
+				return json_encode($this->get('response'));
+			}
 		}
 	}
 
