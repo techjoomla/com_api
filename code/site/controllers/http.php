@@ -72,10 +72,7 @@ class ApiControllerHttp extends ApiController
 
 		require_once JPATH_SITE.'/components/com_api/views/view.json.php';
 
-		$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
-		$version = (string)$xml->version;
-
-		if($version >= 2.0) {
+		if($this->getInstalledAPIVersion() >= 2.0) {
 			$res = array();	
 			$res['responseCode'] = $error->getCode();
 			$res['errorMsg'] = $error->getMessage();
@@ -97,5 +94,18 @@ class ApiControllerHttp extends ApiController
 	private function resetDocumentType()
 	{
 		JResponse::clearHeaders();
+	}
+	
+	/**
+	 * Get installed API version
+	 * 
+	 * @return string
+	 */
+	
+	public function getInstalledAPIVersion()
+	{
+		$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
+		$version = (string)$xml->version;
+		return $version;
 	}
 }
