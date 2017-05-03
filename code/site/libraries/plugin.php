@@ -527,11 +527,8 @@ class ApiPlugin extends JPlugin
 		else
 		{
 			require_once JPATH_SITE.'/components/com_api/views/view.json.php';
-						
-			$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
-			$version = (string)$xml->version;
 
-			if($version >= 2.0) {
+			if($this->getInstalledAPIVersion() >= 2.0) {
 				return APIViewJSON :: display($this->get('response'));
 			} else {
 				return json_encode($this->get('response'));
@@ -618,5 +615,18 @@ class ApiPlugin extends JPlugin
 	public function getUser()
 	{
 		return $this->user;
+	}
+	
+	/**
+	 * Get installed API version
+	 * 
+	 * @return string
+	 */
+	
+	public function getInstalledAPIVersion()
+	{
+		$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
+		$version = (string)$xml->version;
+		return $version;
 	}
 }
