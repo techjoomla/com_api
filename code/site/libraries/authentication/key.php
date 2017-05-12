@@ -27,6 +27,19 @@ class ApiAuthenticationKey extends ApiAuthentication {
 			return false;
 		endif;
 
+		if (($this->domain_checking) && ($token->domain))
+		{
+			$domain = $app->input->get('domain','','STRING');
+			if (
+				($domain != $token->domain)
+				&& (substr($domain, -strlen('.'.$token->domain)) != '.'.$token->domain)
+				)
+			{
+				$this->setError(JText::_('COM_API_KEY_NOT_FOUND'));
+				return false;
+			}
+		}
+
 		if (!$token->state) :
 			$this->setError(JText::_('COM_API_KEY_DISABLED'));
 			return false;
