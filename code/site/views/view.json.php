@@ -28,7 +28,7 @@ class APIViewJSON {
 		} else {			
 			$response->responseCode = 200;
 			$response->errorMsg  = "";
-			$response->data = $data;
+			$response->data = $data['data'];
 		}
 
 		return json_encode($response);
