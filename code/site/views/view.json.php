@@ -18,18 +18,18 @@ class APIViewJSON {
 	}
 		
 	public static function display($data) {
-		
+
 		$response = new stdClass;
-		
-		if($data['responseCode']) {
-			$response->responseCode = $data['responseCode'];
-			$response->errorMsg  = $data['errorMsg'];
-			$response->data = [];
+
+		if($data['err_code']) {
+			$response->err_code 	= $data['err_code'];
+			$response->err_message  = $data['err_message'];
+			$response->data 		= [];
 		} else {			
-			$response->responseCode = 200;
-			$response->errorMsg  = "";
-			$response->data = $data['data'];
-		}
+			$response->err_code 	= "";
+			$response->err_message  = "";
+ 			$response->data 		= $data['data'];
+ 		}
 
 		return json_encode($response);
 	}
