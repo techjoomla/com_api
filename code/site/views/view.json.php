@@ -21,14 +21,14 @@ class APIViewJSON {
 
 		$response = new stdClass;
 
-		if($data['err_code']) {
-			$response->err_code 	= $data['err_code'];
-			$response->err_message  = $data['err_message'];
-			$response->data 		= [];
+		if($data -> err_code) {
+			$response -> err_code 		= $data -> err_code;
+			$response -> err_message  	= $data -> err_message;
+			$response -> data 			= [];
 		} else {			
-			$response->err_code 	= "";
-			$response->err_message  = "";
- 			$response->data 		= $data['data'];
+			$response -> err_code 		= "";
+			$response -> err_message  	= "";
+ 			$response -> data 			= $data -> data;
  		}
 
 		return json_encode($response);
