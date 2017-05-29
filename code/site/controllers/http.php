@@ -96,17 +96,4 @@ class ApiControllerHttp extends ApiController
 	{
 		JResponse::clearHeaders();
 	}
-	
-	/**
-	 * Get installed API version
-	 * 
-	 * @return string
-	 */
-	
-	public function getInstalledAPIVersion()
-	{
-		$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
-		$version = (string)$xml->version;
-		return $version;
-	}
 }
