@@ -8,27 +8,28 @@
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
 */
 
-// no direct access
 defined('_JEXEC') or die('Restricted access');
 
 class APIViewJSON {
 	
-	public function __construct() {
-		
+	public function __construct() {		
 	}
 		
 	public static function display($data) {
 
 		$response = new stdClass;
 
-		if($data -> err_code) {
-			$response -> err_code 		= $data -> err_code;
-			$response -> err_message  	= $data -> err_message;
-			$response -> data 			= [];
-		} else {			
-			$response -> err_code 		= "";
-			$response -> err_message  	= "";
- 			$response -> data 			= $data -> data;
+		if($data -> err_code) 
+		{
+			$response->err_code = $data->err_code;
+			$response->err_message = $data->err_message;
+			$response->data = [];
+		} 
+		else 
+		{
+			$response->err_code = "";
+			$response->err_message = "";
+ 			$response->data = $data->data;
  		}
 
 		return json_encode($response);

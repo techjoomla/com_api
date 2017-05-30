@@ -480,6 +480,36 @@ class ApiPlugin extends JPlugin
 	}
 
 	/**
+	 * Setter method for $response instance variable
+	 *
+	 * @param   STRING  $data  The plugin's output
+	 *
+	 * @param   STRING  $error  The plugin's output
+	 *
+	 * @return  mixed
+	 *
+	 * @since 2.0
+	 */
+	function setApiResponse($error, $data)
+	{
+		$result = new stdClass;
+		$result->err_code = '';
+		$result->err_message = '';
+		$result->data = new stdClass;
+
+		if ($error)
+		{
+			$result->err_code = $this->err_code;
+			$result->err_message = JText::_($this->err_message);
+		}
+		else
+		{
+			$result->data = $data;
+		}
+		$this->set('response', $result);
+	}
+	
+	/**
 	 * Determines the method with which to encode the output based on the requested content type
 	 *
 	 * @return STRING
@@ -528,9 +558,12 @@ class ApiPlugin extends JPlugin
 		{
 			require_once JPATH_SITE.'/components/com_api/views/view.json.php';
 
-			if($this->getInstalledAPIVersion() >= 2.0) {
+			if($this->getInstalledAPIVersion() >= 2.0)
+			{
 				return APIViewJSON :: display($this->get('response'));
-			} else {
+			} 
+			else
+			{
 				return json_encode($this->get('response'));
 			}
 		}
@@ -627,6 +660,7 @@ class ApiPlugin extends JPlugin
 	{
 		$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
 		$version = (string)$xml->version;
+
 		return $version;
 	}
 }

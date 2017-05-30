@@ -72,13 +72,16 @@ class ApiControllerHttp extends ApiController
 
 		require_once JPATH_SITE.'/components/com_api/views/view.json.php';
 
-		if(ApiPlugin::getInstalledAPIVersion() >= 2.0) {
-			$res 				= new stdClass;	
-			$res -> err_code 	= $error->getCode();
-			$res -> err_message = $error->getMessage();
-			
-			return APIViewJSON :: display($res);
-		} else {
+		if(ApiPlugin::getInstalledAPIVersion() >= 2.0)
+		{
+			$result = new stdClass;
+			$result->err_code = $error->getCode();
+			$result->err_message = $error->getMessage();
+
+			return APIViewJSON :: display($result);
+		} 
+		else 
+		{
 			return json_encode($error->toArray());
 		}
 	}
