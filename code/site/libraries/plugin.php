@@ -50,6 +50,10 @@ class ApiPlugin extends JPlugin
 
 	public $callbackname = 'callback';
 
+	public $err_code = 403;
+
+	public $err_message = 'JGLOBAL_AUTH_EMPTY_PASS_NOT_ALLOWED';
+
 	/**
 	 * create instance
 	 *
