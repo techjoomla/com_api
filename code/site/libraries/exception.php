@@ -10,9 +10,10 @@
 
 class ApiException extends JException
 {
+	public  $newFormat = 0;
+	
 	public function toArray()
 	{
-		//print_r($this->code);die("in exception class");
-		return ApiResource::getErrorResponse( $this->code, $this->message );
+		return ApiResource::getErrorResponse( $this->code, $this->message, $this->newFormat );
 	}
 }

@@ -560,16 +560,7 @@ class ApiPlugin extends JPlugin
 		}
 		else
 		{
-			require_once JPATH_SITE.'/components/com_api/views/view.json.php';
-
-			if($this->getInstalledAPIVersion() >= 2.0)
-			{
-				return APIViewJSON :: display($this->get('response'));
-			} 
-			else
-			{
-				return json_encode($this->get('response'));
-			}
+			return json_encode($this->get('response'));
 		}
 	}
 
