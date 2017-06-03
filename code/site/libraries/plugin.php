@@ -644,18 +644,5 @@ class ApiPlugin extends JPlugin
 	{
 		return $this->user;
 	}
-	
-	/**
-	 * Get installed API version
-	 * 
-	 * @return string
-	 */
-	
-	public static function getInstalledAPIVersion()
-	{
-		$xml = JFactory::getXML(JPATH_ADMINISTRATOR .'/components/com_api/api.xml');
-		$version = (string)$xml->version;
 
-		return $version;
-	}
 }
