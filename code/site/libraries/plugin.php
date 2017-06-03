@@ -644,5 +644,4 @@ class ApiPlugin extends JPlugin
 	{
 		return $this->user;
 	}
-
 }
