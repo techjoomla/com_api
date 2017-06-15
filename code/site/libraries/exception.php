@@ -14,6 +14,6 @@ class ApiException extends JException
 	
 	public function toArray()
 	{
-		return ApiResource::getErrorResponse( $this->code, $this->message, $this->newFormat );
+		return ApiResource::getErrorResponse($this->code, $this->message, $this->newFormat);
 	}
 }

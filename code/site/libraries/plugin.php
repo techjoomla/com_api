@@ -486,15 +486,15 @@ class ApiPlugin extends JPlugin
 	/**
 	 * Setter method for $response instance variable
 	 *
-	 * @param   STRING  $data  The plugin's output
-	 *
 	 * @param   STRING  $error  The plugin's output
+	 *
+	 * @param   STRING  $data   The plugin's output
 	 *
 	 * @return  mixed
 	 *
 	 * @since 2.0
 	 */
-	function setApiResponse($error, $data)
+	public function setApiResponse($error, $data)
 	{
 		$result = new stdClass;
 		$result->err_code = '';
@@ -510,9 +510,10 @@ class ApiPlugin extends JPlugin
 		{
 			$result->data = $data;
 		}
+
 		$this->set('response', $result);
 	}
-	
+
 	/**
 	 * Determines the method with which to encode the output based on the requested content type
 	 *

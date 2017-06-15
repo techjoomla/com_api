@@ -71,6 +71,7 @@ class ApiControllerHttp extends ApiController
 		JFactory::getDocument()->setMimeEncoding('application/json');
 
 		$error->newFormat = 1;
+
 		return json_encode($error->toArray());
 	}
 
