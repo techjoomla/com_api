@@ -50,6 +50,10 @@ class ApiPlugin extends JPlugin
 
 	public $callbackname = 'callback';
 
+	public $err_code = 403;
+
+	public $err_message = 'JGLOBAL_AUTH_EMPTY_PASS_NOT_ALLOWED';
+
 	/**
 	 * create instance
 	 *
@@ -477,6 +481,37 @@ class ApiPlugin extends JPlugin
 	public function setResponse($data)
 	{
 		$this->set('response', $data);
+	}
+
+	/**
+	 * Setter method for $response instance variable
+	 *
+	 * @param   STRING  $error  The plugin's output
+	 *
+	 * @param   STRING  $data   The plugin's output
+	 *
+	 * @return  mixed
+	 *
+	 * @since 2.0
+	 */
+	public function setApiResponse($error, $data)
+	{
+		$result = new stdClass;
+		$result->err_code = '';
+		$result->err_message = '';
+		$result->data = new stdClass;
+
+		if ($error)
+		{
+			$result->err_code = $this->err_code;
+			$result->err_message = JText::_($this->err_message);
+		}
+		else
+		{
+			$result->data = $data;
+		}
+
+		$this->set('response', $result);
 	}
 
 	/**
