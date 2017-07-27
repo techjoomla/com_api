@@ -53,17 +53,14 @@ class APIJSONResponse
 	{
 		$app = JFactory::getApplication();
 		$callback = $app->input->get($this->callbackname, '', 'CMD');
-		echo $compatibility = $app->input->server->get('HTTP_X_COMPATIBILITY_MODE', 0, 'INT');
-
-		$response = $compatibility ? $this->data->results : $this;
 
 		if ($callback)
 		{
-			return $callback . '(' . json_encode($response) . ')';
+			return $callback . '(' . json_encode($this) . ')';
 		}
 		else
 		{
-			return json_encode($response);
+			return json_encode($this);
 		}
 	}
 }

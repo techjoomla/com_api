@@ -79,6 +79,26 @@ class ApiControllerHttp extends ApiController
 		$app = JFactory::getApplication();
 		$doc = JFactory::getDocument();
 		$accept = $app->input->server->get('HTTP_ACCEPT', 'application/json', 'STRING');
+		$compatibility = $app->input->server->get('HTTP_X_COMPATIBILITY_MODE', 0, 'INT');
+		
+		// Enforce JSON in compatibility mode
+		if ($compatibility)
+		{
+			$output = new \stdClass;
+			header("Content-type: application/json");
+			if ($response instanceof Exception) {
+				$output->message = $response->getMessage();
+				$output->code = $response->getCode();
+			}
+			else
+			{
+				$output = $response->get('response');
+			}
+
+			echo json_encode($output);
+
+			die();
+		}
 
 		switch($accept) {
 			case 'application/json':
