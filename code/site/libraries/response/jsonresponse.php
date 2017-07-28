@@ -37,7 +37,7 @@ class APIJSONResponse
 		{
 			$this->api = "{$response->component}.{$response->resource}";
 			$this->response_id = $response->response_id;			
-			$this->data->results = $response->get('response');
+			$this->data->result = $response->get('response');
 		}
 	}
 
