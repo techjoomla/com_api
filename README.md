@@ -16,7 +16,7 @@ An app is essentially a Joomla plugin. However the plugin itself does nothing mo
 Resources are thea actual files that have code that accept input and return the API output. You will usually have multiple resources in an app. A common use case is for an extension like Easysocial or Jomsocial you will have a single app, and the app contains resources for various objects like groups, events, photos, newsfeed etc.
 
 ### key / token
-
+The key is used to access authenticated resources. The admin section allows you to create keys. It's also possible to use the app=user&resource=login to login using username and password and get a key in response.
 
 
 ## Calling resources
