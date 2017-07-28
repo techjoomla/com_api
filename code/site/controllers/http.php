@@ -13,6 +13,8 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 jimport('joomla.plugin.helper');
+JLoader::discover('API', JPATH_COMPONENT . '/libraries/exceptions');
+//JLoader::discover('API', JPATH_COMPONENT . '/libraries/response');
 
 /**
  * ApiControllerHttp class
@@ -21,6 +23,9 @@ jimport('joomla.plugin.helper');
  */
 class ApiControllerHttp extends ApiController
 {
+
+	public $callbackname = 'callback';
+
 	/**
 	 * Typical view method for MVC based architecture
 	 *
@@ -47,12 +52,17 @@ class ApiControllerHttp extends ApiController
 
 		try
 		{
-			echo ApiPlugin::getInstance($name)->fetchResource();
+			JResponse::setHeader('status', 200);
+			$resource_response = ApiPlugin::getInstance($name)->fetchResource();
+			echo $this->respond($resource_response);
 		}
 		catch (Exception $e)
 		{
-			echo $this->sendError($e);
+			JResponse::setHeader('status', $e->http_code);
+			echo $this->respond($e);
 		}
+
+		//exit;
 	}
 
 	/**
@@ -64,15 +74,61 @@ class ApiControllerHttp extends ApiController
 	 *
 	 * @since 1.0
 	 */
-	private function sendError($exception)
+	private function respond($response)
 	{
-		JResponse::setHeader('status', $exception->getCode());
-		$error = new APIException($exception->getMessage(), $exception->getCode());
-		JFactory::getDocument()->setMimeEncoding('application/json');
+		$app = JFactory::getApplication();
+		$doc = JFactory::getDocument();
+		$accept = $app->input->server->get('HTTP_ACCEPT', 'application/json', 'STRING');
+		$compatibility = $app->input->server->get('HTTP_X_COMPATIBILITY_MODE', 0, 'INT');
+		
+		// Enforce JSON in compatibility mode
+		if ($compatibility)
+		{
+			$output = new \stdClass;
+			header("Content-type: application/json");
+			if ($response instanceof Exception) {
+				$output->message = $response->getMessage();
+				$output->code = $response->getCode();
+			}
+			else
+			{
+				$output = $response->get('response');
+			}
 
-		$error->newFormat = 1;
+			echo json_encode($output);
 
-		return json_encode($error->toArray());
+			die();
+		}
+
+		switch($accept) {
+			case 'application/json':
+			default:
+				header("Content-type: application/json");
+				$format = 'json';
+			break;
+
+			case 'application/xml':
+				header("Content-type: application/xml");
+				$format = 'xml';
+			break;
+		}
+
+		$output_overrride = JPATH_ROOT . '/' . $app->getTemplate() . '/'.$format.'/api.php';
+
+		if (file_exists($output_overrride)) {
+			require_once $output_overrride;
+		}
+		else
+		{
+			require_once JPATH_COMPONENT . '/libraries/response/'.$format.'response.php';
+		}
+
+		$classname = 'API'.ucfirst($format).'Response';
+		$output = new $classname($response);
+
+		echo $output->__toString();
+
+		die();
 	}
 
 	/**

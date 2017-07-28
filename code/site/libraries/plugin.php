@@ -28,7 +28,7 @@ class ApiPlugin extends JPlugin
 
 	protected $format = null;
 
-	protected $response = null;
+	private $response = null;
 
 	protected $request = null;
 
@@ -48,11 +48,11 @@ class ApiPlugin extends JPlugin
 
 	public static $plg_path = '/plugins/api/';
 
-	public $callbackname = 'callback';
-
 	public $err_code = 403;
 
 	public $err_message = 'JGLOBAL_AUTH_EMPTY_PASS_NOT_ALLOWED';
+
+	public $response_id = '';
 
 	/**
 	 * create instance
@@ -263,6 +263,8 @@ class ApiPlugin extends JPlugin
 	 */
 	final public function fetchResource($resource_name = null)
 	{
+		$this->log();
+
 		if ($resource_name == null)
 		{
 			$resource_name = $this->get('resource');
@@ -284,15 +286,14 @@ class ApiPlugin extends JPlugin
 
 		if ($access == 'protected' && $user === false)
 		{
-			ApiError::raiseError(403, APIAuthentication::getAuthError());
+			ApiError::raiseError(403, APIAuthentication::getAuthError(), 'APIUnauthorisedException');
 		}
 
 		if (! $this->checkRequestLimit())
 		{
-			ApiError::raiseError(403, JText::_('COM_API_RATE_LIMIT_EXCEEDED'));
+			ApiError::raiseError(403, JText::_('COM_API_RATE_LIMIT_EXCEEDED'), 'APIUnauthorisedException');
 		}
 
-		$this->log();
 		$this->lastUsed();
 
 		if ($resource_obj !== false)
@@ -304,9 +305,9 @@ class ApiPlugin extends JPlugin
 			call_user_func(array($this, $resource_name));
 		}
 
-		$output = $this->encode();
+		//$output = $this->encode();
 
-		return $output;
+		return $this;
 	}
 
 	/**
@@ -322,12 +323,12 @@ class ApiPlugin extends JPlugin
 	{
 		if (! method_exists($this, $resource_name))
 		{
-			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_FOUND', ucfirst($resource_name)));
+			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_FOUND', ucfirst($resource_name)), 'APINotFoundException');
 		}
 
 		if (! is_callable(array($this, $resource_name)))
 		{
-			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_CALLABLE', ucfirst($resource_name)));
+			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_CALLABLE', ucfirst($resource_name)), 'APINotFoundException');
 		}
 
 		return true;
@@ -401,6 +402,7 @@ class ApiPlugin extends JPlugin
 	{
 		if (! $this->params->get('log_requests'))
 		{
+			$this->response_id = uniqid();
 			return;
 		}
 
@@ -409,36 +411,29 @@ class ApiPlugin extends JPlugin
 		//  For exclude password from log
 		$params = JComponentHelper::getParams('com_api');
 		$excludes = $params->get('exclude_log');
-		$pst_dt = $app->input->post->getArray(array());
-		$exld_arr = explode(",", $excludes);
+		$raw_post = file_get_contents('php://input');
+		$redactions = explode(",", $excludes);
 		$req_url = JFactory::getURI()->getQuery();
 
-		foreach ($exld_arr as $val)
-		{
-			if (! empty($pst_dt[$val]))
-			{
-				// Unset($pst_dt[$val]);
-				$pst_dt[$val] = '******';
-			}
-
-			// For get call
-			if (strpos($req_url, $val))
-			{
-				$req_arr = explode("&", $req_url);
-
-				foreach ($req_arr as $ky => $re_nd)
-				{
-					$pos = strpos($re_nd, $val);
-
-					if ($pos === 0)
-					{
-						$req_arr[$ky] = $val . '=******';
-					}
-				}
-
-				$req_url = implode('&', $req_arr);
-			}
+		switch ($app->input->server->get('CONTENT_TYPE')) {
+			case 'application/x-www-form-urlencoded':
+			default:
+				mb_parse_str($raw_post, $post_data);
+				array_walk($post_data, function(&$value, $key, $redactions) { 
+		   			$value = in_array($key, $redactions) ? '**REDACTED**' : $value;
+				}, $redactions); 
+				break;
+			
+			case 'application/json':
+			case 'application/javascript':
+				$post_data = json_decode($raw_post);
+				array_walk($post_data, function(&$value, $key, $redactions) { 
+		   			$value = (is_string($value) && in_array($key, $redactions)) ? '**REDACTED**' : $value;
+				}, $redactions);
+				$post_data = json_encode($post_data);
+				break;
 		}
+
 
 		$table = JTable::getInstance('Log', 'ApiTable');
 		$date = JFactory::getDate();
@@ -449,8 +444,9 @@ class ApiPlugin extends JPlugin
 		$table->request = $req_url;
 
 		// $table->post_data = $app->input->post->getArray(array());
-		$table->post_data = $pst_dt;
+		$table->post_data = $post_data;
 		$table->store();
+		$this->response_id = $table->id;
 	}
 
 	/**
@@ -540,100 +536,6 @@ class ApiPlugin extends JPlugin
 		}
 
 		return $this->$method();
-	}
-
-	/**
-	 * Transforms the plugin response to a JSON-encoded string
-	 * Can also return JSONP if the callback is set
-	 *
-	 * @return  string
-	 *
-	 * @since 1.0
-	 */
-	protected function toJson()
-	{
-		$app = JFactory::getApplication();
-		$callback = $app->input->get($this->callbackname, '');
-
-		if ($callback)
-		{
-			return $callback . '(' . json_encode($this->get('response')) . ')';
-		}
-		else
-		{
-			return json_encode($this->get('response'));
-		}
-	}
-
-	/**
-	 * Transforms the plugin response to an XML string
-	 *
-	 * @return mixed
-	 *
-	 * @return  string
-	 *
-	 * @since 1.0
-	 */
-	protected function toXml()
-	{
-		$response = $this->get('response');
-		$xml = new SimpleXMLElement('<?xml version="1.0"?><response></response>');
-
-		$this->_toXMLRecursive($response, $xml);
-
-		return $xml->asXML();
-	}
-
-	/**
-	 * Method description
-	 *
-	 * @param   STRING  $element  element
-	 * @param   STRING  &$xml     xml
-	 *
-	 * @return  mixed
-	 *
-	 * @since 1.0
-	 */
-	protected function _toXMLRecursive($element, &$xml)
-	{
-		if (! is_array($element) && ! is_object($element))
-		{
-			return null;
-		}
-
-		if (is_object($element))
-		{
-			$element = get_object_vars($element);
-		}
-
-		foreach ($element as $key => $value)
-		{
-			$this->_handleMultiDimensions($key, $value, $xml);
-		}
-	}
-
-	/**
-	 * Method _handleMultiDimensions
-	 *
-	 * @param   STRING  $key    key
-	 * @param   STRING  $value  value
-	 * @param   STRING  &$xml   xml
-	 *
-	 * @return  mixed
-	 *
-	 * @since 1.0
-	 */
-	protected function _handleMultiDimensions($key, $value, &$xml)
-	{
-		if (is_array($value) || is_object($value))
-		{
-			$node = $xml->addChild($key);
-			$this->_toXMLRecursive($value, $node);
-		}
-		else
-		{
-			$node = $xml->addChild($key, htmlspecialchars($value));
-		}
 	}
 
 	/**

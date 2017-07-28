@@ -8,12 +8,7 @@
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
 */
 
-class ApiException extends JException
+class ApiException extends Exception
 {
-	public  $newFormat = 0;
-	
-	public function toArray()
-	{
-		return ApiResource::getErrorResponse($this->code, $this->message, $this->newFormat);
-	}
+	var $http_code = 400;
 }

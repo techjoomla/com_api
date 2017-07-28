@@ -8,10 +8,7 @@
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
 */
 
-class ApiError
+class APIUnauthorisedException extends Exception
 {
-	public static function raiseError($code, $msg, $exception_class = 'APIException')
-	{
-		throw new $exception_class($msg, $code);
-	}
+	var $http_code = 403;
 }
