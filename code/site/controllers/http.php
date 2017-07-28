@@ -14,7 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controller');
 jimport('joomla.plugin.helper');
 JLoader::discover('API', JPATH_COMPONENT . '/libraries/exceptions');
-//JLoader::discover('API', JPATH_COMPONENT . '/libraries/response');
 
 /**
  * ApiControllerHttp class
@@ -77,7 +76,6 @@ class ApiControllerHttp extends ApiController
 	private function respond($response)
 	{
 		$app = JFactory::getApplication();
-		$doc = JFactory::getDocument();
 		$accept = $app->input->server->get('HTTP_ACCEPT', 'application/json', 'STRING');
 		$compatibility = $app->input->server->get('HTTP_X_COMPATIBILITY_MODE', 0, 'INT');
 		

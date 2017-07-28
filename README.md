@@ -33,12 +33,13 @@ Each resorce can support the GET, POST, DELETE & PUT (needs some work) operation
 
 # Writing your own API Plugin
 
-## Typical API plugin file structure
+## API plugin file structure
 * language/en-GB - Resource folder having resource file, keep name same as plugin name.
 	- en-GB.plg_api_users.ini - add plugin language constant.
 	- en-GB.plg_api_users.sys.ini
 * users - Resource folder having resource file, keep name same as plugin name.
 	- login.php - Resource file
+	- users.php - Resource file
 * users.php - plugin file
 * users.xml - xml file 
 
@@ -96,7 +97,34 @@ class UsersApiResourceLogin extends ApiResource
 }
 ```
 
-### Make some resources public
+The array or object from the plugin should be set via `$this->plugin->setResponse()`.
+
+## Error Handling
+It is possible to send HTTP errors with the right HTTP codes using the `APIError::raiseError()` method. Depending on the type of error you can raise different Exceptions that set the appropriate HTTP code. 
+
+```php
+<?php
+	public function post()
+	{
+		// Validation Error sets HTTP 400
+		ApiError::raiseError("VAL001", "Invalid Email", 'APIValidationException');
+
+		// Access Error sets HTTP 403
+		ApiError::raiseError("ACC001", "Not authorised", 'APIUnauthorisedException');
+
+		// Not Found Error sets HTTP 404
+		ApiError::raiseError("ERR005", "Record not found", 'APINotFoundException');
+
+		// General Error sets HTTP 400
+		ApiError::raiseError("ERR001", "Bad Request", 'APIException');
+
+	}
+```
+
+You are free to specify your own error code and message. It is also possible to add more Exceptions in the `site/libraries/exceptions` folder.
+
+
+## Make some resources public
  
 It is possible to make certain resource method public by using the setResourceAccess() access method as
 ```php

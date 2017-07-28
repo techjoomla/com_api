@@ -305,8 +305,6 @@ class ApiPlugin extends JPlugin
 			call_user_func(array($this, $resource_name));
 		}
 
-		//$output = $this->encode();
-
 		return $this;
 	}
 
@@ -430,7 +428,7 @@ class ApiPlugin extends JPlugin
 				array_walk($post_data, function(&$value, $key, $redactions) { 
 		   			$value = (is_string($value) && in_array($key, $redactions)) ? '**REDACTED**' : $value;
 				}, $redactions);
-				$post_data = json_encode($post_data);
+				$post_data = json_encode($post_data, JSON_PRETTY_PRINT);
 				break;
 		}
 
