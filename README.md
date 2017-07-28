@@ -121,7 +121,7 @@ It is possible to send HTTP errors with the right HTTP codes using the `APIError
 	}
 ```
 
-You are free to specify your own error code and message. It is also possible to add more Exceptions in the `site/libraries/exceptions` folder.
+You are free to specify your own error code and message. It is also possible to add more Exceptions in the `site/libraries/exceptions` folder. When using `APIError::raiseError()` there is no need to use `$this->plugin->setResponse()`. com_api will take care of sending the right HTTP code and error messages. 
 
 
 ## Make some resources public
