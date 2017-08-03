@@ -35,7 +35,7 @@ class APIXMLResponse
 		{
 			$this->api = "{$response->component}.{$response->resource}";
 			$this->response_id = $response->response_id;			
-			$this->data->result = $response->get('response');
+			$this->data = $response->get('response');
 		}
 	}
 
