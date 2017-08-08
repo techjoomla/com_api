@@ -13,7 +13,6 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 jimport('joomla.plugin.helper');
-JLoader::discover('API', JPATH_COMPONENT . '/libraries/exceptions');
 
 /**
  * ApiControllerHttp class
@@ -60,8 +59,6 @@ class ApiControllerHttp extends ApiController
 			JResponse::setHeader('status', $e->http_code);
 			echo $this->respond($e);
 		}
-
-		//exit;
 	}
 
 	/**
@@ -126,7 +123,7 @@ class ApiControllerHttp extends ApiController
 
 		echo $output->__toString();
 
-		die();
+		jexit();
 	}
 
 	/**
