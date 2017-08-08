@@ -29,6 +29,7 @@ JLoader::register('APIAuthenticationLogin', $library_path . '/authentication/log
 JLoader::register('APIAuthenticationSession', $library_path . '/authentication/session.php');
 JLoader::register('APIHelper', $library_path . '/helper.php');
 JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
+JLoader::discover('API', JPATH_COMPONENT . '/libraries/exceptions');
 
 $app = JFactory::getApplication();
 
