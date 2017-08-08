@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="API Endpoint">
+		<message>This menu is needed to ensure you can use SEF URLs for making API calls.</message>
+	</layout>
+</metadata>
