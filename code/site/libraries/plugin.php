@@ -411,7 +411,7 @@ class ApiPlugin extends JPlugin
 		$excludes = $params->get('exclude_log');
 		$raw_post = file_get_contents('php://input');
 		$redactions = explode(",", $excludes);
-		$req_url = JFactory::getURI()->getQuery();
+		$req_url = JURI::current() . JFactory::getURI()->getQuery();
 
 		switch ($app->input->server->get('CONTENT_TYPE')) {
 			case 'application/x-www-form-urlencoded':
