@@ -373,8 +373,10 @@ class ApiPlugin extends JPlugin
 		$query_time = time() - $offset;
 
 		$db = JFactory::getDBO();
-		$query = "SELECT COUNT(*) FROM #__api_logs " . "WHERE `time` >= " . $db->Quote($query_time) . " " . "AND (`hash` = " . $db->Quote($hash) .
-				" OR `ip_address` = " . $db->Quote($ip_address) . ")";
+		$query = $db->getQuery(true);
+		$query->select('COUNT(*)');
+		$query->from($db->quoteName('#__api_logs'));
+		$query->where($db->quoteName('time') . ' >= ' . $db->quote($query_time) . ' AND ' . $db->quoteName('hash') . ' = ' . $db->Quote($hash));
 
 		$db->setQuery($query);
 		$result = $db->loadResult();
@@ -401,6 +403,7 @@ class ApiPlugin extends JPlugin
 		if (! $this->params->get('log_requests'))
 		{
 			$this->response_id = uniqid();
+
 			return;
 		}
 
@@ -411,31 +414,34 @@ class ApiPlugin extends JPlugin
 		$excludes = $params->get('exclude_log');
 		$raw_post = file_get_contents('php://input');
 		$redactions = explode(",", $excludes);
-		$req_url = JURI::current() . JFactory::getURI()->getQuery();
+		$req_url = JURI::current() . '?' . JFactory::getURI()->getQuery();
 
-		switch ($app->input->server->get('CONTENT_TYPE')) {
+		switch ($app->input->server->get('CONTENT_TYPE'))
+		{
 			case 'application/x-www-form-urlencoded':
 			default:
 				mb_parse_str($raw_post, $post_data);
-				array_walk($post_data, function(&$value, $key, $redactions) { 
-		   			$value = in_array($key, $redactions) ? '**REDACTED**' : $value;
-				}, $redactions); 
+				array_walk(
+					$post_data, function(&$value, $key, $redactions) {
+						$value = in_array($key, $redactions) ? '**REDACTED**' : $value;
+					}, $redactions
+				);
 				break;
-			
+
 			case 'application/json':
 			case 'application/javascript':
 				$post_data = json_decode($raw_post);
-				array_walk($post_data, function(&$value, $key, $redactions) { 
-		   			$value = (is_string($value) && in_array($key, $redactions)) ? '**REDACTED**' : $value;
-				}, $redactions);
+				array_walk(
+					$post_data, function(&$value, $key, $redactions) {
+						$value = (is_string($value) && in_array($key, $redactions)) ? '**REDACTED**' : $value;
+					}, $redactions
+				);
 				$post_data = json_encode($post_data, JSON_PRETTY_PRINT);
 				break;
 		}
 
-
 		$table = JTable::getInstance('Log', 'ApiTable');
 		$date = JFactory::getDate();
-
 		$table->hash = $app->input->get('key', '', 'STRING');
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
