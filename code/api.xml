@@ -6,8 +6,8 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<author>Techjoomla</author>
 	<authorEmail>contact@techjoomla.com</authorEmail>
-	<authorUrl>http://techjoomla.com</authorUrl>
-	<version>2.1</version>
+	<authorUrl>https://techjoomla.com</authorUrl>
+	<version>2.2</version>
 	<description>Multi-purpose REST API framework for Joomla</description>
 	<install>
 		<!-- Runs on install -->
