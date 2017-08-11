@@ -26,22 +26,24 @@ The URL to access any route is of the format -
 
 `/api/{plugin}/{resource}`
 
-Tip : If your resource expects an `id` parameter in the URL then the endpoint URL then you can use `/api/{plugin}/{resource}/{id}` as the API url. Other query parameters may be sent as is.
+Tip : If your resource expects an `id` parameter in the URL, you can use `/api/{plugin}/{resource}/{id}` as the API url. Other query parameters may be sent as is.
 
 To enable SEF URLs for endpoints, make sure you have created a Joomla menu of the type API > API Endpoint. If you create the menu using any other alias than `api` make sure you use the apppropriate slug in the endpoint. If you do not have SEF URLs enabled, use  the endpoint URL as index.php?option=com_api&app={app}&resource={resource}&format=raw.
 
 ### Authentication
-The API token is used for authentication. The token needs to be passed via the Authorization header using the Bearer scheme eg: `Authorization: Bearer <token>`. Previous versions also allowed passing the token as a querystring variable with the name `key`. The querystring approach will be deprecated in the future version. It is possible for an app to make an entire resource or a specific HTTP method in a resource public.
+The API token is used for authentication. The token needs to be passed via the Authorization header using the Bearer scheme eg: `Authorization: Bearer <token>`. Previous versions also allowed passing the token as a querystring variable with the name `key`. The querystring approach will be deprecated in the future version. It is possible for an app to make an entire resource or a specific HTTP method in a resource public
+
+Note : Sometimes Apache does not pass on the Authorization header, in such cases send then token using the X-Authorization header i.e. `X-Authorization: Bearer {token}`
 
 ### Output Format
 The default output format is JSON. However it's also possible to get XML output by setting the `Accept: application/xml` header.
 
 ## Overriding Output
-If you wish to modify the 'envelope' of the response, you can copy the file `components/com_api/libraries/response/jsonresponse.php` into `templates/{your template}/json/api.php` and modify the structure of the output.
+If you wish to modify the 'envelope' of the response, you can copy the file `components/com_api/libraries/response/jsonresponse.php` into `templates/{your template}/json/api.php` and modify the structure of the output. A similar override is possible for XML as well. 
 
 
 # Writing your own API Plugin
-Each resorce can support the GET, POST, DELETE & PUT (needs some work) operations. These are exposed by creating methods of the same name, i.e. get() post() put() and delete() in each of the resources. This way, if a resouce URL is accessed via HTTP POST , the post() method is called, and similarly for the rest.
+Each resorce can support the GET, POST and DELETE operations. These are exposed by creating methods of the same name, i.e. `get()` `post()` and `delete()` in each of the resources. If a resouce URL is accessed via HTTP POST, the post() method is called, and similarly for the rest.
 
 ### API plugin file structure
 * language/en-GB - Resource folder having resource file, keep name same as plugin name.
@@ -53,7 +55,7 @@ Each resorce can support the GET, POST, DELETE & PUT (needs some work) operation
 * users.php - plugin file
 * users.xml - xml file 
 
-You can add multiple resource in resource folder and use them for different purpose.
+You can add multiple resource in resource folder and use them for different purpose. Usually, each resource will map to an object type for your extension.
 
 ### Create plugin entry file users.php file
 This is the entry file for the API plugin, the things that re deifned in the file are resource locations, and making certain resources public. Below is the code for the file - 
@@ -82,18 +84,18 @@ class plgAPIUsers extends ApiPlugin
 ```
 
 ### Create resource file login.php file
-Although you can place the resource files anywhere, the recommended approach is to place them within a folder inside your plugin.  Below is example code for a resource file. Notice how the methods get() and post() are implemented. The methods may return an array or an object which will be automatically converted to JSON.
+Although you can place the resource files anywhere, the recommended approach is to place them within a folder inside your plugin.  Below is example code for a resource file. Notice how the methods get() and post() are implemented. The methods may return an array or an object which will be automatically converted to JSON or XML.
 
 ```php
 
 <?php
-//class structure example
-//ex - class UsersApiResourceLogin extends ApiResource
 class UsersApiResourceLogin extends ApiResource
 {
 	public function get()
 	{
-		// Add your code here
+        $result = new \stdClass;
+        $result->id = 45;
+        $result->name = "John Doe"
 		 
 		$this->plugin->setResponse( $result );
 	}
@@ -131,7 +133,7 @@ It is possible to send HTTP errors with the right HTTP codes using the `APIError
 	}
 ```
 
-You are free to specify your own error code and message. It is also possible to add more Exceptions in the `site/libraries/exceptions` folder. When using `APIError::raiseError()` there is no need to use `$this->plugin->setResponse()`. com_api will take care of sending the right HTTP code and error messages. 
+You are free to specify your own error code and message. It is also possible to add more Exceptions in the `components/com_api/libraries/exceptions` folder. When using `APIError::raiseError()` there is no need to use `$this->plugin->setResponse()`. com_api will take care of sending the right HTTP code and error messages. 
 
 
 ### Make some resources public
@@ -141,8 +143,7 @@ It is possible to make certain resource method public by using the setResourceAc
 $this->setResourceAccess('users', 'public', 'post') 
 ```
 
-The first parameter is the resource name, second is status (should be public to make it public and last is method,
-which is you want to make public. Setting a resource public will mean that the URL will not need any authentication.
+The first parameter is the resource name, second is status (should be public to make it public) and last is HTTP method to make public. Setting a resource public will mean that the URL will not need any authentication.
   
 
 ### Create .xml file
@@ -169,6 +170,6 @@ Finally create a manifest XML so that your plugin can be installed. Set group as
 ```
 
 ### Tips for writing plugins
-- Think of API plugins as a replacement of controllers. So any business logic that you won't put in a controller, leave it out of the plugin too.
+- Think of API plugins as a replacement of controllers. Any business logic that you won't put in a controller, leave it out of the plugin too. Load and use your models in the plugin code.
 - It is not recommended to have language files unless absolutely necessary. You will ususally make plugins for an existing component, so load the language files from that component.
 - To create the list and details for an object type, you can either add a condition based on `id` query parameter in the `get()` method, or have a separate resource for the list. 
