@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    Com_Api
+ * @package    Techjoomla.API
  * @copyright  Copyright (C) 2009-2017 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
  * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
  * @link       http://techjoomla.com
@@ -188,7 +188,7 @@ abstract class ApiAuthentication extends JObject
 		{
 			$authMethod = $_SERVER['HTTP_X_AUTH'];
 		}
-		elseif ($key)
+		elseif ($key || self::getBearerToken())
 		{
 			$authMethod = 'key';
 		}
@@ -198,5 +198,79 @@ abstract class ApiAuthentication extends JObject
 		}
 
 		return $authMethod;
+	}
+
+	/**
+	 * Find if the user is trying to send a Bearer token
+	 *
+	 * @return  string  Token
+	 */
+	public static function getBearerToken()
+	{
+		$headers = self::getAuthorizationHeader();
+
+		if ( !empty($headers) )
+		{
+			if (preg_match('/Bearer\s(\S+)/', $headers, $matches))
+			{
+				return $matches[1];
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the authorization header
+	 *
+	 * @return  string  Header Value
+	 */
+	private static function getAuthorizationHeader()
+	{
+		$headers = null;
+
+		if (isset($_SERVER['Authorization']))
+		{
+			$headers = trim($_SERVER["Authorization"]);
+		}
+		elseif (isset($_SERVER['HTTP_AUTHORIZATION']))
+		{
+			$headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+		}
+		elseif (function_exists('apache_request_headers'))
+		{
+			$requestHeaders = apache_request_headers();
+
+			// Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+			$requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+
+			if (isset($requestHeaders['Authorization']))
+			{
+				$headers = trim($requestHeaders['Authorization']);
+			}
+		}
+
+		if (isset($_SERVER['X-Authorization']))
+		{
+			$headers = trim($_SERVER["X-Authorization"]);
+		}
+		elseif (isset($_SERVER['HTTP_X_AUTHORIZATION']))
+		{
+			$headers = trim($_SERVER["HTTP_X_AUTHORIZATION"]);
+		}
+		elseif (function_exists('apache_request_headers'))
+		{
+			$requestHeaders = apache_request_headers();
+
+			// Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+			$requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+
+			if (isset($requestHeaders['X-Authorization']))
+			{
+				$headers = trim($requestHeaders['X-Authorization']);
+			}
+		}
+
+		return $headers;
 	}
 }
