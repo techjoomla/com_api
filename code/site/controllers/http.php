@@ -108,8 +108,7 @@ class ApiControllerHttp extends ApiController
 			break;
 		}
 
-		$output_overrride = JPATH_ROOT . '/' . $app->getTemplate() . '/'.$format.'/api.php';
-
+		$output_overrride = JPATH_ROOT . '/templates/' . $app->getTemplate() . '/'.$format.'/api.php';
 		if (file_exists($output_overrride)) {
 			require_once $output_overrride;
 		}
