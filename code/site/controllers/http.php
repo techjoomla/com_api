@@ -21,7 +21,6 @@ jimport('joomla.plugin.helper');
  */
 class ApiControllerHttp extends ApiController
 {
-
 	public $callbackname = 'callback';
 
 	/**
@@ -62,26 +61,28 @@ class ApiControllerHttp extends ApiController
 	}
 
 	/**
-	 * Method description
+	 * Send the response in the correct format
 	 *
-	 * @param   OBJECT  $exception  exception
+	 * @param   OBJECT  $response  exception
 	 *
 	 * @return  json
 	 *
-	 * @since 1.0
+	 * @since 2.0
 	 */
 	private function respond($response)
 	{
 		$app = JFactory::getApplication();
 		$accept = $app->input->server->get('HTTP_ACCEPT', 'application/json', 'STRING');
 		$compatibility = $app->input->server->get('HTTP_X_COMPATIBILITY_MODE', 0, 'INT');
-		
+
 		// Enforce JSON in compatibility mode
 		if ($compatibility)
 		{
 			$output = new \stdClass;
 			header("Content-type: application/json");
-			if ($response instanceof Exception) {
+
+			if ($response instanceof Exception)
+			{
 				$output->message = $response->getMessage();
 				$output->code = $response->getCode();
 			}
@@ -95,7 +96,8 @@ class ApiControllerHttp extends ApiController
 			die();
 		}
 
-		switch($accept) {
+		switch ($accept)
+		{
 			case 'application/json':
 			default:
 				header("Content-type: application/json");
@@ -108,17 +110,18 @@ class ApiControllerHttp extends ApiController
 			break;
 		}
 
-		$output_overrride = JPATH_ROOT . '/' . $app->getTemplate() . '/'.$format.'/api.php';
+		$output_overrride = JPATH_ROOT . '/templates/' . $app->getTemplate() . '/' . $format . '/api.php';
 
-		if (file_exists($output_overrride)) {
+		if (file_exists($output_overrride))
+		{
 			require_once $output_overrride;
 		}
 		else
 		{
-			require_once JPATH_COMPONENT . '/libraries/response/'.$format.'response.php';
+			require_once JPATH_COMPONENT . '/libraries/response/' . $format . 'response.php';
 		}
 
-		$classname = 'API'.ucfirst($format).'Response';
+		$classname = 'API' . ucfirst($format) . 'Response';
 		$output = new $classname($response);
 
 		echo $output->__toString();
