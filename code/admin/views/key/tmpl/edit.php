@@ -81,7 +81,6 @@ $document->addStyleSheet('components/com_api/assets/css/api.css');
 							<div class="controls"><?php echo $this->form->getInput('per_hour'); ?></div>
 						</div>
 
-						<input type="hidden" name="jform[ordering]" value="<?php echo $this->item->ordering; ?>" />
 						<input type="hidden" name="jform[state]" value="<?php echo $this->item->state; ?>" />
 						<input type="hidden" name="jform[checked_out]" value="<?php echo $this->item->checked_out; ?>" />
 						<input type="hidden" name="jform[checked_out_time]" value="<?php echo $this->item->checked_out_time; ?>" />

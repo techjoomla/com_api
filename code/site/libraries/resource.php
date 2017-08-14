@@ -98,11 +98,21 @@ abstract class ApiResource {
 		return $paths;
 	}
 
-	final public static function getErrorResponse($code, $message)
+	final public static function getErrorResponse($code, $message, $newFormat = 0)
 	{
 		$error = new stdClass;
-		$error->code = $code;
-		$error->message = $message;
+
+		if (!$newFormat)
+		{
+			$error->code = $code;
+			$error->message = $message;
+		}
+		else
+		{
+			$error->err_code = $code;
+			$error->err_message = $message;
+			$error->data = new stdClass;
+		}
 
 		return $error;
 	}

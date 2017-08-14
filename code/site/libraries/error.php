@@ -6,14 +6,12 @@
  * @link http://techjoomla.com
  * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API) 
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
-*/
+ */
 
-class ApiError extends JException
+class ApiError
 {
-	public static function raiseError($code, $msg)
+	public static function raiseError($code, $msg, $exception_class = 'APIException')
 	{
-		//throw new Exception($msg, $code);
-		//return ApiResource::getErrorResponse( $code, $msg );
-		throw new Exception($msg, $code);
+		throw new $exception_class($msg, $code);
 	}
 }
