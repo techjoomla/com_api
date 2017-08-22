@@ -39,18 +39,32 @@ class ApiControllerHttp extends ApiController
 		$app = JFactory::getApplication();
 		$name = $app->input->get('app', '', 'CMD');
 
-		// Set CORS header
-		$cors_urls = explode("\n", JComponentHelper::getParams('com_api')->get('cors'));
+		$params = JComponentHelper::getParams('com_api');
 
-		foreach ($cors_urls as $cors_url)
+		// Set CORS header add comma seperated values directaly in input box
+		$cors_urls = $params->get('cors', "*");
+
+		$callMethod = $app->input->server->get('REQUEST_METHOD', '', 'STRING');
+
+		// Special method for OPTIONS method
+		if ((!empty($params->get("allow_cors"))))
 		{
-			JResponse::setHeader('Access-Control-Allow-Origin', $cors_url);
+			header("Access-Control-Allow-Origin: " . $cors_urls);
+			header("Access-Control-Allow-Methods: " . strtoupper($params->get("allow_cors")));
+		}
+
+		if ($callMethod === "OPTIONS")
+		{
+			header("Content-type: application/json");
+
+			jexit();
 		}
 
 		try
 		{
 			JResponse::setHeader('status', 200);
 			$resource_response = ApiPlugin::getInstance($name)->fetchResource();
+
 			echo $this->respond($resource_response);
 		}
 		catch (Exception $e)
