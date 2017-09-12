@@ -86,7 +86,6 @@ class plgAPIUsers extends ApiPlugin
 Although you can place the resource files anywhere, the recommended approach is to place them within a folder inside your plugin.  Below is example code for a resource file. Notice how the methods get() and post() are implemented. The methods may return an array or an object which will be automatically converted to JSON or XML.
 
 ```php
-
 <?php
 class UsersApiResourceLogin extends ApiResource
 {
@@ -137,7 +136,7 @@ You are free to specify your own error code and message. It is also possible to 
 Note : The exception classes extend PHP's `Exception` class. So you will need to use numeric only codes, since PHP does not support non-numeric Exception codes. 
 
 
-### Private and public public
+### Private and public resources
  
 Unless specified, all resources are private, which means an API token is needed to access. However, it is possible to make certain resource and methods public by using the setResourceAccess() access method as
 ```php
@@ -147,10 +146,9 @@ $this->setResourceAccess('login', 'public', 'post')
 The first parameter is the resource name, second is status (should be public to make it public) and last is HTTP method to make public. Setting a resource public will mean that the API URL for that resource will not need any authentication.
 
 ### Access Control
-ACL needs to be handled by the respective plugins. com_api makes a `$this->user` object available in the resource class. This is same as the JFactory::getUser() object for the user to whom the token belongs. 
+ACL needs to be handled by the respective plugins. com_api makes a `$this->user` object available in the resource class. This is same as the JFactory::getUser() object for the user to whom the token belongs. It is upto the resource to use the user object and apply the necessary access control and produce authorisation errors.
 
 ```php
-
 <?php
 class ExamplesApiResourceExample extends ApiResource
 {
@@ -170,7 +168,7 @@ Finally create a manifest XML so that your plugin can be installed. Set group as
 <extension version="3.0.0" type="plugin" group="api" method="upgrade">
     <name>YourPlugin</name>
     <version>1.0</version>
-    <creationDate>10/11/2014</creationDate>
+    <creationDate>10/11/2016</creationDate>
     <author></author> 
     <description></description>
     <files>
