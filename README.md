@@ -117,7 +117,7 @@ It is possible to send HTTP errors with the right HTTP codes using the `APIError
 	public function post()
 	{
 		// Validation Error sets HTTP 400
-		ApiError::raiseError(10001", "Invalid Email", 'APIValidationException');
+		ApiError::raiseError(10001, "Invalid Email", 'APIValidationException');
 
 		// Access Error sets HTTP 403
 		ApiError::raiseError(11001, "Not authorised", 'APIUnauthorisedException');
