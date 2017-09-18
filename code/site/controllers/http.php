@@ -40,22 +40,35 @@ class ApiControllerHttp extends ApiController
 		$name = $app->input->get('app', '', 'CMD');
 
 		$params = JComponentHelper::getParams('com_api');
-
-		// Set CORS header add comma seperated values directaly in input box
-		$cors_urls = $params->get('cors', "*");
-
-		$callMethod = $app->input->server->get('REQUEST_METHOD', '', 'STRING');
+		$callMethod = $app->input->getMethod();
 
 		// Special method for OPTIONS method
 		if ((!empty($params->get("allow_cors"))))
 		{
-			header("Access-Control-Allow-Origin: " . $cors_urls);
+			$corsUrls = $params->get('cors', "*");
+
+			if ($corsUrls === "*")
+			{
+				header("Access-Control-Allow-Origin: " . '*');
+			}
+			else
+			{
+				$httpOrigin = $app->input->server->get('HTTP_ORIGIN', '', 'STRING');
+				$corsUrlsArray = array_map('trim',array_filter(explode(',',$corsUrls)));
+
+				if(in_array($httpOrigin, $corsUrlsArray))
+				{
+					header("Access-Control-Allow-Origin: " . $httpOrigin);
+				}
+			}
+
 			header("Access-Control-Allow-Methods: " . strtoupper($params->get("allow_cors")));
 		}
 
 		if ($callMethod === "OPTIONS")
 		{
-			header("Content-type: application/json");
+			header("Content-type: text/html; charset=utf-8");
+			header("Access-Control-Allow-Headers: " . $params->get("allow_headers"));
 
 			jexit();
 		}
