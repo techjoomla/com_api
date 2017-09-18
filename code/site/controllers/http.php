@@ -53,7 +53,7 @@ class ApiControllerHttp extends ApiController
 			}
 			else
 			{
-				$httpOrigin = $app->input->server->get('HTTP_ORIGIN', '', 'STRING');
+				$httpOrigin = $app->input->server->getString('HTTP_REFERER', '');
 				$corsUrlsArray = array_map('trim',array_filter(explode(',',$corsUrls)));
 
 				if(in_array($httpOrigin, $corsUrlsArray))
