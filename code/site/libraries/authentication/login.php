@@ -34,7 +34,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 			return false;
 		}
 
-		return $user->id;
+		return $user;
 	}
 
 	public function loadUserByCredentials( $user, $pass )
@@ -46,7 +46,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		$response = $authenticate->authenticate(array( 'username' => $user, 'password' => $pass ),$options = array());
 
 		if ($response->status ===JAuthentication::STATUS_SUCCESS) {
-			$instance = JUser::getInstance($response->username);
+			$instance = JUserHelper::getUserId($response->username);
 			if ( $instance === false ) {
 				$this->setError( JError::getError() );
 				return false;
