@@ -35,21 +35,21 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		$username = $app->input->post->get('username', '', 'STRING');
 		$password = $app->input->post->get('password', '', 'STRING');
 
-		$user_id = $this->loadUserByCredentials($username, $password);
+		$userId = $this->loadUserByCredentials($username, $password);
 
 		// Remove username and password from request for when it gets logged
 		$uri = JFactory::getURI();
 		$uri->delVar('username');
 		$uri->delVar('password');
 
-		if ($user_id === false)
+		if ($userId === false)
 		{
 			// Errors are already set, just return
 
 			return false;
 		}
 
-		return $user_id;
+		return $userId;
 	}
 
 	/**
@@ -68,13 +68,13 @@ class ApiAuthenticationLogin extends ApiAuthentication
 
 		$authenticate = JAuthentication::getInstance();
 
-		$response = $authenticate->authenticate(array( 'username' => $user, 'password' => $pass ), $options = array());
+		$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass), $options = array());
 
 		if ($response->status === JAuthentication::STATUS_SUCCESS)
 		{
-			$user_id = JUserHelper::getUserId($response->username);
+			$userId = JUserHelper::getUserId($response->username);
 
-			if ( $user_id === false )
+			if ($userId === false)
 			{
 				$this->setError(JError::getError());
 
@@ -83,7 +83,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		}
 		else
 		{
-			if (isset( $response->error_message))
+			if (isset($response->error_message))
 			{
 				$this->setError($response->error_message);
 			}
@@ -95,6 +95,6 @@ class ApiAuthenticationLogin extends ApiAuthentication
 			return false;
 		}
 
-		return $user_id;
+		return $userId;
 	}
 }
