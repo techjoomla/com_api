@@ -42,7 +42,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		$uri->delVar('username');
 		$uri->delVar('password');
 
-		if ($user === false)
+		if ($user_id === false)
 		{
 			// Errors are already set, just return
 
