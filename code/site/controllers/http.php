@@ -41,9 +41,13 @@ class ApiControllerHttp extends ApiController
 
 		$params = JComponentHelper::getParams('com_api');
 		$callMethod = $app->input->getMethod();
+		$httpOrigin = $app->input->server->getString('HTTP_REFERER', '');
+
+		$JUriObj = JUri::getInstance($httpOrigin);
+		$referer = $JUriObj->toString($parts = array('scheme', 'host'));
 
 		// Special method for OPTIONS method
-		if ((!empty($params->get("allow_cors"))))
+		if ((! empty($params->get("allow_cors"))))
 		{
 			$corsUrls = $params->get('cors', "*");
 
@@ -53,12 +57,11 @@ class ApiControllerHttp extends ApiController
 			}
 			else
 			{
-				$httpOrigin = $app->input->server->getString('HTTP_REFERER', '');
-				$corsUrlsArray = array_map('trim',array_filter(explode(',',$corsUrls)));
+				$corsUrlsArray = array_map('trim', array_filter(explode(',', $corsUrls)));
 
-				if(in_array($httpOrigin, $corsUrlsArray))
+				if (in_array($referer, $corsUrlsArray))
 				{
-					header("Access-Control-Allow-Origin: " . $httpOrigin);
+					header("Access-Control-Allow-Origin: " . $referer);
 				}
 			}
 
