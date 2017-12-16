@@ -44,7 +44,7 @@ class ApiControllerHttp extends ApiController
 		$httpOrigin = $app->input->server->getString('HTTP_REFERER', '');
 
 		$JUriObj = JUri::getInstance($httpOrigin);
-		$referer = $JUriObj->toString($parts = array('scheme', 'host'));
+		$referer = $JUriObj->toString(array('scheme', 'host', 'port'));
 
 		// Special method for OPTIONS method
 		if ((! empty($params->get("allow_cors"))))
@@ -57,7 +57,7 @@ class ApiControllerHttp extends ApiController
 			}
 			else
 			{
-				$corsUrlsArray = array_map('trim', array_filter(explode(',', $corsUrls)));
+				$corsUrlsArray = array_map('trim', explode(',', $corsUrls));
 
 				if (in_array($referer, $corsUrlsArray))
 				{
@@ -70,7 +70,7 @@ class ApiControllerHttp extends ApiController
 
 		if ($callMethod === "OPTIONS")
 		{
-			header("Content-type: text/html; charset=utf-8");
+			header("Content-type: application/json");
 			header("Access-Control-Allow-Headers: " . $params->get("allow_headers"));
 
 			jexit();
