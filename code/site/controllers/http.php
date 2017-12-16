@@ -40,22 +40,38 @@ class ApiControllerHttp extends ApiController
 		$name = $app->input->get('app', '', 'CMD');
 
 		$params = JComponentHelper::getParams('com_api');
+		$callMethod = $app->input->getMethod();
+		$httpOrigin = $app->input->server->getString('HTTP_REFERER', '');
 
-		// Set CORS header add comma seperated values directaly in input box
-		$cors_urls = $params->get('cors', "*");
-
-		$callMethod = $app->input->server->get('REQUEST_METHOD', '', 'STRING');
+		$JUriObj = JUri::getInstance($httpOrigin);
+		$referer = $JUriObj->toString(array('scheme', 'host', 'port'));
 
 		// Special method for OPTIONS method
-		if ((!empty($params->get("allow_cors"))))
+		if ((! empty($params->get("allow_cors"))))
 		{
-			header("Access-Control-Allow-Origin: " . $cors_urls);
+			$corsUrls = $params->get('cors', "*");
+
+			if ($corsUrls === "*")
+			{
+				header("Access-Control-Allow-Origin: " . '*');
+			}
+			else
+			{
+				$corsUrlsArray = array_map('trim', explode(',', $corsUrls));
+
+				if (in_array($referer, $corsUrlsArray))
+				{
+					header("Access-Control-Allow-Origin: " . $referer);
+				}
+			}
+
 			header("Access-Control-Allow-Methods: " . strtoupper($params->get("allow_cors")));
 		}
 
 		if ($callMethod === "OPTIONS")
 		{
 			header("Content-type: application/json");
+			header("Access-Control-Allow-Headers: " . $params->get("allow_headers"));
 
 			jexit();
 		}

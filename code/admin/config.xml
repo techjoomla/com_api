@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-    <fieldset label="COM_API" name="api">
-			<field name="force_output" type="text"
-            label="COM_API_FORM_LBL_FORCE_OUTPUT"
-            description="COM_API_FORM_DESC_FORCE_OUTPUT" />
-			<field name="request_limit" type="text"
-            label="COM_API_FORM_LBL_RATE_LIMIT"
-            description="COM_API_FORM_LBL_RATE_LIMIT_DESC" />
-            <field name="log_requests" type="radio" default="0" label="COM_API_CONFIG_LOG_LBL" description="COM_API_CONFIG_LOG_DESC" class="btn-group">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </field>
-            <field name="allow_cors" type="radio" default="0" label="COM_API_CONFIG_ALLOW_CORS_LBL" description="COM_API_CONFIG_ALLOW_CORS_DESC" class="btn-group">
-                <option value="0">No</option>
-                <option value="get">GET</option>
-                <option value="*">ALL</option>
-            </field>
-			<field name="cors" type="textarea" default="*" columns="5" label="COM_API_CONFIG_CORS_LBL" description="COM_API_CONFIG_CORS_DESC" />
-			<field name="exclude_log" type="text" default="password,pass,passwd,pwd,key"
-            label="COM_API_EXCLD_WORDS"
-            description="COM_API_EXCLD_WORDS_DESC" />
-    </fieldset>
-    <fieldset 
-        name="permissions"
-	description="JCONFIG_PERMISSIONS_DESC"
-	label="JCONFIG_PERMISSIONS_LABEL">
+	<fieldset label="COM_API" name="api">
+		<field name="force_output" type="text" label="COM_API_FORM_LBL_FORCE_OUTPUT"
+			description="COM_API_FORM_DESC_FORCE_OUTPUT" />
+		<field name="request_limit" type="text" label="COM_API_FORM_LBL_RATE_LIMIT"
+			description="COM_API_FORM_LBL_RATE_LIMIT_DESC" />
+		<field name="log_requests" type="radio" default="0"
+			label="COM_API_CONFIG_LOG_LBL" description="COM_API_CONFIG_LOG_DESC"
+			class="btn-group">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</field>
+		<field name="exclude_log" type="text" default="password,pass,passwd,pwd,key"
+			label="COM_API_EXCLD_WORDS" description="COM_API_EXCLD_WORDS_DESC" />
+	</fieldset>
 
-		<field 
-                    name="rules" type="rules" component="com_api"
-                    class="inputbox" filter="rules" validate="rules"
-                    label="JCONFIG_PERMISSIONS_LABEL"
-                    section="component" />
+	<fieldset label="CORS" name="CORS">
+		<field name="allow_cors" type="radio" default="0"
+			label="COM_API_CONFIG_ALLOW_CORS_LBL" description="COM_API_CONFIG_ALLOW_CORS_DESC"
+			class="btn-group">
+			<option value="0">No</option>
+			<option value="get">GET</option>
+			<option value="*">ALL</option>
+		</field>
+        <field name="cors" type="textarea" default="*" columns="5"
+            label="COM_API_CONFIG_CORS_LBL" description="COM_API_CONFIG_CORS_DESC" />
+        <field name="allow_headers" type="textarea" default="Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods, X-Authorization, X-Compatibility-Mode, Content-Type, Accept" columns="5"
+            label="COM_API_CONFIG_ALLOW_HEADER_LBL" description="COM_API_CONFIG_ALLOW_HEADER_DESC" />
+	</fieldset>
+
+	<fieldset name="permissions" description="JCONFIG_PERMISSIONS_DESC"
+		label="JCONFIG_PERMISSIONS_LABEL">
+
+		<field name="rules" type="rules" component="com_api" class="inputbox"
+			filter="rules" validate="rules" label="JCONFIG_PERMISSIONS_LABEL"
+			section="component" />
 	</fieldset>
 </config>
