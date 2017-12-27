@@ -33,6 +33,7 @@ class ApiHelper
 	 */
 	public static function addSubmenu($vName = '')
 	{
+		$submenus = array();
 		$submenus[] = array('title' => JText::_('COM_API_TITLE_KEYS'), 'link' => 'index.php?option=com_api&view=keys', 'view' => $vName == 'keys');
 		$submenus[] = array('title' => JText::_('COM_API_TITLE_LOGS'), 'link' => 'index.php?option=com_api&view=logs', 'view' => $vName == 'logs');
 

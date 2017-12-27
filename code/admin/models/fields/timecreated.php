@@ -46,6 +46,6 @@ class JFormFieldTimecreated extends JFormField
             $pretty_date = $jdate->format(JText::_('DATE_FORMAT_LC2'));
             $html[] = "<div>" . $pretty_date . "</div>";
         }
-        return implode($html);
+        return implode(" ", $html);
     }
 }

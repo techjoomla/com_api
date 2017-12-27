@@ -47,6 +47,6 @@ class JFormFieldCreatedby extends JFormField
 		}
 		$html[] = "<div>".$user->name." (".$user->username.")</div>";
         
-		return implode($html);
+		return implode(" ", $html);
 	}
 }
