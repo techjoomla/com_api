@@ -57,8 +57,6 @@ class APIXMLResponse
 	 *
 	 * @return mixed
 	 *
-	 * @return  string
-	 *
 	 * @since 1.0
 	 */
 	public function __toString()
@@ -73,7 +71,7 @@ class APIXMLResponse
 	/**
 	 * Method description
 	 *
-	 * @param   STRING  $element  element
+	 * @param   MIXED   $element  element
 	 * @param   STRING  &$xml     xml
 	 *
 	 * @return  mixed
