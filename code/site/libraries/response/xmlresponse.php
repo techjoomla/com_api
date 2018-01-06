@@ -15,17 +15,17 @@
  */
 class APIXMLResponse
 {
-	public var $err_msg = '';
+	public $err_msg = '';
 
-	public var $err_code = '';
+	public $err_code = '';
 
-	public var $response_id = '';
+	public $response_id = '';
 
-	public var $api = '';
+	public $api = '';
 
-	public var $version = '';
+	public $version = '';
 
-	public var $data = null;
+	public $data = null;
 
 	/**
 	 * Constructor for APIXMLResponse
