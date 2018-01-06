@@ -1,40 +1,53 @@
 <?php
 /**
- * @package com_api
- * @copyright Copyright (C) 2009 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API) 
+ * @package    Com_Api
+ * @copyright  Copyright (C) 2009 - 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
+ * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
+ * @link       http://techjoomla.com
+ * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
-*/
+ */
 
+/**
+ * Class APIXMLResponse to convert the response of API in XML
+ * 
+ * @since  1.0
+ */
 class APIXMLResponse
 {
-	var $err_msg = '';
+	public var $err_msg = '';
 
-	var $err_code = '';
+	public var $err_code = '';
 
-	var $response_id = '';
+	public var $response_id = '';
 
-	var $api = '';
+	public var $api = '';
 
-	var $version = '';
+	public var $version = '';
 
-	var $data = null;
+	public var $data = null;
 
+	/**
+	 * Constructor for APIXMLResponse
+	 *
+	 * @param   OBJECT  $response  The response object
+	 *
+	 * @since 1.0
+	 */
 	public function __construct($response)
 	{
 		$app = JFactory::getApplication();
 		$this->data = new \stdClass;
 
-		if ($response instanceof Exception) {
+		if ($response instanceof Exception)
+		{
 			$this->err_msg = $response->getMessage();
 			$this->err_code = $response->getCode();
 		}
 		else
 		{
 			$this->api = "{$response->component}.{$response->resource}";
-			$this->response_id = $response->response_id;			
+			$this->response_id = $response->response_id;
 			$this->data = $response->get('response');
 		}
 	}
@@ -98,6 +111,12 @@ class APIXMLResponse
 	 */
 	protected function _handleMultiDimensions($key, $value, &$xml)
 	{
+		// Dealing with <0/>..<n/> issues
+		if (is_numeric($key))
+		{
+			$key = 'node' . $key;
+		}
+
 		if (is_array($value) || is_object($value))
 		{
 			$node = $xml->addChild($key);
