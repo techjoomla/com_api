@@ -160,7 +160,7 @@ class Com_ApiInstallerScript
 	/**
 	 * Renders the post-installation message
 	 *
-	 * @param   STRING  $status         status
+	 * @param   object  $status         status
 	 * @param   STRING  $straperStatus  straperStatus
 	 * @param   STRING  $parent         parent
 	 * @param   array   $msgBox         msgBox
@@ -566,11 +566,20 @@ class Com_ApiInstallerScript
 
 			if (JFile::exists($target . DS . 'version.txt'))
 			{
-				$rawData = JFile::read($target . DS . 'version.txt');
-				$info = explode("\n", $rawData);
-				$straperVersion['installed'] = array(
-					'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
-				);
+				$rawData = file_get_contents($target . DS . 'version.txt');
+
+				if (is_string($rawData))
+				{
+					$info = explode("\n", $rawData);
+
+					$straperVersion['installed'] = array(
+							'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
+					);
+				}
+				else
+				{
+					return false;
+				}
 			}
 			else
 			{
@@ -579,7 +588,7 @@ class Com_ApiInstallerScript
 				);
 			}
 
-			$rawData = JFile::read($source . DS . 'version.txt');
+			$rawData = file_get_contents($source . DS . 'version.txt');
 			$info = explode("\n", $rawData);
 			$straperVersion['package'] = array(
 				'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
@@ -607,11 +616,20 @@ class Com_ApiInstallerScript
 
 			if (JFile::exists($target . DS . 'version.txt'))
 			{
-				$rawData = JFile::read($target . DS . 'version.txt');
-				$info = explode("\n", $rawData);
-				$straperVersion['installed'] = array(
-					'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
-				);
+				$rawData = file_get_contents($target . DS . 'version.txt');
+
+				if (is_string($rawData))
+				{
+					$info = explode("\n", $rawData);
+					$straperVersion['installed'] = array(
+							'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
+					);
+				}
+				else
+				{
+					return false;
+				}
+
 			}
 			else
 			{
@@ -620,7 +638,7 @@ class Com_ApiInstallerScript
 				);
 			}
 
-			$rawData = JFile::read($source . DS . 'version.txt');
+			$rawData = file_get_contents($source . DS . 'version.txt');
 			$info = explode("\n", $rawData);
 			$straperVersion['package'] = array(
 				'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
