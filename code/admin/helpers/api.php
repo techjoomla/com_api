@@ -37,14 +37,7 @@ class ApiHelper
 
 		foreach ($submenus as $submenu)
 		{
-			if (version_compare(JVERSION, '3.0.0', 'ge'))
-			{
-				JHtmlSidebar::addEntry($submenu['title'], $submenu['link'], $submenu['view']);
-			}
-			else
-			{
-				JSubMenuHelper::addEntry($submenu['title'], $submenu['link'], $submenu['view']);
-			}
+			JHtmlSidebar::addEntry($submenu['title'], $submenu['link'], $submenu['view']);
 		}
 	}
 

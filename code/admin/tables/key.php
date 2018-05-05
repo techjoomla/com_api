@@ -17,6 +17,14 @@ defined('_JEXEC') or die();
 class ApiTablekey extends JTable
 {
 	/**
+	 * Hashed string stored in table
+	 *
+	 * @var    string
+	 * @since  1.0
+	 */
+	public $hash;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JDatabaseDriver  &$db  Database object
@@ -97,7 +105,7 @@ class ApiTablekey extends JTable
 	/**
 	 * This function convert an array of JAccessRule objects into an rules array.
 	 *
-	 * @param   boolean  $jaccessrules  an array of JAccessRule objects.
+	 * @param   array  $jaccessrules  an array of JAccessRule objects.
 	 *
 	 * @return  array
 	 *

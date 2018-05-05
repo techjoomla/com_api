@@ -41,21 +41,6 @@ class Com_ApiInstallerScript
 			'libraries' => array()
 	);
 
-	private $uninstallQueue = array(
-			// Modules => { (folder) => { (module) => { (position), (published) } }* }*
-			'modules' => array(
-				'admin' => array(), 'site' => array()
-			),
-
-			// Plugins => { (folder) => { (element) => (published) }* }*
-			'plugins' => array(
-				'system' => array()
-			),
-
-			// Libraries
-			'libraries' => array()
-	);
-
 	/**
 	 * method to run before an install/update/uninstall method
 	 *
@@ -87,8 +72,10 @@ class Com_ApiInstallerScript
 		// Install subextensions
 		$status = $this->installSubextensions($parent);
 
-		// Show the post-installation page
-		$this->renderPostInstallation($status, $parent, $msgBox);
+		/*
+		 * Show the post-installation page
+		 * $this->renderPostInstallation($status, $parent, $msgBox);
+		 */
 	}
 
 	/**
@@ -134,21 +121,12 @@ class Com_ApiInstallerScript
 	/**
 	 * Renders the post-installation message
 	 *
-	 * @param   STRING  $status         status
-	 * @param   STRING  $straperStatus  straperStatus
-	 * @param   STRING  $parent         parent
-	 * @param   array   $msgBox         msgBox
-	 *
 	 * @return  mixed
 	 *
 	 * @since 1.0
 	 */
-	private function renderPostInstallation($status, $parent, $msgBox = array())
+	private function renderPostInstallation()
 	{
-		$enable = "<span class=\"label label-success\">Enabled</span>";
-		$disable = "<span class=\"label label-important\">Disabled</span>";
-		$updatemsg = "Updated Successfully";
-		$rows = 1;
 	}
 
 	/**

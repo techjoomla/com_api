@@ -91,7 +91,7 @@ class ApiTablelog extends JTable
 	/**
 	 * This function convert an array of JAccessRule objects into an rules array.
 	 *
-	 * @param   boolean  $jaccessrules  an array of JAccessRule objects.
+	 * @param   array  $jaccessrules  an array of JAccessRule objects.
 	 *
 	 * @return  array
 	 *
