@@ -1,13 +1,9 @@
 <?php
 /**
- * @version    SVN: <svn_id>
- * @package    Api
- * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link       http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
- * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
+ * @package    Com.Api
+ *
+ * @copyright  Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
@@ -16,19 +12,35 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
- * View class for a list of log.
+ * View class for list of logs
  *
- * @package     Api
- * @subpackage  com_api
- * @since       1.0
+ * @since  1.0
  */
 class ApiViewLogs extends JViewLegacy
 {
+	/**
+	 * The model state.
+	 *
+	 * @var   JObject
+	 * @since 1.0
+	 */
+	protected $state;
+
+	/**
+	 * The item data.
+	 *
+	 * @var   object
+	 * @since 1.0
+	 */
 	protected $items;
 
+	/**
+	 * The pagination object.
+	 *
+	 * @var   JPagination
+	 * @since 1.0
+	 */
 	protected $pagination;
-
-	protected $state;
 
 	/**
 	 * Display the view
@@ -93,7 +105,7 @@ class ApiViewLogs extends JViewLegacy
 		// Show trash and delete for components that uses the state field
 		if (isset($this->items[0]->state))
 		{
-			if ($state->get('filter.state') == -2 && $canDo->get('core.delete'))
+			if ($state->get('filter.state') == - 2 && $canDo->get('core.delete'))
 			{
 				JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_EMPTY_TRASH');
 				JToolBarHelper::divider();
@@ -129,10 +141,8 @@ class ApiViewLogs extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'u.name' => JText::_('COM_API_LOGS_USER'),
-			'a.hash' => JText::_('COM_API_KEYS_HASH'),
-			'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'),
-			'a.time' => JText::_('COM_API_LOGS_TIME'),
+			'u.name' => JText::_('COM_API_LOGS_USER'), 'a.hash' => JText::_('COM_API_KEYS_HASH'),
+				'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'), 'a.time' => JText::_('COM_API_LOGS_TIME')
 		);
 	}
 }

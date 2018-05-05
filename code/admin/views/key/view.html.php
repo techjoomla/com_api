@@ -1,13 +1,9 @@
 <?php
 /**
- * @version    SVN: <svn_id>
- * @package    Api
- * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link       http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
- * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
+ * @package    Com.Api
+ *
+ * @copyright  Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
@@ -18,16 +14,32 @@ jimport('joomla.application.component.view');
 /**
  * View class key form.
  *
- * @package     Api
- * @subpackage  com_api
- * @since       1.0
+ * @since  1.0
  */
 class ApiViewKey extends JViewLegacy
 {
+	/**
+	 * The model state.
+	 *
+	 * @var   JObject
+	 * @since 1.0
+	 */
 	protected $state;
 
+	/**
+	 * The item data.
+	 *
+	 * @var   object
+	 * @since 1.0
+	 */
 	protected $item;
 
+	/**
+	 * A JForm instance with filter fields.
+	 *
+	 * @var    JForm
+	 * @since  1.0
+	 */
 	protected $form;
 
 	/**
@@ -88,7 +100,7 @@ class ApiViewKey extends JViewLegacy
 
 		if (isset($this->item->checked_out))
 		{
-			$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
+			$checkedOut = ! ($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		}
 		else
 		{
@@ -98,19 +110,19 @@ class ApiViewKey extends JViewLegacy
 		$canDo = ApiHelper::getActions();
 
 		// If not checked out, can save the item.
-		if (!$checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))
+		if (! $checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))
 		{
 			JToolBarHelper::apply('key.apply', 'JTOOLBAR_APPLY');
 			JToolBarHelper::save('key.save', 'JTOOLBAR_SAVE');
 		}
 
-		if (!$checkedOut && ($canDo->get('core.create')))
+		if (! $checkedOut && ($canDo->get('core.create')))
 		{
 			JToolBarHelper::custom('key.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 
 		// If an existing item, can save to a copy.
-		if (!$isNew && $canDo->get('core.create'))
+		if (! $isNew && $canDo->get('core.create'))
 		{
 			JToolBarHelper::custom('key.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 		}

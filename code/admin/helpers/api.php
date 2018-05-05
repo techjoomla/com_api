@@ -1,13 +1,9 @@
 <?php
 /**
- * @version    SVN: <svn_id>
- * @package    Api
- * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link       http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
- * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
+ * @package    Com.Api
+ *
+ * @copyright  Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
@@ -16,9 +12,7 @@ defined('_JEXEC') or die();
 /**
  * Content component helper.
  *
- * @package     Api
- * @subpackage  com_api
- * @since       1.0
+ * @since  1.0
  */
 class ApiHelper
 {
@@ -34,26 +28,22 @@ class ApiHelper
 	public static function addSubmenu($vName = '')
 	{
 		$submenus = array();
-		$submenus[] = array('title' => JText::_('COM_API_TITLE_KEYS'), 'link' => 'index.php?option=com_api&view=keys', 'view' => $vName == 'keys');
-		$submenus[] = array('title' => JText::_('COM_API_TITLE_LOGS'), 'link' => 'index.php?option=com_api&view=logs', 'view' => $vName == 'logs');
+		$submenus[] = array(
+			'title' => JText::_('COM_API_TITLE_KEYS'), 'link' => 'index.php?option=com_api&view=keys', 'view' => $vName == 'keys'
+		);
+		$submenus[] = array(
+			'title' => JText::_('COM_API_TITLE_LOGS'), 'link' => 'index.php?option=com_api&view=logs', 'view' => $vName == 'logs'
+		);
 
 		foreach ($submenus as $submenu)
 		{
 			if (version_compare(JVERSION, '3.0.0', 'ge'))
 			{
-				JHtmlSidebar::addEntry(
-					$submenu['title'],
-					$submenu['link'],
-					$submenu['view']
-				);
+				JHtmlSidebar::addEntry($submenu['title'], $submenu['link'], $submenu['view']);
 			}
 			else
 			{
-				JSubMenuHelper::addEntry(
-					$submenu['title'],
-					$submenu['link'],
-					$submenu['view']
-				);
+				JSubMenuHelper::addEntry($submenu['title'], $submenu['link'], $submenu['view']);
 			}
 		}
 	}
@@ -73,14 +63,7 @@ class ApiHelper
 		$assetName = 'com_api';
 
 		$actions = array(
-			'core.admin',
-			'core.manage',
-			'core.create',
-			'core.edit',
-			'core.edit.own',
-			'core.edit.state',
-			'core.delete',
-			'logs.manage'
+			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete', 'logs.manage'
 		);
 
 		foreach ($actions as $action)

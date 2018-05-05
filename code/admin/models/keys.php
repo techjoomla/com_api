@@ -1,13 +1,9 @@
 <?php
 /**
- * @version    SVN: <svn_id>
- * @package    Api
- * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link       http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
- * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
+ * @package    Com.Api
+ *
+ * @copyright  Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
@@ -18,9 +14,7 @@ jimport('joomla.application.component.modellist');
 /**
  * Methods supporting a list of keys records.
  *
- * @package     Api
- * @subpackage  com_api
- * @since       1.0
+ * @since  1.0
  */
 class ApiModelKeys extends JModelList
 {
@@ -37,15 +31,8 @@ class ApiModelKeys extends JModelList
 		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
-				'id', 'a.id',
-				'userid', 'a.userid',
-				'hash', 'a.hash',
-				'domain', 'a.domain',
-				'ordering', 'a.ordering',
-				'state', 'a.state',
-				'created_by', 'a.created_by',
-				'last_used', 'a.last_used',
-				'per_hour', 'a.per_hour',
+				'id', 'a.id', 'userid', 'a.userid', 'hash', 'a.hash', 'domain', 'a.domain', 'ordering', 'a.ordering', 'state', 'a.state',
+					'created_by', 'a.created_by', 'last_used', 'a.last_used', 'per_hour', 'a.per_hour'
 			);
 		}
 
@@ -120,11 +107,7 @@ class ApiModelKeys extends JModelList
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
-		$query->select(
-			$this->getState(
-				'list.select', 'DISTINCT a.*'
-			)
-		);
+		$query->select($this->getState('list.select', 'DISTINCT a.*'));
 
 		$query->from('`#__api_keys` AS a');
 
@@ -155,7 +138,7 @@ class ApiModelKeys extends JModelList
 		// Filter by search in title
 		$search = $this->getState('filter.search');
 
-		if (!empty($search))
+		if (! empty($search))
 		{
 			if (stripos($search, 'id:') === 0)
 			{
@@ -164,10 +147,7 @@ class ApiModelKeys extends JModelList
 			else
 			{
 				$search = $db->Quote('%' . $db->escape($search, true) . '%');
-				$query->where('( userid.name LIKE ' . $search .
-						' OR  a.domain LIKE ' . $search .
-						' OR  a.hash LIKE ' . $search . ' )'
-				);
+				$query->where('( userid.name LIKE ' . $search . ' OR  a.domain LIKE ' . $search . ' OR  a.hash LIKE ' . $search . ' )');
 			}
 		}
 
@@ -181,19 +161,5 @@ class ApiModelKeys extends JModelList
 		}
 
 		return $query;
-	}
-
-	/**
-	 * Method to get a list of keys.
-	 *
-	 * @return  mixed  An array of data items on success, false on failure.
-	 *
-	 * @since   1.6.1
-	 */
-	public function getItems()
-	{
-		$items = parent::getItems();
-
-		return $items;
 	}
 }
