@@ -1,26 +1,10 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  Com_api
+ * @package     Com.Api
  *
- * @copyright   Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license     GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link        http://techjoomla.com
- * 
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * @copyright   Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die();
 
 jimport('joomla.filesystem.folder');
@@ -37,28 +21,12 @@ if (! defined('DS'))
  *
  * @since  1.0
  */
-
 class Com_ApiInstallerScript
 {
 	// Used to identify new install or update
 	private $componentStatus = "install";
 
-	private $installation_queue = array(
-			// Modules => { (folder) => { (module) => { (position), (published) } }* }*
-			'modules' => array(
-				'admin' => array(), 'site' => array()
-			),
-
-			// Plugins => { (folder) => { (element) => (published) }* }*
-			'plugins' => array(
-				'system' => array()
-			),
-
-			// Libraries
-			'libraries' => array()
-	);
-
-	private $uninstall_queue = array(
+	private $installationQueue = array(
 			// Modules => { (folder) => { (module) => { (position), (published) } }* }*
 			'modules' => array(
 				'admin' => array(), 'site' => array()
@@ -102,19 +70,12 @@ class Com_ApiInstallerScript
 		$msgBox = array();
 
 		// Install subextensions
-		$status = $this->_installSubextensions($parent);
+		$status = $this->installSubextensions($parent);
 
-		// Install Techjoomla Straper
-		$straperStatus = $this->_installStraper($parent);
-
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			$document = JFactory::getDocument();
-			$document->addStyleSheet(JUri::root() . '/media/techjoomla_strapper/css/bootstrap.min.css');
-		}
-
-		// Show the post-installation page
-		$this->_renderPostInstallation($status, $straperStatus, $parent, $msgBox);
+		/*
+		 * Show the post-installation page
+		 * $this->renderPostInstallation($status, $parent, $msgBox);
+		 */
 	}
 
 	/**
@@ -160,143 +121,24 @@ class Com_ApiInstallerScript
 	/**
 	 * Renders the post-installation message
 	 *
-	 * @param   STRING  $status         status
-	 * @param   STRING  $straperStatus  straperStatus
-	 * @param   STRING  $parent         parent
-	 * @param   array   $msgBox         msgBox
-	 *
 	 * @return  mixed
 	 *
 	 * @since 1.0
 	 */
-	private function _renderPostInstallation($status, $straperStatus, $parent, $msgBox = array())
+	private function renderPostInstallation()
 	{
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			$document = JFactory::getDocument();
-			$document->addStyleSheet(JUri::root() . '/media/techjoomla_strapper/css/bootstrap.min.css');
-		}
-
-		$enable = "<span class=\"label label-success\">Enabled</span>";
-		$disable = "<span class=\"label label-important\">Disabled</span>";
-		$updatemsg = "Updated Successfully";
-		?>
-		<?php $rows = 1;?>
-		<div class="techjoomla-bootstrap">
-			<table class="table-condensed table">
-				<thead>
-					<tr class="row1">
-						<th class="title" colspan="2">Extension</th>
-						<th width="30%">Status</th>
-					</tr>
-				</thead>
-
-				<tfoot>
-					<tr>
-						<td colspan="3"></td>
-					</tr>
-				</tfoot>
-
-				<tbody>
-					<tr class="row2">
-						<td class="key" colspan="2"><strong>TJFields component</strong></td>
-						<td><strong style="color: green">Installed</strong></td>
-					</tr>
-					<tr class="row2">
-						<td class="key" colspan="2"><strong>TechJoomla Strapper <?php echo $straperStatus['version']?></strong> [<?php echo $straperStatus['date'] ?>]
-								</td>
-						<td><strong> <span style="color: <?php echo $straperStatus['required'] ? ($straperStatus['installed']?'green':'red') : '#660' ?>; font-weight: bold;">
-											<?php echo $straperStatus['required'] ? ($straperStatus['installed'] ?'Installed':'Not Installed') : 'Already up-to-date'; ?>
-										</span>
-						</strong></td>
-					</tr>
-
-							<?php if (count($status->modules)) : ?>
-								<tr class="row1">
-						<th>Module</th>
-						<th>Client</th>
-						<th></th>
-					</tr>
-
-								<?php foreach ($status->modules as $module) : ?>
-									<tr class="row2 <?php //echo ($rows++ % 2); ?>">
-						<td class="key"><?php echo ucfirst($module['name']); ?></td>
-						<td class="key"><?php echo ucfirst($module['client']); ?></td>
-						<td><strong style="color: <?php echo ($module['result'])? "green" : "red"?>"><?php echo ($this->componentStatus=="install") ?(($module['result'])?'Installed':'Not installed'):$updatemsg; ?></strong>
-
-										<?php
-						if ($this->componentStatus == "install")
-						{
-							if (! empty($module['result'])) // if installed then only show msg
-							{
-								echo $mstat = ($module['status'] ? $enable : $disable);
-							}
-						}
-						?>
-										</td>
-					</tr>
-								<?php endforeach;?>
-							<?php endif;?>
-
-							<!-- pLUGIN DETAILS -->
-							<?php if (count($status->plugins)) : ?>
-								<tr class="row1">
-						<th colspan="2">Plugin</th>
-						<!--<th>Group</th>-->
-						<th></th>
-					</tr>
-
-								<?php
-					$oldplugingroup = "";
-					foreach ($status->plugins as $plugin)
-					:
-						if ($oldplugingroup != $plugin['group'])
-						{
-							$oldplugingroup = $plugin['group'];
-							?>
-										<tr class="row0">
-						<th colspan="2"><strong><?php echo ucfirst($oldplugingroup)." Plugins";?></strong></th>
-						<th></th>
-						<!--<td></td>-->
-					</tr>
-										<?php
-						}
-						?>
-									<tr class="row2 <?php //echo ($rows++ % 2); ?>">
-						<td colspan="2" class="key"><?php echo ucfirst($plugin['name']); ?></td>
-						<!--<td class="key"><?php //echo ucfirst($plugin['group']); ?></td> -->
-						<td><strong style="color: <?php echo ($plugin['result'])? "green" : "red"?>"><?php echo ($this->componentStatus=="install") ?(($plugin['result'])?'Installed':'Not installed'):$updatemsg; ?></strong>
-
-											<?php
-						if ($this->componentStatus == "install")
-						{
-							if (! empty($plugin['result']))
-							{
-								echo $pstat = ($plugin['status'] ? "<span class=\"label label-success\">Enabled</span>" : "<span class=\"label label-important\">Disabled</span>");
-							}
-						}
-						?>
-										</td>
-					</tr>
-								<?php endforeach; ?>
-							<?php endif;?>
-						</tbody>
-			</table>
-		</div>
-		<!-- end akeeba bootstrap -->
-		<?php
 	}
 
 	/**
 	 * Installs subextensions (modules, plugins) bundled with the main extension
 	 *
 	 * @param   JInstaller  $parent  parent
-	 * 
+	 *
 	 * @return JObject  The subextension installation status
 	 *
 	 * @since 1.0
 	 */
-	private function _installSubextensions($parent)
+	private function installSubextensions($parent)
 	{
 		$src = $parent->getParent()->getPath('source');
 
@@ -308,9 +150,9 @@ class Com_ApiInstallerScript
 
 		// Modules installation
 
-		if (count($this->installation_queue['modules']))
+		if (count($this->installationQueue['modules']))
 		{
-			foreach ($this->installation_queue['modules'] as $folder => $modules)
+			foreach ($this->installationQueue['modules'] as $folder => $modules)
 			{
 				if (count($modules))
 				{
@@ -435,9 +277,9 @@ class Com_ApiInstallerScript
 		}
 
 		// Plugins installation
-		if (count($this->installation_queue['plugins']))
+		if (count($this->installationQueue['plugins']))
 		{
-			foreach ($this->installation_queue['plugins'] as $folder => $plugins)
+			foreach ($this->installationQueue['plugins'] as $folder => $plugins)
 			{
 				if (count($plugins))
 				{
@@ -465,11 +307,13 @@ class Com_ApiInstallerScript
 							continue;
 						}
 
-							// Was the plugin already installed?
+						// Was the plugin already installed?
 						$query = $db->getQuery(true)
 							->select('COUNT(*)')
 							->from($db->qn('#__extensions'))
-							->where('( ' . ($db->qn('name') . ' = ' . $db->q($plugin)) . ' OR ' . ($db->qn('element') . ' = ' . $db->q($plugin)) . ' )')
+							->where('( ' . ($db->qn('name') . ' = ' . $db->q($plugin)) . ' OR ' .
+								($db->qn('element') . ' = ' . $db->q($plugin)) . ' )'
+							)
 							->where($db->qn('folder') . ' = ' . $db->q($folder));
 						$db->setQuery($query);
 						$count = $db->loadResult();
@@ -486,7 +330,9 @@ class Com_ApiInstallerScript
 							$query = $db->getQuery(true)
 								->update($db->qn('#__extensions'))
 								->set($db->qn('enabled') . ' = ' . $db->q('1'))
-								->where('( ' . ($db->qn('name') . ' = ' . $db->q($plugin)) . ' OR ' . ($db->qn('element') . ' = ' . $db->q($plugin)) . ' )')
+								->where('( ' . ($db->qn('name') . ' = ' . $db->q($plugin)) . ' OR ' .
+									($db->qn('element') . ' = ' . $db->q($plugin)) . ' )'
+								)
 								->where($db->qn('folder') . ' = ' . $db->q($folder));
 							$db->setQuery($query);
 							$db->query();
@@ -497,9 +343,9 @@ class Com_ApiInstallerScript
 		}
 
 		// Library installation
-		if (count($this->installation_queue['libraries']))
+		if (count($this->installationQueue['libraries']))
 		{
-			foreach ($this->installation_queue['libraries'] as $folder => $status1)
+			foreach ($this->installationQueue['libraries'] as $folder => $status1)
 			{
 				$path = "$src/libraries/$folder";
 
@@ -532,110 +378,5 @@ class Com_ApiInstallerScript
 		}
 
 		return $status;
-	}
-
-	/**
-	 * Method description
-	 *
-	 * @param   STRING  $parent  parent
-	 *
-	 * @return  mixed
-	 *
-	 * @since 1.0
-	 */
-	private function _installStraper($parent)
-	{
-		$src = $parent->getParent()->getPath('source');
-
-		// Install the FOF framework
-		jimport('joomla.filesystem.folder');
-		jimport('joomla.filesystem.file');
-		jimport('joomla.utilities.date');
-		$source = $src . DS . 'tj_strapper';
-		$target = JPATH_ROOT . DS . 'media' . DS . 'techjoomla_strapper';
-
-		$haveToInstallStraper = false;
-
-		if (! JFolder::exists($target))
-		{
-			$haveToInstallStraper = true;
-		}
-		else
-		{
-			$straperVersion = array();
-
-			if (JFile::exists($target . DS . 'version.txt'))
-			{
-				$rawData = JFile::read($target . DS . 'version.txt');
-				$info = explode("\n", $rawData);
-				$straperVersion['installed'] = array(
-					'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
-				);
-			}
-			else
-			{
-				$straperVersion['installed'] = array(
-					'version' => '0.0', 'date' => new JDate('2011-01-01')
-				);
-			}
-
-			$rawData = JFile::read($source . DS . 'version.txt');
-			$info = explode("\n", $rawData);
-			$straperVersion['package'] = array(
-				'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
-			);
-
-			$haveToInstallStraper = $straperVersion['package']['date']->toUNIX() > $straperVersion['installed']['date']->toUNIX();
-		}
-
-		$installedStraper = false;
-
-		if ($haveToInstallStraper)
-		{
-			$versionSource = 'package';
-			$installer = new JInstaller;
-			$installedStraper = $installer->install($source);
-		}
-		else
-		{
-			$versionSource = 'installed';
-		}
-
-		if (! isset($straperVersion))
-		{
-			$straperVersion = array();
-
-			if (JFile::exists($target . DS . 'version.txt'))
-			{
-				$rawData = JFile::read($target . DS . 'version.txt');
-				$info = explode("\n", $rawData);
-				$straperVersion['installed'] = array(
-					'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
-				);
-			}
-			else
-			{
-				$straperVersion['installed'] = array(
-					'version' => '0.0', 'date' => new JDate('2011-01-01')
-				);
-			}
-
-			$rawData = JFile::read($source . DS . 'version.txt');
-			$info = explode("\n", $rawData);
-			$straperVersion['package'] = array(
-				'version' => trim($info[0]), 'date' => new JDate(trim($info[1]))
-			);
-			$versionSource = 'installed';
-		}
-
-		if (! ($straperVersion[$versionSource]['date'] instanceof JDate))
-		{
-			$straperVersion[$versionSource]['date'] = new JDate;
-		}
-
-		return array(
-			'required' => $haveToInstallStraper, 'installed' => $installedStraper, 'version' => $straperVersion[$versionSource]['version'],
-				'date' => $straperVersion[$versionSource]['date']->format('Y-m-d')
-		);
 	}
 }
