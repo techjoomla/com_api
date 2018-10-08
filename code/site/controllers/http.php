@@ -1,14 +1,11 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  Com_api
+ * @package    Com.Api
  *
- * @copyright   Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license     GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link        http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
- * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
+ * @copyright  Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
@@ -21,6 +18,12 @@ jimport('joomla.plugin.helper');
  */
 class ApiControllerHttp extends ApiController
 {
+	/**
+	 * Used to find callback in the url
+	 *
+	 * @var    string
+	 * @since  1.0
+	 */
 	public $callbackname = 'callback';
 
 	/**
@@ -29,7 +32,7 @@ class ApiControllerHttp extends ApiController
 	 * @param   boolean  $cachable   If true, the view output will be cached
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
-	 * @return  Mixed
+	 * @return  void
 	 *
 	 * @since   12.2
 	 */
@@ -79,9 +82,9 @@ class ApiControllerHttp extends ApiController
 		try
 		{
 			JResponse::setHeader('status', 200);
-			$resource_response = ApiPlugin::getInstance($name)->fetchResource();
+			$resourceResponse = ApiPlugin::getInstance($name)->fetchResource();
 
-			echo $this->respond($resource_response);
+			echo $this->respond($resourceResponse);
 		}
 		catch (Exception $e)
 		{
@@ -95,7 +98,7 @@ class ApiControllerHttp extends ApiController
 	 *
 	 * @param   OBJECT  $response  exception
 	 *
-	 * @return  json
+	 * @return  void
 	 *
 	 * @since 2.0
 	 */
@@ -140,11 +143,11 @@ class ApiControllerHttp extends ApiController
 			break;
 		}
 
-		$output_overrride = JPATH_ROOT . '/templates/' . $app->getTemplate() . '/' . $format . '/api.php';
+		$outputOverrride = JPATH_ROOT . '/templates/' . $app->getTemplate() . '/' . $format . '/api.php';
 
-		if (file_exists($output_overrride))
+		if (file_exists($outputOverrride))
 		{
-			require_once $output_overrride;
+			require_once $outputOverrride;
 		}
 		else
 		{
