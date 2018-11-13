@@ -1,9 +1,10 @@
 <?php
 /**
- * @package     Com.Api
+ * @package    Com.Api
  *
- * @copyright   Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die();
 
@@ -19,11 +20,15 @@ if (! defined('DS'))
 /**
  * API Installation class
  *
- * @since  1.0
+ * @since  1.0.0
  */
 class Com_ApiInstallerScript
 {
-	// Used to identify new install or update
+	/**
+	 * Used to identify new install or update
+	 *
+	 * @var    string
+	 */
 	private $componentStatus = "install";
 
 	private $installationQueue = array(
@@ -42,6 +47,27 @@ class Com_ApiInstallerScript
 	);
 
 	/**
+	 * Obsolete files and folders to remove.
+	 *
+	 * @var   array
+	 */
+	protected $deprecatedFiles = array(
+			'files'   => array(
+					'administrator/components/com_api/models/fields/custom_field',
+					'administrator/components/com_api/models/fields/foreignkey.php',
+					'administrator/components/com_api/models/fields/timecreated.php',
+					'administrator/components/com_api/models/fields/timeupdated.php',
+					'components/com_api/controllers/keys.php',
+					'components/com_api/libraries/authentication1.php',
+					'components/com_api/models/key.php',
+					'components/com_api/models/keys.php',
+			),
+			'folders' => array(
+					'components/com_api/views/keys/',
+			)
+	);
+
+	/**
 	 * method to run before an install/update/uninstall method
 	 *
 	 * @param   STRING  $type    type
@@ -49,7 +75,7 @@ class Com_ApiInstallerScript
 	 *
 	 * @return  mixed
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function preflight($type, $parent)
 	{
@@ -63,19 +89,14 @@ class Com_ApiInstallerScript
 	 *
 	 * @return  mixed
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function postflight($type, $parent)
 	{
-		$msgBox = array();
-
 		// Install subextensions
-		$status = $this->installSubextensions($parent);
+		$this->installSubextensions($parent);
 
-		/*
-		 * Show the post-installation page
-		 * $this->renderPostInstallation($status, $parent, $msgBox);
-		 */
+		$this->removeFilesAndFolders($this->deprecatedFiles);
 	}
 
 	/**
@@ -85,7 +106,7 @@ class Com_ApiInstallerScript
 	 *
 	 * @return  mixed
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function install($parent)
 	{
@@ -98,7 +119,7 @@ class Com_ApiInstallerScript
 	 *
 	 * @return  mixed
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function uninstall($parent)
 	{
@@ -111,7 +132,7 @@ class Com_ApiInstallerScript
 	 *
 	 * @return  mixed
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function update($parent)
 	{
@@ -123,7 +144,7 @@ class Com_ApiInstallerScript
 	 *
 	 * @return  mixed
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private function renderPostInstallation()
 	{
@@ -136,7 +157,7 @@ class Com_ApiInstallerScript
 	 *
 	 * @return JObject  The subextension installation status
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private function installSubextensions($parent)
 	{
@@ -378,5 +399,47 @@ class Com_ApiInstallerScript
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Removes obsolete files and folders
+	 *
+	 * @param   array  $removeList  The files and directories to remove
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	protected function removeFilesAndFolders($removeList)
+	{
+		if (!empty($removeList['files']) && count($removeList['files']))
+		{
+			foreach ($removeList['files'] as $file)
+			{
+				$file = JPATH_ROOT . '/' . $file;
+
+				if (!JFile::exists($file))
+				{
+					continue;
+				}
+
+				JFile::delete($file);
+			}
+		}
+
+		if (!empty($removeList['folders']) && count($removeList['folders']))
+		{
+			foreach ($removeList['folders'] as $folder)
+			{
+				$folder = JPATH_ROOT . '/' . $folder;
+
+				if (!JFolder::exists($folder))
+				{
+					continue;
+				}
+
+				JFolder::delete($folder);
+			}
+		}
 	}
 }
