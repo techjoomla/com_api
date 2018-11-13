@@ -427,7 +427,7 @@ class Com_ApiInstallerScript
 			}
 		}
 
-		if (isset($removeList['folders']) && !empty($removeList['folders']))
+		if (!empty($removeList['folders']))
 		{
 			foreach ($removeList['folders'] as $folder)
 			{
