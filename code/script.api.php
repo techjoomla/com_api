@@ -412,7 +412,7 @@ class Com_ApiInstallerScript
 	 */
 	protected function removeFilesAndFolders($removeList)
 	{
-		if (isset($removeList['files']) && !empty($removeList['files']))
+		if (!empty($removeList['files']) && count($removeList['files']))
 		{
 			foreach ($removeList['files'] as $file)
 			{
@@ -427,7 +427,7 @@ class Com_ApiInstallerScript
 			}
 		}
 
-		if (!empty($removeList['folders']))
+		if (!empty($removeList['folders']) && count($removeList['folders']))
 		{
 			foreach ($removeList['folders'] as $folder)
 			{
