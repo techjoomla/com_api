@@ -21,10 +21,10 @@
 			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
 		</sql>
 	</uninstall>
-	<update> 
-		<schemas> 
-			<schemapath type="mysql">sql/updates/mysql</schemapath> 
-		</schemas> 
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
 	</update>
 	<files folder="site">
 		<filename>index.html</filename>
@@ -38,6 +38,7 @@
 		<folder>assets</folder>
 		<folder>libraries</folder>
 		<folder>language</folder>
+		<folder>vendors</folder>
 	</files>
 	<languages folder="site">
 		<language tag="en-GB">language/en-GB/en-GB.com_api.ini</language>
