@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.1" type="plugin" group="system" method="upgrade">
+	<name>plg_system_tjtokenlogin</name>
+	<description>PLG_SYSTEM_TJTOKENLOGIN_XML_DESCRIPTION</description>
+	<author>Techjomla</author>
+	<authorEmail>contact@techjoomla.com</authorEmail>
+	<authorUrl>https://techjoomla.com</authorUrl>
+	<creationDate>9th Jan 2019</creationDate>
+	<copyright>Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<version>1.0.0</version>
+
+	<files>
+		<filename plugin="tjtokenlogin">tjtokenlogin.php</filename>
+	</files>
+
+	<languages folder="languages">
+		<language tag="en-GB">en-GB/en-GB.plg_system_tjtokenlogin.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_system_tjtokenlogin.sys.ini</language>
+	</languages>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+			</fieldset>
+		</fields>
+	</config>
+
+</extension>
