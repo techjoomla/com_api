@@ -26,7 +26,7 @@ class PlgAuthenticationTjapi extends JPlugin
 	 */
 	public function verifyApiKey($userId, $key)
 	{
-		// 1. Important to include category table first
+		// Load table
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
 		$table = JTable::getInstance('Key', 'ApiTable');
 		$table->load(array('userid' => $userId));
