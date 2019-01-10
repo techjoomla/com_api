@@ -209,7 +209,8 @@ if (! empty($this->extra_sidebar))
 								</td>
 							<?php endif; ?>
 							<td>
-								<a href="<?php echo 'index.php?option=com_api&task=key.edit&id='.(int) $item->id; ?>"><?php echo $item->userid; ?></a>
+								<a href="<?php echo 'index.php?option=com_api&task=key.edit&id='.(int) $item->id; ?>"><?php echo $item->name; ?></a>
+								<div class="small"><?php echo JText::_('COM_API_USER_ID') . ': ' . $item->userid; ?></div>
 							</td>
 							<td>
 								<?php if (isset($item->checked_out) && $item->checked_out) : ?>
