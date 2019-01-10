@@ -1,12 +1,15 @@
 <?php
 /**
- * @package    Com.Api
+ * @package     API
+ * @subpackage  com_api
  *
- * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      Techjoomla <extensions@techjoomla.com>
+ * @copyright   Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
-defined('_JEXEC') or die();
+
+// No direct access.
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
@@ -31,19 +34,22 @@ class Com_ApiInstallerScript
 	 */
 	private $componentStatus = "install";
 
-	private $installationQueue = array(
-			// Modules => { (folder) => { (module) => { (position), (published) } }* }*
-			'modules' => array(
-				'admin' => array(), 'site' => array()
-			),
+	private $installationQueue = array (
+		// Modules => { (folder) => { (module) => { (position), (published) } } }
+		'modules' => array(
+			'admin' => array(), 'site' => array()
+		),
 
-			// Plugins => { (folder) => { (element) => (published) }* }*
-			'plugins' => array(
-				'system' => array()
-			),
+		// Plugins => { (folder) => { (element) => (published) } }
+		'plugins' => array(
+			'system' => array (
+				'tjtokenlogin'   => 0,
+				'authentication' => 0
+			)
+		),
 
-			// Libraries
-			'libraries' => array()
+		// Libraries
+		'libraries' => array()
 	);
 
 	/**
@@ -52,19 +58,19 @@ class Com_ApiInstallerScript
 	 * @var   array
 	 */
 	protected $deprecatedFiles = array(
-			'files'   => array(
-					'administrator/components/com_api/models/fields/custom_field',
-					'administrator/components/com_api/models/fields/foreignkey.php',
-					'administrator/components/com_api/models/fields/timecreated.php',
-					'administrator/components/com_api/models/fields/timeupdated.php',
-					'components/com_api/controllers/keys.php',
-					'components/com_api/libraries/authentication1.php',
-					'components/com_api/models/key.php',
-					'components/com_api/models/keys.php',
-			),
-			'folders' => array(
-					'components/com_api/views/keys/',
-			)
+		'files' => array(
+			'administrator/components/com_api/models/fields/custom_field',
+			'administrator/components/com_api/models/fields/foreignkey.php',
+			'administrator/components/com_api/models/fields/timecreated.php',
+			'administrator/components/com_api/models/fields/timeupdated.php',
+			'components/com_api/controllers/keys.php',
+			'components/com_api/libraries/authentication1.php',
+			'components/com_api/models/key.php',
+			'components/com_api/models/keys.php',
+		),
+		'folders' => array(
+			'components/com_api/views/keys/',
+		)
 	);
 
 	/**
