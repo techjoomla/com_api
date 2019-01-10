@@ -52,8 +52,8 @@ class PlgAuthenticationTjapi extends JPlugin
 	 */
 	public function onUserAuthenticate(&$credentials, $options, &$response)
 	{
-		$uid = $credentials['id'];
-		$key = $credentials['key'];
+		$uid = isset($credentials['id']) ? $credentials['id'] : '';
+		$key = isset($credentials['key']) ? $credentials['key'] : '';
 
 		$response->type = 'Tjapi';
 
@@ -90,6 +90,6 @@ class PlgAuthenticationTjapi extends JPlugin
 			}
 		}
 
-		return true;
+		return;
 	}
 }
