@@ -151,6 +151,12 @@ class ApiModelKeys extends JModelList
 			}
 		}
 
+		// Needed for login api, which try to get keys for userid trying to log in
+		if ($this->getState('user_id'))
+		{
+			$query->where('userid = ' . $db->quote($this->getState('user_id')));
+		}
+
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
 		$orderDirn = $this->state->get('list.direction');
