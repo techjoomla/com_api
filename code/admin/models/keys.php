@@ -116,7 +116,7 @@ class ApiModelKeys extends JModelList
 		$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
 
 		// Join over the user field 'userid'
-		$query->select('userid.name AS userid');
+		$query->select('userid.name AS name');
 		$query->join('LEFT', '#__users AS userid ON userid.id = a.userid');
 
 		// Join over the user field 'created_by'
