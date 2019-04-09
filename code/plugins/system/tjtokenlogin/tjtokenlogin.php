@@ -9,7 +9,16 @@
 
 defined('_JEXEC') or die('Unauthorized Access');
 
-require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/JWT.php';
+jimport('joomla.filesystem.file');
+
+$jwtFilePath = JPATH_SITE . '/components/com_api/vendors/php-jwt/src/JWT.php';
+
+if (!JFile::exists($jwtFilePath))
+{
+	return;
+}
+
+require_once $jwtFilePath;
 require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/BeforeValidException.php';
 require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/ExpiredException.php';
 require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/SignatureInvalidException.php';
