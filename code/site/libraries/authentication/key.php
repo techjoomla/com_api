@@ -62,7 +62,7 @@ class ApiAuthenticationKey extends ApiAuthentication
 						$searchFor      = 'username';
 						$searchForValue = $matches[1];
 					}
-					elseif (is_integer((int) $userToImpersonate))
+					elseif (is_numeric($userToImpersonate))
 					{
 						$userId = $userToImpersonate;
 					}
