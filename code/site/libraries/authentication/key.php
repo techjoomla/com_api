@@ -49,7 +49,8 @@ class ApiAuthenticationKey extends ApiAuthentication
 				// If other is to be impersonated
 				if ($userToImpersonate)
 				{
-					$searchFor = '';
+					$searchFor      = '';
+					$searchForValue = '';
 
 					if (preg_match('/email:(\S+)/', $userToImpersonate, $matches))
 					{
