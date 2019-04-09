@@ -116,7 +116,7 @@ class ApiModelKeys extends JModelList
 		$query->join("LEFT", "#__users AS uc ON uc.id=a.checked_out");
 
 		// Join over the user field 'userid'
-		$query->select('userid.name AS userid');
+		$query->select('userid.name AS name');
 		$query->join('LEFT', '#__users AS userid ON userid.id = a.userid');
 
 		// Join over the user field 'created_by'
@@ -149,6 +149,12 @@ class ApiModelKeys extends JModelList
 				$search = $db->Quote('%' . $db->escape($search, true) . '%');
 				$query->where('( userid.name LIKE ' . $search . ' OR  a.domain LIKE ' . $search . ' OR  a.hash LIKE ' . $search . ' )');
 			}
+		}
+
+		// Needed for login api, which try to get keys for userid trying to log in
+		if ($this->getState('user_id'))
+		{
+			$query->where('userid = ' . $db->quote($this->getState('user_id')));
 		}
 
 		// Add the list ordering clause.
