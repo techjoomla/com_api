@@ -273,4 +273,23 @@ abstract class ApiAuthentication extends JObject
 
 		return $headers;
 	}
+
+	/**
+	 * Find if the user is trying imporsonate other user
+	 *
+	 * @return  int|string|null  User id or Email id or null
+	 */
+	public static function getUserToImpersonate()
+	{
+		if (isset($_SERVER['X-Impersonate']) && $_SERVER['X-Impersonate'])
+		{
+			return $_SERVER['X-Impersonate'];
+		}
+		elseif (isset($_SERVER['HTTP_X_IMPERSONATE']) && $_SERVER['HTTP_X_IMPERSONATE'])
+		{
+			return $_SERVER['HTTP_X_IMPERSONATE'];
+		}
+
+		return null;
+	}
 }
