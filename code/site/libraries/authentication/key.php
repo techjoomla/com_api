@@ -18,14 +18,14 @@ jimport('joomla.application.component.model');
  */
 class ApiAuthenticationKey extends ApiAuthentication
 {
-	protected	$auth_method		= null;
+	protected $auth_method     = null;
 
-	protected	$domain_checking	= null;
+	protected $domain_checking = null;
 
 	/**
 	 * Authenticate the user using the key in the header or request
 	 *
-	 * @return  string  User id of the user or false
+	 * @return  int|boolean  User id of the user or false
 	 */
 	public function authenticate()
 	{
