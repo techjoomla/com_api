@@ -277,19 +277,114 @@ abstract class ApiAuthentication extends JObject
 	/**
 	 * Find if the user is trying imporsonate other user
 	 *
-	 * @return  int|string|null  User id or Email id or null
+	 * @return  int|string|NULL  User id or Email id or null
+	 *
+	 * @since   __DEPLOY_VERSION__
 	 */
-	public static function getUserToImpersonate()
+	public static function getImpersonateHeader()
 	{
-		if (isset($_SERVER['X-Impersonate']) && $_SERVER['X-Impersonate'])
+		$jinput           = JFactory::getApplication()->input;
+		$xImpersonate     = $jinput->server->get('X-Impersonate', '', 'STRING');
+		$httpXImpersonate = $jinput->server->get('HTTP_X_IMPERSONATE', '', 'STRING');
+
+		if (!empty($xImpersonate))
 		{
-			return $_SERVER['X-Impersonate'];
+			return $xImpersonate;
 		}
-		elseif (isset($_SERVER['HTTP_X_IMPERSONATE']) && $_SERVER['HTTP_X_IMPERSONATE'])
+		elseif (!empty($httpXImpersonate))
 		{
-			return $_SERVER['HTTP_X_IMPERSONATE'];
+			return $httpXImpersonate;
+		}
+	}
+
+	/**
+	 * Find if the user is trying imporsonate other user
+	 *
+	 * @param   int  $tokenUserId  The userid for which token hash is validated
+	 *
+	 * @return  int|boolean  User id or Email id or null
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public static function getUserIdToImpersonate($tokenUserId)
+	{
+		// Get user for this key
+		$user         = JFactory::getUser($tokenUserId);
+		$isSuperAdmin = $user->authorise('core.admin');
+
+		// If this user is not super admin user, return false
+		if (!$isSuperAdmin)
+		{
+			return false;
 		}
 
-		return null;
+		// User is superadmin, lets find out if he/she is trying to imporsonate other user
+		$userToImpersonate = self::getImpersonateHeader();
+
+		// If other is to be impersonated
+		if ($userToImpersonate)
+		{
+			$searchFor      = '';
+			$searchForValue = '';
+
+			if (preg_match('/email:(\S+)/', $userToImpersonate, $matches))
+			{
+				$searchFor      = 'email';
+				$searchForValue = $matches[1];
+			}
+			elseif (preg_match('/username:(\S+)/', $userToImpersonate, $matches))
+			{
+				$searchFor      = 'username';
+				$searchForValue = $matches[1];
+			}
+			elseif (is_numeric($userToImpersonate))
+			{
+				$userId = $userToImpersonate;
+			}
+			else
+			{
+				ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
+
+				return false;
+			}
+
+			// If username or emailid exists ?
+			if ($searchFor)
+			{
+				$db = JFactory::getDbo();
+				$query = $db->getQuery(true)
+					->select($db->quoteName('id'))
+					->from($db->quoteName('#__users'))
+					->where($db->quoteName($searchFor) . ' = ' . $db->quote($searchForValue));
+				$db->setQuery($query);
+
+				if ($id = $db->loadResult())
+				{
+					return $id;
+				}
+				else
+				{
+					ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
+
+					return false;
+				}
+			}
+			// If userid exists ?
+			elseif ($userId)
+			{
+				$table = JUser::getTable();
+
+				if ($table->load($userId))
+				{
+					return $userId;
+				}
+				else
+				{
+					ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
+
+					return false;
+				}
+			}
+		}
 	}
 }

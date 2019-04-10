@@ -37,80 +37,11 @@ class ApiAuthenticationKey extends ApiAuthentication
 
 		if (isset($token->state) && $token->state == 1)
 		{
-			// Get user for this key
-			$user         = JFactory::getUser($token->userid);
-			$isSuperAdmin = $user->authorise('core.admin');
+			$userId = parent::getUserIdToImpersonate($token->userid);
 
-			// If this user is super admin user
-			if ($isSuperAdmin)
+			if ($userId)
 			{
-				$userToImpersonate = self::getUserToImpersonate();
-
-				// If other is to be impersonated
-				if ($userToImpersonate)
-				{
-					$searchFor      = '';
-					$searchForValue = '';
-
-					if (preg_match('/email:(\S+)/', $userToImpersonate, $matches))
-					{
-						$searchFor      = 'email';
-						$searchForValue = $matches[1];
-					}
-					elseif (preg_match('/username:(\S+)/', $userToImpersonate, $matches))
-					{
-						$searchFor      = 'username';
-						$searchForValue = $matches[1];
-					}
-					elseif (is_numeric($userToImpersonate))
-					{
-						$userId = $userToImpersonate;
-					}
-					else
-					{
-						ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
-
-						return false;
-					}
-
-					// If username or emailid exists ?
-					if ($searchFor)
-					{
-						$db = JFactory::getDbo();
-						$query = $db->getQuery(true)
-							->select($db->quoteName('id'))
-							->from($db->quoteName('#__users'))
-							->where($db->quoteName($searchFor) . ' = ' . $db->quote($searchForValue));
-						$db->setQuery($query);
-
-						if ($id = $db->loadResult())
-						{
-							return $id;
-						}
-						else
-						{
-							ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
-
-							return false;
-						}
-					}
-					// If userid exists ?
-					elseif ($userId)
-					{
-						$table = JUser::getTable();
-
-						if ($table->load($userId))
-						{
-							return $userId;
-						}
-						else
-						{
-							ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
-
-							return false;
-						}
-					}
-				}
+				return $userId;
 			}
 
 			return $token->userid;
