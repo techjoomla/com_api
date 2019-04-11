@@ -275,7 +275,7 @@ abstract class ApiAuthentication extends JObject
 	}
 
 	/**
-	 * Find if the user is trying imporsonate other user
+	 * Find if the user is trying impersonate other user
 	 *
 	 * @return  int|string|NULL  User id or Email id or null
 	 *
@@ -298,7 +298,7 @@ abstract class ApiAuthentication extends JObject
 	}
 
 	/**
-	 * Find if the user is trying imporsonate other user
+	 * Find if the user is trying impersonate other user
 	 *
 	 * @param   int  $tokenUserId  The userid for which token hash is validated
 	 *
@@ -308,7 +308,16 @@ abstract class ApiAuthentication extends JObject
 	 */
 	public static function getUserIdToImpersonate($tokenUserId)
 	{
-		// Get user for this key
+		// Lets find out if user trying to impersonate other user
+		$userToImpersonate = self::getImpersonateHeader();
+
+		// If other is to be impersonated
+		if (!$userToImpersonate)
+		{
+			return false;
+		}
+
+		// Get user from tokenUserId
 		$user         = JFactory::getUser($tokenUserId);
 		$isSuperAdmin = $user->authorise('core.admin');
 
@@ -318,72 +327,65 @@ abstract class ApiAuthentication extends JObject
 			return false;
 		}
 
-		// User is superadmin, lets find out if he/she is trying to imporsonate other user
-		$userToImpersonate = self::getImpersonateHeader();
+		$searchFor      = '';
+		$searchForValue = '';
 
-		// If other is to be impersonated
-		if ($userToImpersonate)
+		if (preg_match('/email:(\S+)/', $userToImpersonate, $matches))
 		{
-			$searchFor      = '';
-			$searchForValue = '';
+			$searchFor      = 'email';
+			$searchForValue = $matches[1];
+		}
+		elseif (preg_match('/username:(\S+)/', $userToImpersonate, $matches))
+		{
+			$searchFor      = 'username';
+			$searchForValue = $matches[1];
+		}
+		elseif (is_numeric($userToImpersonate))
+		{
+			$userId = $userToImpersonate;
+		}
+		else
+		{
+			ApiError::raiseError("400", JText::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
 
-			if (preg_match('/email:(\S+)/', $userToImpersonate, $matches))
+			return false;
+		}
+
+		// If username or emailid exists ?
+		if ($searchFor)
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select($db->quoteName('id'))
+				->from($db->quoteName('#__users'))
+				->where($db->quoteName($searchFor) . ' = ' . $db->quote($searchForValue));
+			$db->setQuery($query);
+
+			if ($id = $db->loadResult())
 			{
-				$searchFor      = 'email';
-				$searchForValue = $matches[1];
-			}
-			elseif (preg_match('/username:(\S+)/', $userToImpersonate, $matches))
-			{
-				$searchFor      = 'username';
-				$searchForValue = $matches[1];
-			}
-			elseif (is_numeric($userToImpersonate))
-			{
-				$userId = $userToImpersonate;
+				return $id;
 			}
 			else
 			{
-				ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
+				ApiError::raiseError("400", JText::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
 
 				return false;
 			}
+		}
+		// If userid exists ?
+		elseif ($userId)
+		{
+			$table = JUser::getTable();
 
-			// If username or emailid exists ?
-			if ($searchFor)
+			if ($table->load($userId))
 			{
-				$db = JFactory::getDbo();
-				$query = $db->getQuery(true)
-					->select($db->quoteName('id'))
-					->from($db->quoteName('#__users'))
-					->where($db->quoteName($searchFor) . ' = ' . $db->quote($searchForValue));
-				$db->setQuery($query);
-
-				if ($id = $db->loadResult())
-				{
-					return $id;
-				}
-				else
-				{
-					ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
-
-					return false;
-				}
+				return $userId;
 			}
-			// If userid exists ?
-			elseif ($userId)
+			else
 			{
-				$table = JUser::getTable();
+				ApiError::raiseError("400", JText::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
 
-				if ($table->load($userId))
-				{
-					return $userId;
-				}
-				else
-				{
-					ApiError::raiseError("400", JText::_('COM_API_USER_NOT_FOUND'), 'APIValidationException');
-
-					return false;
-				}
+				return false;
 			}
 		}
 	}
