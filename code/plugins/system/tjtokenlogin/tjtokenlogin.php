@@ -11,17 +11,19 @@ defined('_JEXEC') or die('Unauthorized Access');
 
 jimport('joomla.filesystem.file');
 
-$jwtFilePath = JPATH_SITE . '/components/com_api/vendors/php-jwt/src/JWT.php';
+$jwtBasePath = JPATH_SITE . '/components/com_api/vendors/php-jwt/src';
+$jwtFilePath = $jwtBasePath . '/JWT.php';
 
 if (!JFile::exists($jwtFilePath))
 {
 	return;
 }
 
-require_once $jwtFilePath;
-require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/BeforeValidException.php';
-require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/ExpiredException.php';
-require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/SignatureInvalidException.php';
+JLoader::import('JWT', $jwtBasePath);
+JLoader::import('DomainException', $jwtBasePath);
+JLoader::import('InvalidArgumentException', $jwtBasePath);
+JLoader::import('UnexpectedValueException', $jwtBasePath);
+JLoader::import('DateTime', $jwtBasePath);
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\DomainException;
