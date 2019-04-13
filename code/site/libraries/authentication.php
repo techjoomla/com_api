@@ -324,7 +324,7 @@ abstract class ApiAuthentication extends JObject
 		// If this user is not super admin user, return false
 		if (!$isSuperAdmin)
 		{
-			return false;
+			ApiError::raiseError(403, "Not authorised to use Impersonation", 'APIUnauthorisedException');
 		}
 
 		$searchFor      = '';
