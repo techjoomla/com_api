@@ -49,12 +49,12 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 
 		if (empty($providerName))
 		{
-			ApiError::raiseError(400, JText::_('PLG_API_USERS_JFBCONNECT_MISSING_PROVIDER'));
+			ApiError::raiseError(400, JText::_('COM_API_JFBCONNECT_MISSING_PROVIDER'));
 		}
 
 		if (empty($accessToken))
 		{
-			ApiError::raiseError(400, JText::_('PLG_API_USERS_JFBCONNECT_MISSING_ACCESS_TOKEN'));
+			ApiError::raiseError(400, JText::_('COM_API_JFBCONNECT_MISSING_ACCESS_TOKEN'));
 		}
 
 		// Get provider object
@@ -106,7 +106,7 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 			return true;
 		}
 
-		ApiError::raiseError(500, JText::_('PLG_API_USERS_JFBCONNECT_NOT_INSTALLED'));
+		ApiError::raiseError(500, JText::_('PLG_API_JFBCONNECT_NOT_INSTALLED'));
 
 		return false;
 	}
