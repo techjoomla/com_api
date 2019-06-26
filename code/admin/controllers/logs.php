@@ -29,7 +29,7 @@ class ApiControllerLogs extends JControllerAdmin
 	 *
 	 * @since   3.0
 	 */
-	public function getModel($name = '', $prefix = 'ApiModel', $config = array())
+	public function getModel($name = 'log', $prefix = 'ApiModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
