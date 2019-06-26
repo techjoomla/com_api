@@ -24,6 +24,7 @@ JLoader::register('ApiException', $library_path . '/exception.php');
 JLoader::register('APICache', $library_path . '/cache.php');
 JLoader::register('APIResource', $library_path . '/resource.php');
 JLoader::register('APIAuthentication', $library_path . '/authentication.php');
+JLoader::register('APIAuthenticationJfbconnect', $library_path . '/authentication/jfbconnect.php');
 JLoader::register('APIAuthenticationKey', $library_path . '/authentication/key.php');
 JLoader::register('APIAuthenticationLogin', $library_path . '/authentication/login.php');
 JLoader::register('APIAuthenticationSession', $library_path . '/authentication/session.php');
