@@ -2,13 +2,13 @@
 <extension version="3.1" type="plugin" group="authentication" method="upgrade">
 	<name>plg_authentication_tjapi</name>
 	<description>PLG_AUTHENTICATION_TJAPI_XML_DESCRIPTION</description>
-	<author>Techjomla</author>
-	<authorEmail>contact@techjoomla.com</authorEmail>
+	<author>Techjoomla</author>
+	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<creationDate>9th Jan 2019</creationDate>
+	<creationDate>2nd Jul 2019</creationDate>
 	<copyright>Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>1.0.0</version>
+	<version>2.5.0</version>
 
 	<files>
 		<filename plugin="tjapi">tjapi.php</filename>
