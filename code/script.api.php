@@ -414,7 +414,7 @@ class Com_ApiInstallerScript
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   2.4.0
 	 */
 	protected function removeFilesAndFolders($removeList)
 	{

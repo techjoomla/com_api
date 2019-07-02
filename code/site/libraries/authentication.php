@@ -279,7 +279,7 @@ abstract class ApiAuthentication extends JObject
 	 *
 	 * @return  int|string|NULL  User id or Email id or null
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   2.4.0
 	 */
 	public static function getImpersonateHeader()
 	{
@@ -304,7 +304,7 @@ abstract class ApiAuthentication extends JObject
 	 *
 	 * @return  int|boolean  User id or Email id or null
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   2.4.0
 	 */
 	public static function getUserIdToImpersonate($tokenUserId)
 	{
