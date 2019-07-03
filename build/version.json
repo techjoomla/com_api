@@ -1,0 +1,18 @@
+{
+    "com_api": {
+        "2.5.0": {
+            "com_api": {
+                "version": "2.5.0",
+                "repoUrl": "git@github.com:techjoomla/com_api.git",
+                "branch":  "release-2.5.0"
+            }
+        },
+        "2.4.0": {
+            "com_api": {
+                "version": "2.4.0",
+                "repoUrl": "git@github.com:techjoomla/com_api.git",
+                "branch":  "master"
+            }
+        }
+    }
+}
