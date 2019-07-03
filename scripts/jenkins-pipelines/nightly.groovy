@@ -65,12 +65,12 @@ pipeline {
             steps {
                 script {
                     // Copy com_api from com_api repo into builds folder
-                    sh("cp    code/api.xml        builds/")
-                    sh("cp    code/script.api.php builds/")
+                    sh("cp    com_api/code/api.xml        builds/")
+                    sh("cp    com_api/code/script.api.php builds/")
 
-                    sh("cp -r code/admin   builds/")
-                    sh("cp -r code/site    builds/")
-                    sh("cp -r code/plugins builds/")
+                    sh("cp -r com_api/code/admin   builds/")
+                    sh("cp -r com_api/code/site    builds/")
+                    sh("cp -r com_api/code/plugins builds/")
                 }
             }
         }
