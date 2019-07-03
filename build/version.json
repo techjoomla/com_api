@@ -3,14 +3,14 @@
         "2.5.0": {
             "com_api": {
                 "version": "2.5.0",
-                "repoUrl": "git@git.tekdi.net:techjoomla/com_api.git",
+                "repoUrl": "git@github.com:techjoomla:techjoomla/com_api.git",
                 "branch":  "release-2.5.0"
             }
         },
         "2.4.0": {
             "com_api": {
                 "version": "2.4.0",
-                "repoUrl": "git@git.tekdi.net:techjoomla/com_api.git",
+                "repoUrl": "git@github.com:techjoomla:techjoomla/com_api.git",
                 "branch":  "master"
             }
         }
