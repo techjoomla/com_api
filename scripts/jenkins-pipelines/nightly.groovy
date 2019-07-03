@@ -15,13 +15,13 @@ pipeline {
                     // Files
                     sh("rm -f .gitignore")
 
-                    // Folders - EB job scm files
+                    // Folders - API job scm files
                     sh("rm -rf .git/ .gitlab/ build/ code/ docs/ scripts/")
 
                     // Folders - Remaining files
-                    sh("rm -rf builds/                     builds@tmp/")
-                    sh("rm -rf com_api/                   com_api@tmp/")
-                    sh("rm -rf com_api-scm/                com_api-scm@tmp/")
+                    sh("rm -rf builds/      builds@tmp/")
+                    sh("rm -rf com_api/     com_api@tmp/")
+                    sh("rm -rf com_api-scm/ com_api-scm@tmp/")
 
                     // Make directories needed to generate build
                     // mkdir -p is for creatingparents directories as needed
@@ -148,6 +148,7 @@ pipeline {
                     sh("rm -rf com_api-scm/ com_api-scm@tmp/")
                     sh("rm -rf scripts/     scripts@tmp/")
                     sh("rm -rf docs/        docs@tmp/")
+                }
             }
         }
     }
