@@ -284,6 +284,11 @@ class ApiPlugin extends JPlugin
 
 		$access = $this->getResourceAccess($resource_name, $this->request_method);
 
+		if ($access == 'session' && JSession::checkToken() === false)
+		{
+			ApiError::raiseError(403, JText::_('COM_API_INVALID_SESSION'), 'APIUnauthorisedException');
+		}
+
 		if ($access == 'protected' && $user === false)
 		{
 			ApiError::raiseError(403, APIAuthentication::getAuthError(), 'APIUnauthorisedException');
