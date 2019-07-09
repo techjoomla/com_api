@@ -277,21 +277,31 @@ class ApiPlugin extends JPlugin
 			$this->checkInternally($resource_name);
 		}
 
+		$sessionUser = JFactory::getUser();
 		$user = APIAuthentication::authenticateRequest();
 		$this->set('user', $user);
-		$session = JFactory::getSession();
-		$session->set('user', $user);
 
 		$access = $this->getResourceAccess($resource_name, $this->request_method);
 
-		if ($access == 'session' && JSession::checkToken() === false)
+		if ($access == 'session')
 		{
-			ApiError::raiseError(403, JText::_('COM_API_INVALID_SESSION'), 'APIUnauthorisedException');
+			if ($sessionUser->guest && JSession::checkToken() === false)
+			{
+				ApiError::raiseError(403, JText::_('COM_API_INVALID_SESSION'), 'APIUnauthorisedException');
+			}
 		}
 
-		if ($access == 'protected' && $user === false)
+		if ($access == 'protected')
 		{
-			ApiError::raiseError(403, APIAuthentication::getAuthError(), 'APIUnauthorisedException');
+			if($user === false && $sessionUser->guest)
+			{
+				ApiError::raiseError(403, APIAuthentication::getAuthError(), 'APIUnauthorisedException');
+			}
+			elseif ($user !== false && $sessionUser->guest)
+			{
+				$session = JFactory::getSession();
+				$session->set('user', $user);
+			}
 		}
 
 		if (! $this->checkRequestLimit())
