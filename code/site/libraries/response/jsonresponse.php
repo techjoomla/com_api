@@ -12,7 +12,7 @@ class APIJSONResponse
 {
 	var $err_msg = '';
 
-	var $err_code = '';
+	var $err_code = null;
 
 	var $response_id = '';
 
