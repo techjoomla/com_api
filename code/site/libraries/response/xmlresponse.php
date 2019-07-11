@@ -17,7 +17,7 @@ class APIXMLResponse
 {
 	public $err_msg = '';
 
-	public $err_code = '';
+	public $err_code = null;
 
 	public $response_id = '';
 
