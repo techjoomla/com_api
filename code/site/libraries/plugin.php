@@ -277,7 +277,9 @@ class ApiPlugin extends JPlugin
 			$this->checkInternally($resource_name);
 		}
 
+		$app = JFactory::getApplication();
 		$sessionUser = JFactory::getUser();
+		$token = JSession::getFormToken();
 		$user = APIAuthentication::authenticateRequest();
 		$this->set('user', $user);
 
@@ -285,7 +287,7 @@ class ApiPlugin extends JPlugin
 
 		if ($access == 'session')
 		{
-			if ($sessionUser->guest && JSession::checkToken() === false)
+			if ($sessionUser->guest && $token !== $app->input->server->get('HTTP_X_CSRF_TOKEN', '', 'alnum'))
 			{
 				ApiError::raiseError(403, JText::_('COM_API_INVALID_SESSION'), 'APIUnauthorisedException');
 			}
