@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_api</name>
-	<creationDate>2nd Jul 2019</creationDate>
+	<creationDate>22nd Oct 2019</creationDate>
 	<copyright>Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Techjoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<version>2.5.0</version>
+	<version>2.5.1</version>
 	<description>Multi-purpose REST API framework for Joomla</description>
 	<install>
 		<!-- Runs on install -->
