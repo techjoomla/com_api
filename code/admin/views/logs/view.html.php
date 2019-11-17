@@ -99,7 +99,7 @@ class ApiViewLogs extends JViewLegacy
 		if ($canDo->get('core.edit.state'))
 		{
 			// If this component does not use state then show a direct delete button as we can not trash
-			JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_DELETE');
+			JToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'logs.delete', 'JTOOLBAR_DELETE');
 		}
 
 		// Show trash and delete for components that uses the state field
