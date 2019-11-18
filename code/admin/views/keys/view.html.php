@@ -131,7 +131,7 @@ class ApiViewKeys extends JViewLegacy
 		{
 			if ($canDo->get('core.delete'))
 			{
-				JToolBarHelper::deleteList('', 'keys.delete', 'JTOOLBAR_DELETE');
+				JToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'keys.delete', 'JTOOLBAR_DELETE');
 				JToolBarHelper::divider();
 			}
 		}
