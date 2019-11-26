@@ -136,6 +136,8 @@ class ApiTablelog extends JTable
 			$this->post_data = JArrayHelper::toString($this->post_data, '=', '&');
 		}
 
+		$this->request_method = JFactory::getApplication()->input->getMethod();
+
 		return parent::store($updateNulls = false);
 	}
 
