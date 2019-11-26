@@ -49,6 +49,7 @@ class ApiTablelog extends JTable
 		if ($array['id'] == 0)
 		{
 			$array['created_by'] = JFactory::getUser()->id;
+			$array['request_method'] = $input->getMethod();
 		}
 
 		if (isset($array['params']) && is_array($array['params']))
