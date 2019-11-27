@@ -17,6 +17,14 @@ defined('_JEXEC') or die();
 class ApiTablelog extends JTable
 {
 	/**
+	 * Request method
+	 *
+	 * @var    string
+	 * @since  2.5.2
+	 */
+	public $request_method;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JDatabaseDriver  &$db  Database object
