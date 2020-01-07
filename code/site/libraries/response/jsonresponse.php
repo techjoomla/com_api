@@ -52,9 +52,12 @@ class APIJSONResponse
 			$this->response_id = $response->response_id;
 			$this->data = $response->get('response');
 
-			if (!empty($custom_attributes = $response->get('custom_attributes')))
+			if (!empty($customAttributes = $response->get('customAttributes')->toArray()))
 			{
-				foreach ($custom_attributes as $customKey => $customValue)
+				// Unset the already set class variables from the custom attributes
+				$diffAttr = array_diff_key($customAttributes, (array) $this);
+
+				foreach ($diffAttr as $customKey => $customValue)
 				{
 					$this->$customKey = $customValue;
 				}

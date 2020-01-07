@@ -54,6 +54,8 @@ class ApiPlugin extends JPlugin
 
 	public $response_id = '';
 
+	public $customAttributes = null;
+
 	/**
 	 * create instance
 	 *
@@ -145,6 +147,8 @@ class ApiPlugin extends JPlugin
 		}
 
 		$handler->set('request_method', $app->input->server->get('REQUEST_METHOD', '', 'STRING'));
+
+		$handler->set('customAttributes', new Registry);
 
 		self::$instances[$name] = $handler;
 
@@ -512,29 +516,6 @@ class ApiPlugin extends JPlugin
 		}
 
 		$this->set('response', $result);
-	}
-
-	/**
-	 * Sets the custom attribute passed as a key to the value
-	 *
-	 * @param   STRING  $key    Custom attribute
-	 *
-	 * @param   STRING  $value  Value of the custom attribute
-	 *
-	 * @return  void
-	 *
-	 * @since   __DEPLOY_VERSION__
-	 */
-	public function setCustomAttribute($key, $value)
-	{
-		static $customAttr = array();
-
-		if (!empty($key))
-		{
-			$customAttr[$key] = $value;
-		}
-
-		$this->set('custom_attributes', $customAttr);
 	}
 
 	/**
