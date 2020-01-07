@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    Com_Api
- * @copyright  Copyright (C) 2009 - 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2009 - 2020 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
  * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
  * @link       http://techjoomla.com
  * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
@@ -52,7 +52,7 @@ class APIXMLResponse
 
 			if (!empty($customAttributes = $response->get('customAttributes')->toArray()))
 			{
-				$diffAttr = array_diff_key($customAttributes, (array) $this);
+				$diffAttr = array_diff_key($customAttributes, get_object_vars($this));
 
 				foreach ($diffAttr as $customKey => $customValue)
 				{
