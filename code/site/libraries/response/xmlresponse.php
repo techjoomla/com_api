@@ -10,7 +10,7 @@
 
 /**
  * Class APIXMLResponse to convert the response of API in XML
- * 
+ *
  * @since  1.0
  */
 class APIXMLResponse
@@ -49,6 +49,14 @@ class APIXMLResponse
 			$this->api = "{$response->component}.{$response->resource}";
 			$this->response_id = $response->response_id;
 			$this->data = $response->get('response');
+
+			if (!empty($custom_attributes = $response->get('custom_attributes')))
+			{
+				foreach ($custom_attributes as $customKey => $customValue)
+				{
+					$this->$customKey = $customValue;
+				}
+			}
 		}
 	}
 

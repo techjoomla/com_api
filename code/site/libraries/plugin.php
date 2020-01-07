@@ -515,6 +515,29 @@ class ApiPlugin extends JPlugin
 	}
 
 	/**
+	 * Sets the custom attribute passed as a key to the value
+	 *
+	 * @param   STRING  $key    Custom attribute
+	 *
+	 * @param   STRING  $value  Value of the custom attribute
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function setCustomAttribute($key, $value)
+	{
+		static $customAttr = array();
+
+		if (!empty($key))
+		{
+			$customAttr[$key] = $value;
+		}
+
+		$this->set('custom_attributes', $customAttr);
+	}
+
+	/**
 	 * Determines the method with which to encode the output based on the requested content type
 	 *
 	 * @return STRING
