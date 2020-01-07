@@ -54,6 +54,8 @@ class ApiPlugin extends JPlugin
 
 	public $response_id = '';
 
+	public $customAttributes = null;
+
 	/**
 	 * create instance
 	 *
@@ -145,6 +147,8 @@ class ApiPlugin extends JPlugin
 		}
 
 		$handler->set('request_method', $app->input->server->get('REQUEST_METHOD', '', 'STRING'));
+
+		$handler->set('customAttributes', new Registry);
 
 		self::$instances[$name] = $handler;
 
