@@ -16,6 +16,8 @@ jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.helper');
 
+use Joomla\Registry\Registry;
+
 /**
  * API_plugin base class
  * API resource class
