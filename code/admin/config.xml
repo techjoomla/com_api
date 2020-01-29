@@ -16,7 +16,7 @@
 	</fieldset>
 
 	<fieldset label="CORS" name="CORS">
-		<field name="allow_cors" type="radio" default="0"
+		<field name="allow_cors" type="radio" default="*"
 			label="COM_API_CONFIG_ALLOW_CORS_LBL" description="COM_API_CONFIG_ALLOW_CORS_DESC"
 			class="btn-group">
 			<option value="0">No</option>
@@ -25,7 +25,7 @@
 		</field>
         <field name="cors" type="textarea" default="*" columns="5"
             label="COM_API_CONFIG_CORS_LBL" description="COM_API_CONFIG_CORS_DESC" />
-        <field name="allow_headers" type="textarea" default="Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods, X-Authorization, X-Compatibility-Mode, Content-Type, Accept" columns="5"
+        <field name="allow_headers" type="textarea" default="Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods, X-Authorization, X-Compatibility-Mode, Content-Type, Accept, X-Auth" columns="5"
             label="COM_API_CONFIG_ALLOW_HEADER_LBL" description="COM_API_CONFIG_ALLOW_HEADER_DESC" />
 	</fieldset>
 
