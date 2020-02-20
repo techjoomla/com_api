@@ -16,6 +16,8 @@ jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.helper');
 
+use Joomla\Registry\Registry;
+
 /**
  * API_plugin base class
  * API resource class
@@ -53,6 +55,8 @@ class ApiPlugin extends JPlugin
 	public $err_message = 'JGLOBAL_AUTH_EMPTY_PASS_NOT_ALLOWED';
 
 	public $response_id = '';
+
+	public $customAttributes = null;
 
 	/**
 	 * create instance
@@ -145,6 +149,8 @@ class ApiPlugin extends JPlugin
 		}
 
 		$handler->set('request_method', $app->input->server->get('REQUEST_METHOD', '', 'STRING'));
+
+		$handler->set('customAttributes', new Registry);
 
 		self::$instances[$name] = $handler;
 

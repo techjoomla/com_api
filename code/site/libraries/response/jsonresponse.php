@@ -1,43 +1,67 @@
 <?php
 /**
- * @package com_api
- * @copyright Copyright (C) 2009 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API) 
+ * @package    Com_Api
+ * @copyright  Copyright (C) 2009 - 2020 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
+ * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
+ * @link       http://techjoomla.com
+ * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
-*/
+ */
 
+/**
+ * Class APIJSONResponse to convert the response of API in json
+ *
+ * @since  1.0
+ */
 class APIJSONResponse
 {
-	var $err_msg = '';
+	public $err_msg = '';
 
-	var $err_code = '';
+	public $err_code = '';
 
-	var $response_id = '';
+	public $response_id = '';
 
-	var $api = '';
+	public $api = '';
 
-	var $version = '';
+	public $version = '';
 
-	var $data = null;
+	public $data = null;
 
 	protected $callbackname = 'callback';
 
+	/**
+	 * Constructor for APIXMLResponse
+	 *
+	 * @param   OBJECT  $response  The response object
+	 *
+	 * @since 1.0
+	 */
 	public function __construct($response)
 	{
 		$app = JFactory::getApplication();
 		$this->data = new \stdClass;
 
-		if ($response instanceof Exception) {
+		if ($response instanceof Exception)
+		{
 			$this->err_msg = $response->getMessage();
 			$this->err_code = $response->getCode();
 		}
 		else
 		{
 			$this->api = "{$response->component}.{$response->resource}";
-			$this->response_id = $response->response_id;			
+			$this->response_id = $response->response_id;
 			$this->data = $response->get('response');
+
+			if (!empty($customAttributes = $response->get('customAttributes')->toArray()))
+			{
+				// Unset the already set class variables from the custom attributes
+				$diffAttr = array_diff_key($customAttributes, get_object_vars($this));
+
+				foreach ($diffAttr as $customKey => $customValue)
+				{
+					$this->$customKey = $customValue;
+				}
+			}
 		}
 	}
 
