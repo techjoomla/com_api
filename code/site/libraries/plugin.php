@@ -452,8 +452,7 @@ class ApiPlugin extends JPlugin
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
 		$table->request = $req_url;
-
-		// $table->post_data = $app->input->post->getArray(array());
+		$table->request_method = $this->request_method;
 		$table->post_data = $post_data;
 		$table->store();
 		$this->response_id = $table->id;

@@ -57,7 +57,6 @@ class ApiTablelog extends JTable
 		if ($array['id'] == 0)
 		{
 			$array['created_by'] = JFactory::getUser()->id;
-			$array['request_method'] = $input->getMethod();
 		}
 
 		if (isset($array['params']) && is_array($array['params']))
@@ -143,8 +142,6 @@ class ApiTablelog extends JTable
 		{
 			$this->post_data = JArrayHelper::toString($this->post_data, '=', '&');
 		}
-
-		$this->request_method = JFactory::getApplication()->input->getMethod();
 
 		return parent::store($updateNulls = false);
 	}
