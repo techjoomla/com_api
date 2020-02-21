@@ -195,7 +195,9 @@ if (! empty($this->extra_sidebar))
 								<a href="index.php?option=com_api&view=logs&filter_search=ip:<?php echo $item->ip_address; ?>"><?php echo $item->ip_address; ?></a>
 							</td>
 							<td><?php echo $item->time; ?></td>
-							<td><?php echo $item->request_method; ?></td>
+							<td>
+								<a href="index.php?option=com_api&view=logs&filter_search=request_method:<?php echo $item->request_method; ?>"><?php echo $item->request_method; ?></a>
+							</td>
 							<td><div class="request_container"><?php echo implode('&#8203;&', explode('&', $item->request)); ?></div></td>
 							<td><?php echo $item->post_data; ?></td>
 						</tr>
