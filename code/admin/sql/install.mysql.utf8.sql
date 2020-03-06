@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `#__api_keys` (
   `created_by` int(11) NOT NULL,
   `last_used` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `per_hour` int(10) NOT NULL,
-  PRIMARY KEY (`id`)  
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 
@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS `#__api_logs` (
   `hash` varchar(255) NOT NULL,
   `ip_address` varchar(20) NOT NULL,
   `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `request_method` varchar(20) NOT NULL DEFAULT '',
   `request` varchar(255) NOT NULL,
   `post_data` text NOT NULL,
-  PRIMARY KEY (`id`)  
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;

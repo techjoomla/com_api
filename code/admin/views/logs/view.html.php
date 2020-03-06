@@ -141,8 +141,11 @@ class ApiViewLogs extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'u.name' => JText::_('COM_API_LOGS_USER'), 'a.hash' => JText::_('COM_API_KEYS_HASH'),
-				'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'), 'a.time' => JText::_('COM_API_LOGS_TIME')
+			'u.name' => JText::_('COM_API_LOGS_USER'),
+			'a.hash' => JText::_('COM_API_KEYS_HASH'),
+			'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'),
+			'a.time' => JText::_('COM_API_LOGS_TIME'),
+			'a.request_method' => JText::_('COM_API_LOGS_REQUEST_METHOD')
 		);
 	}
 }
