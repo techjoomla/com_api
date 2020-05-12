@@ -182,13 +182,14 @@ abstract class ApiAuthentication extends JObject
 	private static function getAuthMethod()
 	{
 		$app = JFactory::getApplication();
-		$key = $app->input->get('key');
+
+		// $key = $app->input->get('key');
 
 		if (isset($_SERVER['HTTP_X_AUTH']) && $_SERVER['HTTP_X_AUTH'])
 		{
 			$authMethod = $_SERVER['HTTP_X_AUTH'];
 		}
-		elseif ($key || self::getBearerToken())
+		elseif (self::getBearerToken())
 		{
 			$authMethod = 'key';
 		}

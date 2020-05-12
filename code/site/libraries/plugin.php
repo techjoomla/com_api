@@ -349,7 +349,10 @@ class ApiPlugin extends JPlugin
 			return true;
 		}
 
-		$hash = $app->input->get('key', '', 'STRING');
+		// $hash = $app->input->get('key', '', 'STRING');
+
+		$hash = APIAuthentication::getBearerToken();
+
 		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 
 		$time = $this->params->get('request_limit_time', 'hour');
@@ -442,7 +445,10 @@ class ApiPlugin extends JPlugin
 
 		$table = JTable::getInstance('Log', 'ApiTable');
 		$date = JFactory::getDate();
-		$table->hash = $app->input->get('key', '', 'STRING');
+
+		// $table->hash = $app->input->get('key', '', 'STRING');
+
+		$table->hash = APIAuthentication::getBearerToken();
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
 		$table->request = $req_url;
@@ -465,7 +471,10 @@ class ApiPlugin extends JPlugin
 		$app = JFactory::getApplication();
 		$table = JTable::getInstance('Key', 'ApiTable');
 
-		$hash = $app->input->get('key', '', 'STRING');
+		// $hash = $app->input->get('key', '', 'STRING');
+
+		$hash = APIAuthentication::getBearerToken();
+
 		$table->setLastUsed($hash);
 	}
 

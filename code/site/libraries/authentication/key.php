@@ -30,10 +30,14 @@ class ApiAuthenticationKey extends ApiAuthentication
 	public function authenticate()
 	{
 		$app          = JFactory::getApplication();
-		$query_token  = $app->input->get('key', '', 'STRING');
+
+		// $query_token  = $app->input->get('key', '', 'STRING');
+
 		$header_token = $this->getBearerToken();
-		$key          = $header_token ? $header_token : $query_token;
-		$token        = $this->loadTokenByHash($key);
+
+		// $key = $header_token ? $header_token : $query_token;
+
+		$token  = $this->loadTokenByHash($header_token);
 
 		if (isset($token->state) && $token->state == 1)
 		{
