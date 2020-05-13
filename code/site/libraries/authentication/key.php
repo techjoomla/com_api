@@ -9,7 +9,9 @@
  */
 
 defined('_JEXEC') or die;
-jimport('joomla.application.component.model');
+
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
 
 /**
  * API resource class
@@ -29,29 +31,17 @@ class ApiAuthenticationKey extends ApiAuthentication
 	 */
 	public function authenticate()
 	{
-		$app          = JFactory::getApplication();
-
-		// $query_token  = $app->input->get('key', '', 'STRING');
-
 		$header_token = $this->getBearerToken();
-
-		// $key = $header_token ? $header_token : $query_token;
-
-		$token  = $this->loadTokenByHash($header_token);
+		$token        = $this->loadTokenByHash($header_token);
 
 		if (isset($token->state) && $token->state == 1)
 		{
 			$userId = parent::getUserIdToImpersonate($token->userid);
 
-			if ($userId)
-			{
-				return $userId;
-			}
-
-			return $token->userid;
+			return $userId ? $userId : $token->userid;
 		}
 
-		$this->setError(JText::_('COM_API_KEY_NOT_FOUND'));
+		$this->setError(Text::_('COM_API_KEY_NOT_FOUND'));
 
 		return false;
 	}
@@ -61,11 +51,11 @@ class ApiAuthenticationKey extends ApiAuthentication
 	 *
 	 * @param   STRING  $hash  The token hash
 	 *
-	 * @return  OBJECT
+	 * @return  OBJECT|boolean
 	 */
 	public function loadTokenByHash($hash)
 	{
-		$table = JTable::getInstance('Key', 'ApiTable');
+		$table = Table::getInstance('Key', 'ApiTable');
 		$table->loadByHash($hash);
 
 		return $table;
