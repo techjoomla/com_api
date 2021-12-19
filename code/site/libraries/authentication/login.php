@@ -73,13 +73,8 @@ class ApiAuthenticationLogin extends ApiAuthentication
 
 		// $response = $authenticate->authenticate(array('username' => $user, 'password' => $pass), $options = array());
 		// adding support for two factor authentication
-
-		if ($secret == NULL){
-				$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass), $options = array());
-		}
-		else{
-				$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass, 'secretkey' => $secret), $options = array());
-		}
+		
+		$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass, 'secretkey' => $secret), $options = array());
 
 		if ($response->status === JAuthentication::STATUS_SUCCESS)
 		{
