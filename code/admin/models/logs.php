@@ -30,7 +30,7 @@ class ApiModelLogs extends JModelList
 		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
-				'user', 'u.name', 'hash', 'a.hash', 'ip_address', 'a.ip_address', 'time', 'a.time'
+				'user', 'u.name', 'hash', 'a.hash', 'ip_address', 'a.ip_address', 'time', 'a.time', 'request_method', 'a.request_method'
 			);
 		}
 
@@ -81,7 +81,7 @@ class ApiModelLogs extends JModelList
 	 * ordering requirements.
 	 *
 	 * @param   string  $id  A prefix for the store id.
-	 * 
+	 *
 	 * @return  string  A store id.
 	 *
 	 * @since   1.6
@@ -99,7 +99,7 @@ class ApiModelLogs extends JModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
-	 * 
+	 *
 	 * @since   1.6
 	 */
 	protected function getListQuery()
@@ -127,6 +127,10 @@ class ApiModelLogs extends JModelList
 			elseif (substr($search, 0, 2) == 'ip')
 			{
 				$query->where('a.ip_address = ' . $db->Quote(substr($search, 3)));
+			}
+			elseif (substr($search, 0, 14) == 'request_method')
+			{
+				$query->where('a.request_method = ' . $db->quote(substr($search, 15)));
 			}
 			else
 			{

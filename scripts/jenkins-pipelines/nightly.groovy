@@ -2,7 +2,7 @@
 
 // Get / Set release name
 // TODO - remove hardcoded value
-def  apiVersion = '2.5.0' //env.getProperty("apiVersion")
+def  apiVersion = '2.5.2' //env.getProperty("apiVersion")
 echo apiVersion
 
 pipeline {

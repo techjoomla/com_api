@@ -99,7 +99,7 @@ class ApiViewLogs extends JViewLegacy
 		if ($canDo->get('core.edit.state'))
 		{
 			// If this component does not use state then show a direct delete button as we can not trash
-			JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_DELETE');
+			JToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'logs.delete', 'JTOOLBAR_DELETE');
 		}
 
 		// Show trash and delete for components that uses the state field
@@ -141,8 +141,11 @@ class ApiViewLogs extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'u.name' => JText::_('COM_API_LOGS_USER'), 'a.hash' => JText::_('COM_API_KEYS_HASH'),
-				'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'), 'a.time' => JText::_('COM_API_LOGS_TIME')
+			'u.name' => JText::_('COM_API_LOGS_USER'),
+			'a.hash' => JText::_('COM_API_KEYS_HASH'),
+			'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'),
+			'a.time' => JText::_('COM_API_LOGS_TIME'),
+			'a.request_method' => JText::_('COM_API_LOGS_REQUEST_METHOD')
 		);
 	}
 }
