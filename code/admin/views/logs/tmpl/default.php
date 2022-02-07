@@ -4,7 +4,7 @@
  * @copyright Copyright (C) 2009 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
  * @license GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
  * @link http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API) 
+ * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
 */
 
@@ -170,6 +170,9 @@ if (! empty($this->extra_sidebar))
 						<th class='left'>
 							<?php echo JHtml::_('grid.sort',  'COM_API_LOGS_TIME', 'a.time', $listDirn, $listOrder); ?>
 						</th>
+						<th class='left'>
+							<?php echo JHtml::_('grid.sort',  'COM_API_LOGS_REQUEST_METHOD', 'a.request_method', $listDirn, $listOrder); ?>
+						</th>
 						<th class='left' width="15%"><?php echo JText::_('COM_API_LOGS_REQUEST'); ?></th>
 						<th class='left' width="25%"><?php echo JText::_('COM_API_LOGS_POST_DATA'); ?></th>
 					</tr>
@@ -192,6 +195,9 @@ if (! empty($this->extra_sidebar))
 								<a href="index.php?option=com_api&view=logs&filter_search=ip:<?php echo $item->ip_address; ?>"><?php echo $item->ip_address; ?></a>
 							</td>
 							<td><?php echo $item->time; ?></td>
+							<td>
+								<a href="index.php?option=com_api&view=logs&filter_search=request_method:<?php echo $item->request_method; ?>"><?php echo $item->request_method; ?></a>
+							</td>
 							<td><div class="request_container"><?php echo implode('&#8203;&', explode('&', $item->request)); ?></div></td>
 							<td><?php echo $item->post_data; ?></td>
 						</tr>
