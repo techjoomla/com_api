@@ -360,23 +360,24 @@ class ApiPlugin extends JPlugin
 
 		$time = $this->params->get('request_limit_time', 'hour');
 
+		$now = JFactory::getDate();
 		switch ($time)
 		{
 			case 'day':
-				$offset = 60 * 60 * 24;
+				$now->modify('-1 day');
 				break;
 
 			case 'minute':
-				$offset = 60;
+				$now->modify('-1 minute');
 				break;
 
 			case 'hour':
 			default:
-				$offset = 60 * 60;
+				$now->modify('-1 hour');
 				break;
 		}
 
-		$query_time = time() - $offset;
+		$query_time = $now->toSql();
 
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
