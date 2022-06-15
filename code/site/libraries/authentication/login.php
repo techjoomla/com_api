@@ -34,6 +34,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 
 		$username = $app->input->post->get('username', '', 'STRING');
 		$password = $app->input->post->get('password', '', 'STRING');
+		$secret = $app->input->post->get('secretkey', '', 'STRING');
 
 		$userId = $this->loadUserByCredentials($username, $password);
 
@@ -41,6 +42,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		$uri = JFactory::getURI();
 		$uri->delVar('username');
 		$uri->delVar('password');
+		$uri->delVar('secretkey');
 
 		if ($userId === false)
 		{
@@ -57,18 +59,22 @@ class ApiAuthenticationLogin extends ApiAuthentication
 	 *
 	 * @param   STRING  $user  user
 	 * @param   STRING  $pass  pass
+	 * @param   STRING  $secret  secretkey
 	 *
 	 * @return  int
 	 *
 	 * @since	1.6
 	 */
-	public function loadUserByCredentials($user, $pass)
+	public function loadUserByCredentials($user, $pass, $secret = NULL)
 	{
 		jimport('joomla.user.authentication');
 
 		$authenticate = JAuthentication::getInstance();
 
-		$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass), $options = array());
+		// $response = $authenticate->authenticate(array('username' => $user, 'password' => $pass), $options = array());
+		// adding support for two factor authentication
+		
+		$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass, 'secretkey' => $secret), $options = array());
 
 		if ($response->status === JAuthentication::STATUS_SUCCESS)
 		{
