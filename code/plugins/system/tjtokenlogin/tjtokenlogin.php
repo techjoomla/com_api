@@ -9,12 +9,17 @@
 
 defined('_JEXEC') or die('Unauthorized Access');
 
-jimport('joomla.filesystem.file');
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Router\Route;
 
 $jwtBasePath = JPATH_SITE . '/components/com_api/vendors/php-jwt/src';
 $jwtFilePath = $jwtBasePath . '/JWT.php';
 
-if (!JFile::exists($jwtFilePath))
+if (!File::exists($jwtFilePath))
 {
 	return;
 }
@@ -36,12 +41,12 @@ use Firebase\JWT\DateTime;
  *
  * @since  1.0.0
  */
-class PlgSystemTjtokenlogin extends JPlugin
+class PlgSystemTjtokenlogin extends CMSPlugin
 {
 	/**
 	 * Application object.
 	 *
-	 * @var    JApplicationCms
+	 * @var    CMSApplication
 	 * @since  1.0.0
 	 */
 	protected $app;
@@ -60,7 +65,7 @@ class PlgSystemTjtokenlogin extends JPlugin
 		// Get the application if not done by JPlugin. This may happen during upgrades from Joomla 2.5.
 		if (!$this->app)
 		{
-			$this->app = JFactory::getApplication();
+			$this->app = Factory::getApplication();
 		}
 
 		// No remember me for admin.
@@ -70,7 +75,7 @@ class PlgSystemTjtokenlogin extends JPlugin
 		}
 
 		// Get logintoken
-		$input      = JFactory::getApplication()->input;
+		$input      = Factory::getApplication()->input;
 		$loginToken = $input->get->get('logintoken', '', 'STRING');
 
 		// If loginToken is not set, return
@@ -99,8 +104,8 @@ class PlgSystemTjtokenlogin extends JPlugin
 		}
 
 		// Load api key table
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
-		$table = JTable::getInstance('Key', 'ApiTable');
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
+		$table = Table::getInstance('Key', 'ApiTable');
 		$table->load(array('userid' => $payload->id));
 		$key = $table->hash;
 
@@ -129,7 +134,7 @@ class PlgSystemTjtokenlogin extends JPlugin
 
 		$redirect = $input->get->get('redirect', '', 'STRING');
 		$redirect = base64_decode($redirect);
-		$this->app->redirect(JRoute::_($redirect, false));
+		$this->app->redirect(Route::_($redirect, false));
 
 		// }
 	}

@@ -9,11 +9,17 @@
 // No direct access.
 defined('_JEXEC') or die();
 
+use Joomla\CMS\HTML\HTMLHelper;
+
 // Define wrapper class
 define('COM_APIS_WRAPPER_CLASS', "api-wrapper");
 
-JHtml::_('behavior.tabstate');
-JHtml::_('behavior.tooltip');
-JHtml::_('bootstrap.tooltip');
-JHtml::_('behavior.multiselect');
-JHtml::_('formbehavior.chosen', 'select');
+if (JVERSION < '4.0.0')
+{
+    HTMLHelper::_('behavior.tabstate');
+}
+
+HTMLHelper::_('bootstrap.tooltip');
+HTMLHelper::_('bootstrap.tooltip');
+HTMLHelper::_('behavior.multiselect');
+HTMLHelper::_('formbehavior.chosen', 'select');

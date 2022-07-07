@@ -10,11 +10,13 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-$base_url = JUri::base();
-$formToken = JSession::getFormToken();
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Session\Session;
+
+$base_url = Uri::base();
+$formToken = Session::getFormToken();
 $url = base64_encode($base_url.'tjlogin-registration');
 
-// @use Joomla\CMS\Uri\Uri;
 ?>
 
 <script type="text/javascript">

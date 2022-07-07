@@ -10,9 +10,10 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 
-jimport('joomla.application.component.model');
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Pagination\Pagination;
 
-class ApiModel extends JModelLegacy {
+class ApiModel extends BaseDatabaseModel {
 
 	public function __construct($config=array()) {
 		parent::__construct($config);
@@ -25,8 +26,7 @@ class ApiModel extends JModelLegacy {
 		endif;
 
 		if (empty($this->pagination)) {
-		  jimport('joomla.html.pagination');
-		  $this->pagination = new JPagination($this->get('total'), $this->getState('limitstart'), $this->getState('limit'));
+		  $this->pagination = new Pagination($this->get('total'), $this->getState('limitstart'), $this->getState('limit'));
 		}
 		return $this->pagination;
   	}

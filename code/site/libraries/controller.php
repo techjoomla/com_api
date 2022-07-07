@@ -10,11 +10,13 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 
-jimport('joomla.application.component.controller');
-jimport('joomla.application.component.modellist');
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Table\Table;
 
 //class ApiController extends JController {
-class ApiController extends JControllerLegacy {
+class ApiController extends BaseController {
 
 	/**
 	 * Base Controller Constructor
@@ -27,12 +29,12 @@ class ApiController extends JControllerLegacy {
 	public function __construct($config=array()) {
 		parent::__construct();
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$this->set('option', $app->input->get('option','','STRING'));
 
-		JModelList::addIncludePath(JPATH_SITE.'/components/com_api/models');
-		JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_api/tables');
+		ListModel::addIncludePath(JPATH_SITE.'/components/com_api/models');
+		Table::addIncludePath(JPATH_ROOT.'/administrator/components/com_api/tables');
 
 	}
 

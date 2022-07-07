@@ -9,14 +9,16 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.controlleradmin');
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Factory;
 
 /**
  * Keys list controller class.
  *
  * @since  1.0
  */
-class ApiControllerKeys extends JControllerAdmin
+class ApiControllerKeys extends AdminController
 {
 	/**
 	 * Method to get a model object, loading it if required.
@@ -24,7 +26,7 @@ class ApiControllerKeys extends JControllerAdmin
 	 * @param   string  $name    The model name. Optional.
 	 * @param   string  $prefix  The class prefix. Optional.
 	 *
-	 * @return  \JModelLegacy|boolean  Model object on success; otherwise false on failure.
+	 * @return  \BaseDatabaseModel|boolean  Model object on success; otherwise false on failure.
 	 *
 	 * @since   3.0
 	 */
@@ -45,7 +47,7 @@ class ApiControllerKeys extends JControllerAdmin
 	public function saveOrderAjax()
 	{
 		// Get the input
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		$pks = $input->post->get('cid', array(), 'array');
 		$order = $input->post->get('order', array(), 'array');
 
@@ -65,6 +67,6 @@ class ApiControllerKeys extends JControllerAdmin
 		}
 
 		// Close the application
-		JFactory::getApplication()->close();
+		Factory::getApplication()->close();
 	}
 }

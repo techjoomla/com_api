@@ -9,7 +9,9 @@
 */
 defined('_JEXEC') or die;
 
-$template = JFactory::getApplication()->getTemplate(true)->template;
+use Joomla\CMS\Factory;
+
+$template = Factory::getApplication()->getTemplate(true)->template;
 ?>
 <div id="cpanel">
 <?php

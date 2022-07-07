@@ -10,6 +10,9 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\User\User;
+
 class APIHelper
 {
 	function getAPIUserID()
@@ -25,13 +28,13 @@ class APIHelper
 
 	function setSessionUser()
 	{
-		$session  =& JFactory::getSession();
-		$session->set( 'user', JUser::getInstance( APIHelper::getAPIUserID() ) );
+		$session  =& Factory::getSession();
+		$session->set( 'user', User::getInstance( APIHelper::getAPIUserID() ) );
 	}
 
 	function unsetSessionUser()
 	{
-		$session  =& JFactory::getSession();
+		$session  =& Factory::getSession();
 		$session->clear( 'user' );
 	}
 }

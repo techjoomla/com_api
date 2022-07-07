@@ -10,6 +10,10 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Authentication\Authentication;
+use Joomla\CMS\User\User;
+
 class ApiAuthenticationUser extends ApiAuthentication
 {
 	protected $auth_method     = null;
@@ -17,18 +21,18 @@ class ApiAuthenticationUser extends ApiAuthentication
 
 	public function authenticate()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$username = $app->input->post->get('username','','STRING');
 		$password = $app->input->post->get('password','','STRING');
 
-		//$username = JRequest::getVar( 'username' );
-		//$password = JRequest::getVar( 'password' );
+		//$username = Factory::getApplication()->input->get( 'username' );
+		//$password = Factory::getApplication()->input->get( 'password' );
 
 		$user = $this->loadUserByCredentials( $username, $password );
 
 		// Remove username and password from request for when it gets logged
-		$uri = JFactory::getURI();
+		$uri = Factory::getURI();
 		$uri->delVar('username');
 		$uri->delVar('password');
 
@@ -42,13 +46,12 @@ class ApiAuthenticationUser extends ApiAuthentication
 
 	public function loadUserByCredentials( $user, $pass )
 	{
-		jimport('joomla.user.authentication');
 
-		$authenticate = JAuthentication::getInstance();
+		$authenticate = Authentication::getInstance();
 		$response = $authenticate->authenticate(array( 'username' => $user, 'password' => $pass ));
 
-		if ($response->status === JAuthentication::STATUS_SUCCESS) {
-			$instance = JUser::getInstance($response->username);
+		if ($response->status === Authentication::STATUS_SUCCESS) {
+			$instance = User::getInstance($response->username);
 			if ( $instance === false ) {
 				$this->setError( JError::getError() );
 				return false;

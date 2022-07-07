@@ -12,10 +12,14 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.plugin.plugin');
-jimport('joomla.filesystem.file');
-jimport('joomla.application.component.helper');
-
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\User\User;
 use Joomla\Registry\Registry;
 
 /**
@@ -24,7 +28,7 @@ use Joomla\Registry\Registry;
  *
  * @since  1.0
  */
-class ApiPlugin extends JPlugin
+class ApiPlugin extends CMSPlugin
 {
 	protected $user = null;
 
@@ -69,9 +73,9 @@ class ApiPlugin extends JPlugin
 	 */
 	public static function getInstance($name)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$param_path = JPATH_BASE . self::$plg_path . $name . '.xml';
-		$plugin = JPluginHelper::getPlugin('api', $name);
+		$plugin = PluginHelper::getPlugin('api', $name);
 
 		if (isset(self::$instances[$name]))
 		{
@@ -84,20 +88,19 @@ class ApiPlugin extends JPlugin
 		}
 		else
 		{
-			$dispatcher = JEventDispatcher::getInstance();
 			self::$plg_path = self::$plg_path . $plugin->name . '/';
 		}
 
 		if (empty($plugin))
 		{
-			ApiError::raiseError(400, JText::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
+			ApiError::raiseError(400, Text::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
 		}
 
 		$plgfile = JPATH_BASE . self::$plg_path . $name . '/' . $name . '.php';
 
-		if (! JFile::exists($plgfile))
+		if (! File::exists($plgfile))
 		{
-			ApiError::raiseError(400, JText::sprintf('COM_API_FILE_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
+			ApiError::raiseError(400, Text::sprintf('COM_API_FILE_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
 		}
 
 		include_once $plgfile;
@@ -105,10 +108,10 @@ class ApiPlugin extends JPlugin
 
 		if (! class_exists($class))
 		{
-			ApiError::raiseError(400, JText::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
+			ApiError::raiseError(400, Text::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
 		}
 
-		$cparams = JComponentHelper::getParams('com_api');
+		$cparams = ComponentHelper::getParams('com_api');
 		$handler = new $class($dispatcher, array('params' => $cparams));
 		$handler->set('params', $cparams);
 
@@ -285,7 +288,7 @@ class ApiPlugin extends JPlugin
 
 		$user = APIAuthentication::authenticateRequest();
 		$this->set('user', $user);
-		$session = JFactory::getSession();
+		$session = Factory::getSession();
 		$session->set('user', $user);
 
 		$access = $this->getResourceAccess($resource_name, $this->request_method);
@@ -297,7 +300,7 @@ class ApiPlugin extends JPlugin
 
 		if (! $this->checkRequestLimit())
 		{
-			ApiError::raiseError(403, JText::_('COM_API_RATE_LIMIT_EXCEEDED'), 'APIUnauthorisedException');
+			ApiError::raiseError(403, Text::_('COM_API_RATE_LIMIT_EXCEEDED'), 'APIUnauthorisedException');
 		}
 
 		$this->lastUsed();
@@ -327,12 +330,12 @@ class ApiPlugin extends JPlugin
 	{
 		if (! method_exists($this, $resource_name))
 		{
-			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_FOUND', ucfirst($resource_name)), 'APINotFoundException');
+			ApiError::raiseError(404, Text::sprintf('COM_API_PLUGIN_METHOD_NOT_FOUND', ucfirst($resource_name)), 'APINotFoundException');
 		}
 
 		if (! is_callable(array($this, $resource_name)))
 		{
-			ApiError::raiseError(404, JText::sprintf('COM_API_PLUGIN_METHOD_NOT_CALLABLE', ucfirst($resource_name)), 'APINotFoundException');
+			ApiError::raiseError(404, Text::sprintf('COM_API_PLUGIN_METHOD_NOT_CALLABLE', ucfirst($resource_name)), 'APINotFoundException');
 		}
 
 		return true;
@@ -347,7 +350,7 @@ class ApiPlugin extends JPlugin
 	 */
 	final private function checkRequestLimit()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$limit = $this->params->get('request_limit', 0);
 
 		if ($limit == 0)
@@ -378,7 +381,7 @@ class ApiPlugin extends JPlugin
 
 		$query_time = time() - $offset;
 
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)');
 		$query->from($db->quoteName('#__api_logs'));
@@ -413,14 +416,14 @@ class ApiPlugin extends JPlugin
 			return;
 		}
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		//  For exclude password from log
-		$params = JComponentHelper::getParams('com_api');
+		$params = ComponentHelper::getParams('com_api');
 		$excludes = $params->get('exclude_log');
 		$raw_post = file_get_contents('php://input');
 		$redactions = explode(",", $excludes);
-		$req_url = JURI::current() . '?' . JFactory::getURI()->getQuery();
+		$req_url = Uri::current() . '?' . Factory::getURI()->getQuery();
 
 		switch ($app->input->server->get('CONTENT_TYPE'))
 		{
@@ -446,8 +449,8 @@ class ApiPlugin extends JPlugin
 				break;
 		}
 
-		$table = JTable::getInstance('Log', 'ApiTable');
-		$date = JFactory::getDate();
+		$table = Table::getInstance('Log', 'ApiTable');
+		$date = Factory::getDate();
 		$table->hash = $app->input->get('key', '', 'STRING');
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
@@ -467,8 +470,8 @@ class ApiPlugin extends JPlugin
 	 */
 	final private function lastUsed()
 	{
-		$app = JFactory::getApplication();
-		$table = JTable::getInstance('Key', 'ApiTable');
+		$app = Factory::getApplication();
+		$table = Table::getInstance('Key', 'ApiTable');
 
 		$hash = $app->input->get('key', '', 'STRING');
 		$table->setLastUsed($hash);
@@ -509,7 +512,7 @@ class ApiPlugin extends JPlugin
 		if ($error)
 		{
 			$result->err_code = $this->err_code;
-			$result->err_message = JText::_($this->err_message);
+			$result->err_message = Text::_($this->err_message);
 		}
 		else
 		{
@@ -528,7 +531,7 @@ class ApiPlugin extends JPlugin
 	 */
 	public function encode()
 	{
-		$document = JFactory::getDocument();
+		$document = Factory::getDocument();
 		$document->setMimeEncoding($this->format);
 
 		$format_name = $this->content_types[$this->format];
@@ -536,12 +539,12 @@ class ApiPlugin extends JPlugin
 
 		if (! method_exists($this, $method))
 		{
-			ApiError::raiseError(406, JText::_('COM_API_PLUGIN_NO_ENCODER'));
+			ApiError::raiseError(406, Text::_('COM_API_PLUGIN_NO_ENCODER'));
 		}
 
 		if (! is_callable(array($this, $method)))
 		{
-			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_NO_ENCODER'));
+			ApiError::raiseError(404, Text::_('COM_API_PLUGIN_NO_ENCODER'));
 		}
 
 		return $this->$method();
@@ -550,7 +553,7 @@ class ApiPlugin extends JPlugin
 	/**
 	 * Method to get current logged in API user
 	 *
-	 * @return JUser
+	 * @return User
 	 */
 	public function getUser()
 	{

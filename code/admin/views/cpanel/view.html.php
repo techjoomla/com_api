@@ -8,7 +8,8 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Language\Text;
 
 /**
  * Cpanel class
@@ -24,7 +25,7 @@ class ApiViewCpanel extends ApiView
 	 *
 	 * @return  mixed  A string if successful, otherwise an Error object.
 	 *
-	 * @see     \JViewLegacy::loadTemplate()
+	 * @see     \HtmlView::loadTemplate()
 	 * @since   1.0
 	 */
 	public function display($tpl = null)
@@ -53,7 +54,7 @@ class ApiViewCpanel extends ApiView
 	 */
 	private function generateToolbar()
 	{
-		JToolBarHelper::title(JText::_('COM_API') . ': ' . JText::_('COM_API_CONTROL_PANEL'));
+		JToolBarHelper::title(Text::_('COM_API') . ': ' . Text::_('COM_API_CONTROL_PANEL'));
 		JToolBarHelper::preferences('com_api', 500, 500);
 	}
 }

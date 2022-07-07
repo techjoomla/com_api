@@ -10,7 +10,11 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 
-jimport('joomla.application.component.controller');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Table\Table;
+
 
 class ApiControllerAdmin extends ApiController {
 
@@ -19,11 +23,11 @@ class ApiControllerAdmin extends ApiController {
 		$this->registerTask('apply', 'save');
 		$this->registerTask('add', 'edit');
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$default_url = 'index.php?option='.$this->get('option');
 
-		//$view = JRequest::getVar('view','');
+		//$view = Factory::getApplication()->input->get('view','');
 		$view = $app->input->get('view','','STRING');
 
 		$task = $app->input->post->get('task','','STRING');
@@ -39,14 +43,14 @@ class ApiControllerAdmin extends ApiController {
 	}
 
 	public function display() {
-		$app	= JFactory::getApplication();
+		$app	= Factory::getApplication();
 
-		//$view 	= JRequest::getVar('view', '');
+		//$view 	= Factory::getApplication()->input->get('view', '');
 
 		$view = $app->input->get('view','','STRING');
 
 		if (!$view) :
-			//JRequest::setVar('view', 'cpanel');
+			//Factory::getApplication()->input->set('view', 'cpanel');
 			$app->input->set('view','cpanel');
 
 		endif;
@@ -56,7 +60,7 @@ class ApiControllerAdmin extends ApiController {
 	}
 
 	public function edit() {
-		$app 	= JFactory::getApplication();
+		$app 	= Factory::getApplication();
 		$view	= $this->getEntityName();
 
 		$layout = 'default';
@@ -73,27 +77,27 @@ class ApiControllerAdmin extends ApiController {
 	public function cancel() {
 
 		//JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
-		JSession::checkToken() or jexit(JText::_('INVALID_TOKEN'));
-		$app 	= JFactory::getApplication();
-		//$this->setRedirect(JRequest::getVar('ret', $this->get('default_url')), $msg);
+		Session::checkToken() or jexit(Text::_('INVALID_TOKEN'));
+		$app 	= Factory::getApplication();
+		//$this->setRedirect(Factory::getApplication()->input->get('ret', $this->get('default_url')), $msg);
 		$this->setRedirect($app->input->get('ret', $this->get('default_url'),'STRING'), $msg);
 	}
 
 	public function remove($hash='post') {
 
-		JSession::checkToken($hash) or jexit(JText::_('INVALID_TOKEN'));
-		$app 	= JFactory::getApplication();
+		Session::checkToken($hash) or jexit(Text::_('INVALID_TOKEN'));
+		$app 	= Factory::getApplication();
 
 		$name	= $this->getEntityName();
-		//$post 	= JRequest::get('post');
+		//$post 	= Factory::getApplication()->input->get('post');
 		$post 	= $app->input->post;
 		$model 	= $this->getModel($name);
 
-		//$cid	= JRequest::getVar('cid', array(), $hash, 'array');
+		//$cid	= Factory::getApplication()->input->get('cid', array(), $hash, 'array');
 		$cid	= $app->input->post->get('cid',array(), 'ARRAY');
 
 		if (empty($cid)) :
-			//$cid = JRequest::getVar('id', 0, $hash, 'int');
+			//$cid = Factory::getApplication()->input->get('id', 0, $hash, 'int');
 			$cid = $app->input->post->get('id', 0,'INT');
 		endif;
 
@@ -102,11 +106,11 @@ class ApiControllerAdmin extends ApiController {
 				$msg	= $model->getError();
 				$type	= 'error';
 			else :
-				$msg	= JText::_('COM_API_DELETE_SUCCESS');
+				$msg	= Text::_('COM_API_DELETE_SUCCESS');
 				$type	= 'message';
 			endif;
 		else :
-			$msg	= JText::_('COM_API_NO_SELECTION');
+			$msg	= Text::_('COM_API_NO_SELECTION');
 			$type	= 'error';
 		endif;
 
@@ -115,9 +119,9 @@ class ApiControllerAdmin extends ApiController {
 	}
 
 	public function save() {
-		JSession::checkToken()  or jexit(JText::_('INVALID_TOKEN'));
+		Session::checkToken()  or jexit(Text::_('INVALID_TOKEN'));
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$name	= $this->getEntityName();
 
@@ -139,14 +143,14 @@ class ApiControllerAdmin extends ApiController {
 
 		if (!$item = $model->save($post)) :
 			$msg = $model->getError();
-			//$url = JRequest::getVar('HTTP_REFERER', $this->get('default_url'), 'server');
+			//$url = Factory::getApplication()->input->get('HTTP_REFERER', $this->get('default_url'), 'server');
 			$url = $app->input->server->get('HTTP_REFERER', $this->get('default_url'), 'STRING');
 			$this->setRedirect($url, $msg, 'error');
 			return;
 		endif;
 
 		$name = strtolower($name);
-		$msg = JText::_("COM_API_SAVE_SUCCESSFUL");
+		$msg = Text::_("COM_API_SAVE_SUCCESSFUL");
 		if($this->getTask() == 'apply') :
 			$url = "index.php?option=".$this->get('option')."&view=".$name."&cid[]=".$item->id;
 		elseif (isset($post['ret'])) :
@@ -160,9 +164,9 @@ class ApiControllerAdmin extends ApiController {
 	public function publish() {
 
 		//JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
-		JSession::checkToken() or jexit(JText::_('INVALID_TOKEN'));
+		Session::checkToken() or jexit(Text::_('INVALID_TOKEN'));
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$this->changeState(1);
 
@@ -170,7 +174,7 @@ class ApiControllerAdmin extends ApiController {
 			$msg = $error;
 			$type = 'error';
 		else :
-			$msg = JText::_("COM_API_PUBLISH_SUCCESS");
+			$msg = Text::_("COM_API_PUBLISH_SUCCESS");
 			$type = 'message';
 		endif;
 
@@ -180,16 +184,16 @@ class ApiControllerAdmin extends ApiController {
 	public function unpublish() {
 
 		//JRequest::checkToken() or jexit(JText::_('INVALID_TOKEN'));
-		JSession::checkToken()  or jexit(JText::_('INVALID_TOKEN'));
+		Session::checkToken()  or jexit(Text::_('INVALID_TOKEN'));
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$this->changeState(0);
 		if ($error = $this->getError()) :
 			$msg = $error;
 			$type = 'error';
 		else :
-			$msg = JText::_("COM_API_UNPUBLISH_SUCCESS");
+			$msg = Text::_("COM_API_UNPUBLISH_SUCCESS");
 			$type = 'message';
 		endif;
 
@@ -198,7 +202,7 @@ class ApiControllerAdmin extends ApiController {
 
 	protected function changeState($state, $cids=array(), $table_class=null) {
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		if (empty($cids)) :
 			$cids = $app->input->post->get('cid', array(),'ARRAY');
@@ -206,7 +210,7 @@ class ApiControllerAdmin extends ApiController {
 
 		$table_class = $table_class ? $table_class : $this->getEntityName();
 
-		$table 	= JTable::getInstance($table_class, 'ApiTable');
+		$table 	= Table::getInstance($table_class, 'ApiTable');
 
 		if (!$table->publish($cids, $state)) :
 			$this->setError($table->getError());

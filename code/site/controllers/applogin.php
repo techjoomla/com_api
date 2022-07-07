@@ -10,6 +10,9 @@
 
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\MVC\Controller\BaseController;
+
 /**
  * Class for a Applogin Controller
  *
@@ -24,9 +27,9 @@ class ApiControllerApplogin extends ApiController
 	 * you will need to override it in your own controllers.
 	 *
 	 * @param   boolean  $cachable   If true, the view output will be cached
-	 * @param   array    $urlparams  An array of safe URL parameters and their variable types, for valid values see {@link \JFilterInput::clean()}.
+	 * @param   array    $urlparams  An array of safe URL parameters and their variable types, for valid values see {@link \InputFilter::clean()}.
 	 *
-	 * @return  \JControllerLegacy  A \JControllerLegacy object to support chaining.
+	 * @return  \BaseController  A \BaseController object to support chaining.
 	 *
 	 * @since   3.0
 	 */

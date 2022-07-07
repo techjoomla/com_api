@@ -13,17 +13,22 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+
+HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 if (version_compare(JVERSION, "3.0.0", "ge"))
 {
-	JHtml::_('behavior.formvalidation');
+	HTMLHelper::_('behavior.formvalidator');
 }
 
-JHtml::_('behavior.keepalive');
+HTMLHelper::_('behavior.keepalive');
 
 // Import CSS
-$document = JFactory::getDocument();
+$document = Factory::getDocument();
 $document->addStyleSheet('components/com_api/assets/css/api.css');
 ?>
 
@@ -48,14 +53,14 @@ $document->addStyleSheet('components/com_api/assets/css/api.css');
 			}
 			else
 			{
-				alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
+				alert('<?php echo $this->escape(Text::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
 			}
 		}
 	}
 </script>
 
 <div class="<?php echo COM_APIS_WRAPPER_CLASS; ?> api-key">
-	<form action="<?php echo JRoute::_('index.php?option=com_api&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="key-form" class="form-validate">
+	<form action="<?php echo Route::_('index.php?option=com_api&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="key-form" class="form-validate">
 		<div class="form-horizontal">
 			<div class="row-fluid">
 				<div class="span10 form-horizontal">
@@ -89,7 +94,7 @@ $document->addStyleSheet('components/com_api/assets/css/api.css');
 						if(empty($this->item->created_by))
 						{
 							?>
-							<input type="hidden" name="jform[created_by]" value="<?php echo JFactory::getUser()->id; ?>" />
+							<input type="hidden" name="jform[created_by]" value="<?php echo Factory::getUser()->id; ?>" />
 							<?php
 						}
 						else
@@ -104,7 +109,7 @@ $document->addStyleSheet('components/com_api/assets/css/api.css');
 				</div>
 			</div>
 			<input type="hidden" name="task" value="" />
-			<?php echo JHtml::_('form.token'); ?>
+			<?php echo HTMLHelper::_('form.token'); ?>
 		</div>
 	</form>
 </div>

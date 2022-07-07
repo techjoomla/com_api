@@ -9,6 +9,11 @@
 // No direct access.
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Factory;
+
 /**
  * Content component helper.
  *
@@ -29,10 +34,10 @@ class ApiHelper
 	{
 		$submenus = array();
 		$submenus[] = array(
-			'title' => JText::_('COM_API_TITLE_KEYS'), 'link' => 'index.php?option=com_api&view=keys', 'view' => $vName == 'keys'
+			'title' => Text::_('COM_API_TITLE_KEYS'), 'link' => 'index.php?option=com_api&view=keys', 'view' => $vName == 'keys'
 		);
 		$submenus[] = array(
-			'title' => JText::_('COM_API_TITLE_LOGS'), 'link' => 'index.php?option=com_api&view=logs', 'view' => $vName == 'logs'
+			'title' => Text::_('COM_API_TITLE_LOGS'), 'link' => 'index.php?option=com_api&view=logs', 'view' => $vName == 'logs'
 		);
 
 		foreach ($submenus as $submenu)
@@ -44,14 +49,14 @@ class ApiHelper
 	/**
 	 * Gets a list of the actions that can be performed.
 	 *
-	 * @return  JObject
+	 * @return  CMSObject
 	 *
 	 * @since  1.0
 	 */
 	public static function getActions()
 	{
-		$user = JFactory::getUser();
-		$result = new JObject;
+		$user = Factory::getUser();
+		$result = new CMSObject;
 
 		$assetName = 'com_api';
 

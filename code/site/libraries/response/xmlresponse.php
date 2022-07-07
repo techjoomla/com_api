@@ -8,6 +8,8 @@
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
  */
 
+use Joomla\CMS\Factory;
+
 /**
  * Class APIXMLResponse to convert the response of API in XML
  *
@@ -36,7 +38,7 @@ class APIXMLResponse
 	 */
 	public function __construct($response)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$this->data = new \stdClass;
 
 		if ($response instanceof Exception)
