@@ -47,7 +47,7 @@ $document->addStyleSheet('components/com_api/assets/css/api.css');
 		}
 		else
 		{
-			if (task != 'key.cancel' && document.formvalidator.isValid(document.id('key-form')))
+			if (task != 'key.cancel' && document.formvalidator.isValid(document.getElementById('key-form')))
 			{
 				Joomla.submitform(task, document.getElementById('key-form'));
 			}
