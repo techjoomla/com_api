@@ -83,9 +83,13 @@ class ApiPlugin extends CMSPlugin
 			return self::$instances[$name];
 		}
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (version_compare(JVERSION, '4.0', 'ge'))
 		{
 			$dispatcher = $app->getDispatcher();
+		}
+		else if (version_compare(JVERSION, '3.0', 'ge'))
+		{
+			$dispatcher = JEventDispatcher::getInstance();
 		}
 		else
 		{
@@ -589,7 +593,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @return User
 	 */
-	public function set($property, $value)
+	public function set($property, $value = null)
 	{
 		$this->$property = $value;
 	}
