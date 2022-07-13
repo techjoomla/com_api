@@ -289,6 +289,7 @@ class ApiPlugin extends CMSPlugin
 		}
 
 		$user = APIAuthentication::authenticateRequest();
+
 		$this->set('user', $user);
 		$session = Factory::getSession();
 		$session->set('user', $user);
@@ -573,8 +574,13 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @return User
 	 */
-	public function get($property)
+	public function get($property, $default = null)
 	{
+		if (!isset($this->$property))
+		{
+			return $default;
+		}
+
 		return $this->$property;
 	}
 
