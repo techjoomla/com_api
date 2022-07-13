@@ -76,6 +76,7 @@ class ApiPlugin extends CMSPlugin
 		$app = Factory::getApplication();
 		$param_path = JPATH_BASE . self::$plg_path . $name . '.xml';
 		$plugin = PluginHelper::getPlugin('api', $name);
+		PluginHelper::importPlugin("api");
 
 		if (isset(self::$instances[$name]))
 		{
@@ -84,7 +85,7 @@ class ApiPlugin extends CMSPlugin
 
 		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
-			$dispatcher = JDispatcher::getInstance();
+			$dispatcher = $app->getDispatcher();
 		}
 		else
 		{
@@ -98,7 +99,7 @@ class ApiPlugin extends CMSPlugin
 
 		$plgfile = JPATH_BASE . self::$plg_path . $name . '/' . $name . '.php';
 
-		if (! File::exists($plgfile))
+		if (!File::exists($plgfile))
 		{
 			ApiError::raiseError(400, Text::sprintf('COM_API_FILE_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
 		}
@@ -106,15 +107,16 @@ class ApiPlugin extends CMSPlugin
 		include_once $plgfile;
 		$class = self::$plg_prefix . ucwords($name);
 
-		if (! class_exists($class))
+		if (!class_exists($class))
 		{
 			ApiError::raiseError(400, Text::sprintf('COM_API_PLUGIN_CLASS_NOT_FOUND', ucfirst($name)), 'APINotFoundException');
 		}
 
 		$cparams = ComponentHelper::getParams('com_api');
+		$enabled = PluginHelper::isEnabled("api", $name);
+
 		$handler = new $class($dispatcher, array('params' => $cparams));
 		$handler->set('params', $cparams);
-
 		$call_methd = $app->input->server->get('REQUEST_METHOD', '', 'STRING');
 
 		// Switch case for differ calling method
@@ -564,5 +566,25 @@ class ApiPlugin extends CMSPlugin
 	public function getUser()
 	{
 		return $this->user;
+	}
+
+	/**
+	 * Method to get value of the property
+	 *
+	 * @return User
+	 */
+	public function get($property)
+	{
+		return $this->$property;
+	}
+
+	/**
+	 * Method to set value of the property
+	 *
+	 * @return User
+	 */
+	public function set($property, $value)
+	{
+		$this->$property = $value;
 	}
 }

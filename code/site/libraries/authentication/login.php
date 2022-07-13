@@ -13,6 +13,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Authentication\Authentication;
 use Joomla\CMS\User\UserHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * ApiAuthenticationLogin class.
@@ -42,7 +43,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		$userId = $this->loadUserByCredentials($username, $password);
 
 		// Remove username and password from request for when it gets logged
-		$uri = Factory::getURI();
+		$uri = Uri::getInstance();
 		$uri->delVar('username');
 		$uri->delVar('password');
 

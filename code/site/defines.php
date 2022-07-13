@@ -16,10 +16,10 @@ define('COM_APIS_WRAPPER_CLASS', "api-wrapper");
 
 if (JVERSION < '4.0.0')
 {
+    HTMLHelper::_('formbehavior.chosen', 'select');
     HTMLHelper::_('behavior.tabstate');
 }
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
-HTMLHelper::_('formbehavior.chosen', 'select');

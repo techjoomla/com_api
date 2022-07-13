@@ -81,14 +81,16 @@ class ApiControllerHttp extends ApiController
 
 		try
 		{
-			JResponse::setHeader('status', 200);
+			header("status: 200");
+			//JResponse::setHeader('status', 200);
 			$resource_response = ApiPlugin::getInstance($name)->fetchResource();
 
 			echo $this->respond($resource_response);
 		}
 		catch (Exception $e)
 		{
-			JResponse::setHeader('status', $e->http_code);
+			header("status: " . $e->http_code);
+			//JResponse::setHeader('status', $e->http_code);
 			echo $this->respond($e);
 		}
 	}
@@ -173,6 +175,13 @@ class ApiControllerHttp extends ApiController
 	 */
 	private function resetDocumentType()
 	{
-		JResponse::clearHeaders();
+		if (!headers_sent())
+		{
+			foreach (headers_list() as $header)
+			{
+				header_remove($header);
+			}
+		}
+		//JResponse::clearHeaders();
 	}
 }

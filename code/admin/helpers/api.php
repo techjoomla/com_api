@@ -32,17 +32,20 @@ class ApiHelper
 	 */
 	public static function addSubmenu($vName = '')
 	{
-		$submenus = array();
-		$submenus[] = array(
-			'title' => Text::_('COM_API_TITLE_KEYS'), 'link' => 'index.php?option=com_api&view=keys', 'view' => $vName == 'keys'
-		);
-		$submenus[] = array(
-			'title' => Text::_('COM_API_TITLE_LOGS'), 'link' => 'index.php?option=com_api&view=logs', 'view' => $vName == 'logs'
-		);
-
-		foreach ($submenus as $submenu)
+		if (JVERSION < '4.0.0')
 		{
-			JHtmlSidebar::addEntry($submenu['title'], $submenu['link'], $submenu['view']);
+			$submenus = array();
+			$submenus[] = array(
+				'title' => Text::_('COM_API_TITLE_KEYS'), 'link' => 'index.php?option=com_api&view=keys', 'view' => $vName == 'keys'
+			);
+			$submenus[] = array(
+				'title' => Text::_('COM_API_TITLE_LOGS'), 'link' => 'index.php?option=com_api&view=logs', 'view' => $vName == 'logs'
+			);
+	
+			foreach ($submenus as $submenu)
+			{
+				JHtmlSidebar::addEntry($submenu['title'], $submenu['link'], $submenu['view']);
+			}
 		}
 	}
 

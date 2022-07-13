@@ -116,7 +116,7 @@ if (! empty($this->extra_sidebar))
 							<?php echo Text::_('JFIELD_ORDERING_DESC'); ?>
 						</label>
 						<select name="directionTable" id="directionTable"
-							class="input-medium" onchange="Joomla.orderTable()">
+							class="input-medium form-select" onchange="Joomla.orderTable()">
 							<option value=""><?php echo Text::_('JFIELD_ORDERING_DESC'); ?></option>
 							<option value="asc"
 								<?php
@@ -143,7 +143,7 @@ if (! empty($this->extra_sidebar))
 						<label for="sortTable" class="element-invisible">
 							<?php echo Text::_('JGLOBAL_SORT_BY'); ?>
 						</label>
-						<select name="sortTable" id="sortTable" class="input-medium"
+						<select name="sortTable" id="sortTable" class="input-medium form-select"
 							onchange="Joomla.orderTable()">
 							<option value=""><?php echo Text::_('JGLOBAL_SORT_BY'); ?></option>
 							<?php echo HTMLHelper::_('select.options', $sortFields, 'value', 'text', $listOrder); ?>
@@ -152,7 +152,7 @@ if (! empty($this->extra_sidebar))
 				<?php endif; ?>
 				<div class="btn-group pull-right hidden-phone">
 					<?php
-					echo HTMLHelper::_('select.genericlist', $this->publish_states, "filter_state", 'class="input-medium" size="1" onchange="document.adminForm.submit();" name="filter_state"', "value", "text", $this->state->get('filter.state'));
+					echo HTMLHelper::_('select.genericlist', $this->publish_states, "filter_state", 'class="input-medium form-select" size="1" onchange="document.adminForm.submit();" name="filter_state"', "value", "text", $this->state->get('filter.state'));
 					?>
 				</div>
 			</div>
@@ -166,6 +166,7 @@ if (! empty($this->extra_sidebar))
 				</div>
 			<?php
 			else : ?>
+				<div class="clearfix">&nbsp;</div>
 				<table class="table table-striped" id="keyList">
 					<thead>
 						<tr>

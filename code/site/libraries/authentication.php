@@ -75,7 +75,7 @@ abstract class ApiAuthentication extends CMSObject
 		{
 			self::setAuthError($auth_handler->getError());
 
-			return false;
+			return Factory::getUser();
 		}
 		else
 		{
@@ -101,8 +101,10 @@ abstract class ApiAuthentication extends CMSObject
 
 			if ($isroot)
 			{
-				JResponse::setHeader('x-api', self::getCom_apiVersion());
-				JResponse::setHeader('x-plugins', implode(',', self::getPluginsList()));
+				header("x-api: " . self::getCom_apiVersion());
+				header("x-plugins: " . implode(',', self::getPluginsList()));
+				//JResponse::setHeader('x-api', self::getCom_apiVersion());
+				//JResponse::setHeader('x-plugins', implode(',', self::getPluginsList()));
 			}
 
 			return $user;

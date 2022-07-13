@@ -38,7 +38,7 @@ $app = Factory::getApplication();
 
 $view = $app->input->get('view', '', 'CMD');
 
-if ($view)
+if (in_array($view, array("api", "applogin", "documentation")))
 {
 	$c = $view;
 }

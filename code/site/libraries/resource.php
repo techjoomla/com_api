@@ -41,7 +41,7 @@ abstract class ApiResource {
 
 		if (is_null($prefix))
 		{
-			$prefix = $plugin->get('component').'ApiResource';
+			$prefix = $plugin->get('component') . 'ApiResource';
 		}
 
 		$type = preg_replace('/[^A-Z0-9_\.-]/i', '', $name);

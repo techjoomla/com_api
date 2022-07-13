@@ -31,11 +31,9 @@ class ApiController extends BaseController {
 
 		$app = Factory::getApplication();
 
-		$this->set('option', $app->input->get('option','','STRING'));
+		$this->option = $app->input->get('option','','STRING');
 
 		ListModel::addIncludePath(JPATH_SITE.'/components/com_api/models');
 		Table::addIncludePath(JPATH_ROOT.'/administrator/components/com_api/tables');
-
 	}
-
 }
