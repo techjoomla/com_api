@@ -11,8 +11,11 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.controller');
-jimport('joomla.plugin.helper');
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Uri\Uri;
+
 
 /**
  * ApiControllerHttp class
@@ -27,7 +30,7 @@ class ApiControllerHttp extends ApiController
 	 * Typical view method for MVC based architecture
 	 *
 	 * @param   boolean  $cachable   If true, the view output will be cached
-	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link InputFilter::clean()}.
 	 *
 	 * @return  Mixed
 	 *
@@ -36,15 +39,15 @@ class ApiControllerHttp extends ApiController
 	public function display($cachable = false, $urlparams = array())
 	{
 		$this->resetDocumentType();
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$name = $app->input->get('app', '', 'CMD');
 
-		$params = JComponentHelper::getParams('com_api');
+		$params = ComponentHelper::getParams('com_api');
 		$callMethod = $app->input->getMethod();
 		$httpOrigin = $app->input->server->getString('HTTP_REFERER', '');
 
-		$JUriObj = JUri::getInstance($httpOrigin);
-		$referer = $JUriObj->toString(array('scheme', 'host', 'port'));
+		$UriObj = Uri::getInstance($httpOrigin);
+		$referer = $UriObj->toString(array('scheme', 'host', 'port'));
 
 		// Special method for OPTIONS method
 		if ((! empty($params->get("allow_cors"))))
@@ -78,14 +81,16 @@ class ApiControllerHttp extends ApiController
 
 		try
 		{
-			JResponse::setHeader('status', 200);
+			header("status: 200");
+			//JResponse::setHeader('status', 200);
 			$resource_response = ApiPlugin::getInstance($name)->fetchResource();
 
 			echo $this->respond($resource_response);
 		}
 		catch (Exception $e)
 		{
-			JResponse::setHeader('status', $e->http_code);
+			header("status: " . $e->http_code);
+			//JResponse::setHeader('status', $e->http_code);
 			echo $this->respond($e);
 		}
 	}
@@ -101,7 +106,7 @@ class ApiControllerHttp extends ApiController
 	 */
 	private function respond($response)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$accept = $app->input->server->get('HTTP_ACCEPT', 'application/json', 'STRING');
 		$compatibility = $app->input->server->get('HTTP_X_COMPATIBILITY_MODE', 0, 'INT');
 
@@ -170,6 +175,13 @@ class ApiControllerHttp extends ApiController
 	 */
 	private function resetDocumentType()
 	{
-		JResponse::clearHeaders();
+		if (!headers_sent())
+		{
+			foreach (headers_list() as $header)
+			{
+				header_remove($header);
+			}
+		}
+		//JResponse::clearHeaders();
 	}
 }

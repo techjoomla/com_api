@@ -10,7 +10,9 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 
-jimport('joomla.plugin.plugin');
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\Path;
+
 
 abstract class ApiResource {
 
@@ -30,7 +32,7 @@ abstract class ApiResource {
 			$this->$method_name();
 		else :
 
-			ApiError::raiseError(404, JText::_('COM_API_PLUGIN_METHOD_NOT_FOUND'));
+			ApiError::raiseError(404, Text::_('COM_API_PLUGIN_METHOD_NOT_FOUND'));
 		endif;
 	}
 
@@ -39,7 +41,7 @@ abstract class ApiResource {
 
 		if (is_null($prefix))
 		{
-			$prefix = $plugin->get('component').'ApiResource';
+			$prefix = $plugin->get('component') . 'ApiResource';
 		}
 
 		$type = preg_replace('/[^A-Z0-9_\.-]/i', '', $name);
@@ -47,8 +49,7 @@ abstract class ApiResource {
 
 		if (!class_exists( $resourceClass ))
 		{
-			jimport('joomla.filesystem.path');
-			if($path = JPath::find(self::addIncludePath(), strtolower($type).'.php'))
+			if($path = Path::find(self::addIncludePath(), strtolower($type).'.php'))
 			{
 				require_once $path;
 

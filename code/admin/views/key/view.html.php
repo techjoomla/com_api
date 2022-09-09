@@ -9,19 +9,23 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 /**
  * View class key form.
  *
  * @since  1.0
  */
-class ApiViewKey extends JViewLegacy
+class ApiViewKey extends HtmlView
 {
 	/**
 	 * The model state.
 	 *
-	 * @var   JObject
+	 * @var   CMSObject
 	 * @since 1.0
 	 */
 	protected $state;
@@ -35,9 +39,9 @@ class ApiViewKey extends JViewLegacy
 	protected $item;
 
 	/**
-	 * A JForm instance with filter fields.
+	 * A Form instance with filter fields.
 	 *
-	 * @var    JForm
+	 * @var    Form
 	 * @since  1.0
 	 */
 	protected $form;
@@ -75,18 +79,18 @@ class ApiViewKey extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
+		Factory::getApplication()->input->set('hidemainmenu', true);
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$isNew = ($this->item->id == 0);
 
 		if ($isNew)
 		{
-			$viewTitle = JText::_('COM_API_ADD_KEY');
+			$viewTitle = Text::_('COM_API_ADD_KEY');
 		}
 		else
 		{
-			$viewTitle = JText::_('COM_API_EDIT_KEY');
+			$viewTitle = Text::_('COM_API_EDIT_KEY');
 		}
 
 		if (JVERSION >= '3.0')

@@ -9,19 +9,20 @@
 // No direct access
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.controllerform');
+use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 /**
  * Key controller class.
  *
  * @since  1.0
  */
-class ApiControllerKey extends JControllerForm
+class ApiControllerKey extends FormController
 {
 	/**
 	 * Constructor.
 	 *
-	 * @see     \JControllerLegacy
+	 * @see     \BaseController
 	 * @since   1.6
 	 * @throws  \Exception
 	 */

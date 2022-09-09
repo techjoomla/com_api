@@ -9,19 +9,24 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Pagination\Pagination;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+
 
 /**
  * View class for list of logs
  *
  * @since  1.0
  */
-class ApiViewLogs extends JViewLegacy
+class ApiViewLogs extends HtmlView
 {
 	/**
 	 * The model state.
 	 *
-	 * @var   JObject
+	 * @var   CMSObject
 	 * @since 1.0
 	 */
 	protected $state;
@@ -37,7 +42,7 @@ class ApiViewLogs extends JViewLegacy
 	/**
 	 * The pagination object.
 	 *
-	 * @var   JPagination
+	 * @var   Pagination
 	 * @since 1.0
 	 */
 	protected $pagination;
@@ -89,11 +94,11 @@ class ApiViewLogs extends JViewLegacy
 
 		if (JVERSION >= '3.0')
 		{
-			JToolBarHelper::title(JText::_('COM_API_TITLE_LOGS'), 'list');
+			JToolBarHelper::title(Text::_('COM_API_TITLE_LOGS'), 'list');
 		}
 		else
 		{
-			JToolBarHelper::title(JText::_('COM_API_TITLE_LOGS'), 'logs.png');
+			JToolBarHelper::title(Text::_('COM_API_TITLE_LOGS'), 'logs.png');
 		}
 
 		if ($canDo->get('core.edit.state'))
@@ -141,11 +146,11 @@ class ApiViewLogs extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'u.name' => JText::_('COM_API_LOGS_USER'),
-			'a.hash' => JText::_('COM_API_KEYS_HASH'),
-			'a.ip_address' => JText::_('COM_API_LOGS_IP_ADDRESS'),
-			'a.time' => JText::_('COM_API_LOGS_TIME'),
-			'a.request_method' => JText::_('COM_API_LOGS_REQUEST_METHOD')
+			'u.name' => Text::_('COM_API_LOGS_USER'),
+			'a.hash' => Text::_('COM_API_KEYS_HASH'),
+			'a.ip_address' => Text::_('COM_API_LOGS_IP_ADDRESS'),
+			'a.time' => Text::_('COM_API_LOGS_TIME'),
+			'a.request_method' => Text::_('COM_API_LOGS_REQUEST_METHOD')
 		);
 	}
 }

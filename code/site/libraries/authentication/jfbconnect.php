@@ -19,7 +19,12 @@
 // No direct access.
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
 
 /**
  * Jfbconnec ApiAuthentication class
@@ -43,18 +48,18 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 		$this->validateInstall();
 
 		// Init vars
-		$app          = JFactory::getApplication();
+		$app          = Factory::getApplication();
 		$providerName = $app->input->json->get('provider', '', 'STRING');
 		$accessToken  = $app->input->json->get('access_token', '', 'STRING');
 
 		if (empty($providerName))
 		{
-			ApiError::raiseError(400, JText::_('COM_API_JFBCONNECT_MISSING_PROVIDER'));
+			ApiError::raiseError(400, Text::_('COM_API_JFBCONNECT_MISSING_PROVIDER'));
 		}
 
 		if (empty($accessToken))
 		{
-			ApiError::raiseError(400, JText::_('COM_API_JFBCONNECT_MISSING_ACCESS_TOKEN'));
+			ApiError::raiseError(400, Text::_('COM_API_JFBCONNECT_MISSING_ACCESS_TOKEN'));
 		}
 
 		// Get provider object
@@ -68,7 +73,7 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 		}
 		catch (Exception $e)
 		{
-			ApiError::raiseError(400, JText::_('api auth error'));
+			ApiError::raiseError(400, Text::_('api auth error'));
 		}*/
 
 		/*echo '<br/> provider class is: ' . get_class($provider);
@@ -97,16 +102,15 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 	 */
 	private function validateInstall()
 	{
-		jimport('joomla.filesystem.file');
 
 		// Check if JFB is installed and enabled
-		if (JFile::exists(JPATH_ROOT . '/components/com_jfbconnect/jfbconnect.php')
-			&& JComponentHelper::isEnabled('com_jfbconnect', true))
+		if (File::exists(JPATH_ROOT . '/components/com_jfbconnect/jfbconnect.php')
+			&& ComponentHelper::isEnabled('com_jfbconnect', true))
 		{
 			return true;
 		}
 
-		ApiError::raiseError(500, JText::_('PLG_API_JFBCONNECT_NOT_INSTALLED'));
+		ApiError::raiseError(500, Text::_('PLG_API_JFBCONNECT_NOT_INSTALLED'));
 
 		return false;
 	}
@@ -129,7 +133,7 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 
 			if (empty($provider->name))
 			{
-				ApiError::raiseError(500, JText::_('Invalid provider'));
+				ApiError::raiseError(500, Text::_('Invalid provider'));
 			}
 
 			return $provider;
@@ -185,7 +189,7 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 	{
 		// Declare vars needed for JFB code to work
 		BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_jfbconnect/models');
-		$loginRegisterModel = JModelLegacy::getInstance('LoginRegister', 'JFBConnectModel');
+		$loginRegisterModel = BaseDatabaseModel::getInstance('LoginRegister', 'JFBConnectModel');
 		$userMapModel       = JFBCFactory::usermap();
 		$providerUserId     = $provider->getProviderUserId();
 		$jUserId            = 0;
@@ -215,14 +219,14 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 
 						if ($userMapModel->map($jUserEmailId, $providerUserId, strtolower($provider->name), $provider->client->getToken()))
 						{
-							JFBCFactory::log(JText::sprintf('COM_JFBCONNECT_MAP_USER_SUCCESS', $provider->name));
+							JFBCFactory::log(Text::sprintf('COM_JFBCONNECT_MAP_USER_SUCCESS', $provider->name));
 
 							// Update the temp jId so that we login below
 							$jUserId = $jUserEmailId;
 						}
 						else
 						{
-							JFBCFactory::log(JText::sprintf('COM_JFBCONNECT_MAP_USER_FAIL', $provider->name));
+							JFBCFactory::log(Text::sprintf('COM_JFBCONNECT_MAP_USER_FAIL', $provider->name));
 						}
 					}
 				}
@@ -234,13 +238,13 @@ class ApiAuthenticationJfbconnect extends ApiAuthentication
 		 * !allowUserRegistration and !social_registration => registration not allowed
 		 * !allowUserRegistration and social_registration => registration allowed
 		 * allowUserRegistration and !social_registration => registration not allowed
-		 * JComponentHelper::getParams('com_users')->get('allowUserRegistration') check is not needed since
+		 * ComponentHelper::getParams('com_users')->get('allowUserRegistration') check is not needed since
 		 * we prioritized the JFBConnect social registration config
 		*/
 
 		if (JFBCFactory::config()->getSetting('social_registration') == 0 && !$jUserId)
 		{
-			JFBCFactory::log(JText::_('COM_JFBCONNECT_MSG_USER_REGISTRATION_DISABLED'), 'notice');
+			JFBCFactory::log(Text::_('COM_JFBCONNECT_MSG_USER_REGISTRATION_DISABLED'), 'notice');
 
 			// Commmented code below for com_api plugin
 

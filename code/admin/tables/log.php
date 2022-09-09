@@ -9,17 +9,22 @@
 // No direct access
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Table\Table;
+use Joomla\Data\DataObject;
+use Joomla\CMS\Factory;
+use Joomla\Registry\Registry;
+
 /**
  * Log Table class
  *
  * @since  1.0
  */
-class ApiTablelog extends JTable
+class ApiTablelog extends Table
 {
 	/**
 	 * Constructor
 	 *
-	 * @param   JDatabaseDriver  &$db  Database object
+	 * @param   DataObjectbaseDriver  &$db  Database object
 	 *
 	 * @since  1.0
 	 */
@@ -43,32 +48,32 @@ class ApiTablelog extends JTable
 	 */
 	public function bind($array, $ignore = '')
 	{
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		$task = $input->getString('task', '');
 
 		if ($array['id'] == 0)
 		{
-			$array['created_by'] = JFactory::getUser()->id;
+			$array['created_by'] = Factory::getUser()->id;
 		}
 
 		if (isset($array['params']) && is_array($array['params']))
 		{
-			$registry = new JRegistry;
+			$registry = new Registry;
 			$registry->loadArray($array['params']);
 			$array['params'] = (string) $registry;
 		}
 
 		if (isset($array['metadata']) && is_array($array['metadata']))
 		{
-			$registry = new JRegistry;
+			$registry = new Registry;
 			$registry->loadArray($array['metadata']);
 			$array['metadata'] = (string) $registry;
 		}
 
-		if (! JFactory::getUser()->authorise('core.admin', 'com_api.key.' . $array['id']))
+		if (! Factory::getUser()->authorise('core.admin', 'com_api.key.' . $array['id']))
 		{
-			$actions = JFactory::getACL()->getActions('com_api', 'key');
-			$defaultActions = JFactory::getACL()->getAssetRules('com_api.key.' . $array['id'])->getData();
+			$actions = Factory::getACL()->getActions('com_api', 'key');
+			$defaultActions = Factory::getACL()->getAssetRules('com_api.key.' . $array['id'])->getData();
 			$arrayJaccess = array();
 
 			foreach ($actions as $action)
@@ -76,7 +81,7 @@ class ApiTablelog extends JTable
 				$arrayJaccess[$action->name] = $defaultActions[$action->name];
 			}
 
-			$array['rules'] = $this->JAccessRulestoArray($arrayJaccess);
+			$array['rules'] = $this->RulestoArray($arrayJaccess);
 		}
 
 		// Bind the rules for ACL where supported.
@@ -89,15 +94,15 @@ class ApiTablelog extends JTable
 	}
 
 	/**
-	 * This function convert an array of JAccessRule objects into an rules array.
+	 * This function convert an array of Rule objects into an rules array.
 	 *
-	 * @param   array  $jaccessrules  an array of JAccessRule objects.
+	 * @param   array  $jaccessrules  an array of Rule objects.
 	 *
 	 * @return  array
 	 *
 	 * @since   1.0
 	 */
-	private function JAccessRulestoArray($jaccessrules)
+	private function RulestoArray($jaccessrules)
 	{
 		$rules = array();
 

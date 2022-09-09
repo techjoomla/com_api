@@ -8,25 +8,30 @@
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
 */
 defined('_JEXEC') or die('Restricted access');
-JFactory::getApplication()->input->set('tmpl', 'component');
-$doc = JFactory::getDocument();
-JHTML::stylesheet(JURI::root() . 'components/com_api/libraries/swagger/css/reset.css');
-JHTML::stylesheet(JURI::root() . 'components/com_api/libraries/swagger/css/screen.css');
+
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Factory;
+
+Factory::getApplication()->input->set('tmpl', 'component');
+
+$doc = Factory::getDocument();
+HTMLHelper::stylesheet(Uri::root() . 'components/com_api/libraries/swagger/css/reset.css');
+HTMLHelper::stylesheet(Uri::root() . 'components/com_api/libraries/swagger/css/screen.css');
 
 
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/jquery-1.8.0.min.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/jquery.slideto.min.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/shred.bundle.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/jquery.wiggle.min.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/jquery.ba-bbq.min.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/handlebars-1.0.0.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/underscore-min.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/backbone-min.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/swagger.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/swagger-ui.js');
-JHTML::script(JURI::root() . 'components/com_api/libraries/swagger/lib/highlight.7.3.pack.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/jquery-1.8.0.min.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/jquery.slideto.min.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/shred.bundle.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/jquery.wiggle.min.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/jquery.ba-bbq.min.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/handlebars-1.0.0.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/underscore-min.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/backbone-min.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/swagger.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/swagger-ui.js');
+HTMLHelper::script(Uri::root() . 'components/com_api/libraries/swagger/lib/highlight.7.3.pack.js');
 
-$doc_path = JURI::root() . 'components/com_api/documentation/api-docs.json';
+$doc_path = Uri::root() . 'components/com_api/documentation/api-docs.json';
 $initjs = <<<EOT
     $(function () {
       window.swaggerUi = new SwaggerUi({

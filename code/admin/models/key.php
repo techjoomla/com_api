@@ -9,14 +9,17 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.modeladmin');
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Factory;
 
 /**
  * Api model.
  *
  * @since  1.0
  */
-class ApiModelKey extends JModelAdmin
+class ApiModelKey extends AdminModel
 {
 	/**
 	 * The prefix to use with controller messages.
@@ -33,14 +36,14 @@ class ApiModelKey extends JModelAdmin
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  \JTable  A \JTable object
+	 * @return  \Table  A \Table object
 	 *
 	 * @since   3.0
 	 * @throws  \Exception
 	 */
 	public function getTable($type = 'Key', $prefix = 'ApiTable', $config = array())
 	{
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 	/**
@@ -49,14 +52,14 @@ class ApiModelKey extends JModelAdmin
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  \JForm|boolean  A \JForm object on success, false on failure
+	 * @return  \Form|boolean  A \Form object on success, false on failure
 	 *
 	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Get the form.
 		$form = $this->loadForm('com_api.key', 'key', array('control' => 'jform', 'load_data' => $loadData));
@@ -79,7 +82,7 @@ class ApiModelKey extends JModelAdmin
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_api.edit.key.data', array());
+		$data = Factory::getApplication()->getUserState('com_api.edit.key.data', array());
 
 		if (empty($data))
 		{

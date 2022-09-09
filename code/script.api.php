@@ -11,9 +11,11 @@
 // No direct access.
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.filesystem.folder');
-jimport('joomla.filesystem.file');
-jimport('joomla.application.component.controller');
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 
 if (! defined('DS'))
 {
@@ -91,7 +93,7 @@ class Com_ApiInstallerScript
 	 * Runs after install, update or discover_update
 	 *
 	 * @param   string      $type    install, update or discover_update
-	 * @param   JInstaller  $parent  parent
+	 * @param   Installer  $parent  parent
 	 *
 	 * @return  mixed
 	 *
@@ -121,7 +123,7 @@ class Com_ApiInstallerScript
 	/**
 	 * Runs on uninstallation
 	 *
-	 * @param   JInstaller  $parent  parent
+	 * @param   Installer  $parent  parent
 	 *
 	 * @return  mixed
 	 *
@@ -159,9 +161,9 @@ class Com_ApiInstallerScript
 	/**
 	 * Installs subextensions (modules, plugins) bundled with the main extension
 	 *
-	 * @param   JInstaller  $parent  parent
+	 * @param   Installer  $parent  parent
 	 *
-	 * @return JObject  The subextension installation status
+	 * @return CMSObject  The subextension installation status
 	 *
 	 * @since 1.0.0
 	 */
@@ -169,9 +171,9 @@ class Com_ApiInstallerScript
 	{
 		$src = $parent->getParent()->getPath('source');
 
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
-		$status = new JObject;
+		$status = new CMSObject;
 		$status->modules = array();
 		$status->plugins = array();
 
@@ -224,7 +226,7 @@ class Com_ApiInstallerScript
 						$db->setQuery($sql);
 
 						$count = $db->loadResult();
-						$installer = new JInstaller;
+						$installer = new Installer;
 						$result = $installer->install($path);
 						$status->modules[] = array(
 							'name' => $module, 'client' => $folder, 'result' => $result, 'status' => $modulePreferences[1]
@@ -345,7 +347,7 @@ class Com_ApiInstallerScript
 						$db->setQuery($query);
 						$count = $db->loadResult();
 
-						$installer = new JInstaller;
+						$installer = new Installer;
 						$result = $installer->install($path);
 
 						$status->plugins[] = array(
@@ -384,7 +386,7 @@ class Com_ApiInstallerScript
 				$db->setQuery($query);
 				$count = $db->loadResult();
 
-				$installer = new JInstaller;
+				$installer = new Installer;
 				$result = $installer->install($path);
 
 				$status->libraries[] = array(
@@ -424,12 +426,12 @@ class Com_ApiInstallerScript
 			{
 				$file = JPATH_ROOT . '/' . $file;
 
-				if (!JFile::exists($file))
+				if (!File::exists($file))
 				{
 					continue;
 				}
 
-				JFile::delete($file);
+				File::delete($file);
 			}
 		}
 
@@ -439,12 +441,12 @@ class Com_ApiInstallerScript
 			{
 				$folder = JPATH_ROOT . '/' . $folder;
 
-				if (!JFolder::exists($folder))
+				if (!Folder::exists($folder))
 				{
 					continue;
 				}
 
-				JFolder::delete($folder);
+				Folder::delete($folder);
 			}
 		}
 	}

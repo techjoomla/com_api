@@ -11,20 +11,23 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
 class ApiViewDocumentation extends ApiView {
 
 	public $can_register = null;
 
 	public function display($tpl = null) {
 
-		JHTML::stylesheet('com_api.css', 'components/com_api/assets/css/');
+		HTMLHelper::stylesheet('com_api.css', 'components/com_api/assets/css/');
 
-		$user	= JFactory::getUser();
+		$user	= Factory::getUser();
 
-		$dmodel	= JModelLegacy::getInstance('Documentation', 'ApiModel');
+		$dmodel	= BaseDatabaseModel::getInstance('Documentation', 'ApiModel');
 		$endpoints	= $dmodel->getList();
 
-		$kmodel	= JModelLegacy::getInstance('Key', 'ApiModel');
+		$kmodel	= BaseDatabaseModel::getInstance('Key', 'ApiModel');
 		$tokens	= $kmodel->getList();
 
 		$this->endpoints = $endpoints;

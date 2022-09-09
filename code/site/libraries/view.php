@@ -10,9 +10,11 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
-class ApiView extends JViewLegacy {
+class ApiView extends HtmlView {
 
 	protected $option	= null;
 	protected $view		= null;
@@ -20,7 +22,7 @@ class ApiView extends JViewLegacy {
 	function __construct() {
 
 		//vishal - for j3.2 changes
-		$app	= JFactory::getApplication();
+		$app	= Factory::getApplication();
 
 		$option = $app->input->get('option','','STRING');
 
@@ -29,8 +31,8 @@ class ApiView extends JViewLegacy {
 	}
 
 	public function display($tpl = null) {
-		$app	= JFactory::getApplication();
-		if ($app->isAdmin()) :
+		$app	= Factory::getApplication();
+		if ($app->isClient("administrator")) :
 			$this->generateSubmenu();
 		endif;
 
@@ -49,8 +51,8 @@ class ApiView extends JViewLegacy {
 
 	protected function getMainViews() {
 		$views = array(
-					array('name' => JText::_('COM_API_CONTROL_PANEL'), 'view' => 'cpanel'),
-					array('name' => JText::_('COM_API_KEYS'), 'view' => 'keys'),
+					array('name' => Text::_('COM_API_CONTROL_PANEL'), 'view' => 'cpanel'),
+					array('name' => Text::_('COM_API_KEYS'), 'view' => 'keys'),
 				);
 		return $views;
 	}

@@ -11,14 +11,15 @@
 // No direct access.
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.controlleradmin');
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
  * Logs list controller class.
  *
  * @since  1.0
  */
-class ApiControllerLogs extends JControllerAdmin
+class ApiControllerLogs extends AdminController
 {
 	/**
 	 * Method to get a model object, loading it if required.
@@ -27,7 +28,7 @@ class ApiControllerLogs extends JControllerAdmin
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  \JModelLegacy|boolean  Model object on success; otherwise false on failure.
+	 * @return  \BaseDatabaseModel|boolean  Model object on success; otherwise false on failure.
 	 *
 	 * @since   3.0
 	 */

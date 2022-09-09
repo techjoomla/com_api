@@ -9,14 +9,17 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.modellist');
+use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Data\DataObject;
 
 /**
  * Methods supporting a list of keys records.
  *
  * @since  1.0
  */
-class ApiModelKeys extends JModelList
+class ApiModelKeys extends ListModel
 {
 	/**
 	 * Constructor.
@@ -54,7 +57,7 @@ class ApiModelKeys extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication('administrator');
+		$app = Factory::getApplication('administrator');
 
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
@@ -64,7 +67,7 @@ class ApiModelKeys extends JModelList
 		$this->setState('filter.state', $state);
 
 		// Load the parameters.
-		$params = JComponentHelper::getParams('com_api');
+		$params = ComponentHelper::getParams('com_api');
 		$this->setState('params', $params);
 
 		// List state information.
@@ -96,7 +99,7 @@ class ApiModelKeys extends JModelList
 	/**
 	 * Build an SQL query to load the list data.
 	 *
-	 * @return  JDatabaseQuery
+	 * @return  DataObjectbaseQuery
 	 *
 	 * @since   1.6
 	 */

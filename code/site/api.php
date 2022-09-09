@@ -11,7 +11,9 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.controller');
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 $library_path = JPATH_COMPONENT . '/libraries';
 
@@ -32,11 +34,11 @@ JLoader::register('APIHelper', $library_path . '/helper.php');
 JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
 JLoader::discover('API', JPATH_COMPONENT . '/libraries/exceptions');
 
-$app = JFactory::getApplication();
+$app = Factory::getApplication();
 
 $view = $app->input->get('view', '', 'CMD');
 
-if ($view)
+if (in_array($view, array("api", "applogin", "documentation")))
 {
 	$c = $view;
 }
@@ -55,7 +57,7 @@ if (file_exists($c_path))
 else
 {
 	// JError::raiseError(404, JText::_('COM_API_CONTROLLER_NOT_FOUND'));
-	throw new Exception(JText::_('COM_API_CONTROLLER_NOT_FOUND'), 404);
+	throw new Exception(Text::_('COM_API_CONTROLLER_NOT_FOUND'), 404);
 }
 
 $command = $app->input->get('task', 'display', 'CMD');
