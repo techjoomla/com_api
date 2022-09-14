@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.0" method="upgrade">
 	<name>com_api</name>
-	<creationDate>13th Jul 2022</creationDate>
+	<creationDate>14th Sep 2022</creationDate>
 	<copyright>Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Techjoomla</author>
