@@ -9,19 +9,23 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Pagination\Pagination;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 /**
  * View class for list of keys
  *
  * @since  1.0
  */
-class ApiViewKeys extends JViewLegacy
+class ApiViewKeys extends HtmlView
 {
 	/**
 	 * The model state.
 	 *
-	 * @var   JObject
+	 * @var   CMSObject
 	 * @since 1.0
 	 */
 	protected $state;
@@ -37,7 +41,7 @@ class ApiViewKeys extends JViewLegacy
 	/**
 	 * The pagination object.
 	 *
-	 * @var   JPagination
+	 * @var   Pagination
 	 * @since 1.0
 	 */
 	protected $pagination;
@@ -64,7 +68,7 @@ class ApiViewKeys extends JViewLegacy
 		ApiHelper::addSubmenu('keys');
 
 		$this->publish_states = array(
-			'' => JText::_('JOPTION_SELECT_PUBLISHED'), '1' => JText::_('JPUBLISHED'), '0' => JText::_('JUNPUBLISHED'), '*' => JText::_('JALL')
+			'' => Text::_('JOPTION_SELECT_PUBLISHED'), '1' => Text::_('JPUBLISHED'), '0' => Text::_('JUNPUBLISHED'), '*' => Text::_('JALL')
 		);
 
 		$this->addToolbar();
@@ -93,11 +97,11 @@ class ApiViewKeys extends JViewLegacy
 
 		if (JVERSION >= '3.0')
 		{
-			JToolBarHelper::title(JText::_('COM_API_TITLE_KEYS'), 'key');
+			JToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'key');
 		}
 		else
 		{
-			JToolBarHelper::title(JText::_('COM_API_TITLE_KEYS'), 'keys.png');
+			JToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'keys.png');
 		}
 
 		// Check if the form exists before showing the add/edit buttons
@@ -159,8 +163,8 @@ class ApiViewKeys extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'a.id' => JText::_('JGRID_HEADING_ID'), 'a.userid' => JText::_('COM_API_KEYS_USERID'), 'a.domain' => JText::_('COM_API_KEYS_DOMAIN'),
-				'a.state' => JText::_('JSTATUS'), 'a.last_used' => JText::_('COM_API_KEYS_LAST_USED')
+			'a.id' => Text::_('JGRID_HEADING_ID'), 'a.userid' => Text::_('COM_API_KEYS_USERID'), 'a.domain' => Text::_('COM_API_KEYS_DOMAIN'),
+				'a.state' => Text::_('JSTATUS'), 'a.last_used' => Text::_('COM_API_KEYS_LAST_USED')
 		);
 	}
 }

@@ -8,18 +8,20 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 // Access check.
-if (!JFactory::getUser()->authorise('core.manage', 'com_api'))
+if (!Factory::getUser()->authorise('core.manage', 'com_api'))
 {
-	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
+	throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
 }
 
 require_once JPATH_SITE . '/components/com_api/defines.php';
 
 // Include dependancies
-jimport('joomla.application.component.controller');
 
-$controller	= JControllerLegacy::getInstance('Api');
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller	= BaseController::getInstance('Api');
+$controller->execute(Factory::getApplication()->input->get('task'));
 $controller->redirect();

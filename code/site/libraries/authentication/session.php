@@ -11,7 +11,9 @@
  */
 
 defined('_JEXEC') or die();
-jimport('joomla.application.component.model');
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 /**
  * API user authentication
@@ -33,12 +35,12 @@ class ApiAuthenticationSession extends ApiAuthentication
 	 */
 	public function authenticate()
 	{
-		$app = JFactory::getApplication();
-		$user = JFactory::getUser();
+		$app = Factory::getApplication();
+		$user = Factory::getUser();
 
 		if (! $user->id)
 		{
-			$this->setError(JText::_('COM_API_LOGIN_MSG'));
+			$this->setError(Text::_('COM_API_LOGIN_MSG'));
 
 			return false;
 		}

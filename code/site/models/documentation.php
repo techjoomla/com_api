@@ -9,9 +9,11 @@
 */
 
 defined('_JEXEC') or die;
-jimport('joomla.application.component.model');
-jimport('joomla.filesystem.folder');
-jimport('joomla.filesystem.file');
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
 
 class ApiModelDocumentation extends ApiModel
 {
@@ -28,7 +30,7 @@ class ApiModelDocumentation extends ApiModel
 	{
 		parent::__construct();
 
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$this->option = $app->input->get('option','','CMD');
 		$this->view   = $app->input->get('view','','CMD');
@@ -39,7 +41,7 @@ class ApiModelDocumentation extends ApiModel
 
 	protected function populateState()
 	{
-    	$app = JFactory::getApplication();
+    	$app = Factory::getApplication();
 
 		$search 			= $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search', '', 'string');
 		$this->setState('filter.search', $search);
@@ -58,18 +60,17 @@ class ApiModelDocumentation extends ApiModel
   	}
 
 	public function getList($override=false, $filter=true) {
-		JPluginHelper::importPlugin('api');
+		PluginHelper::importPlugin('api');
 		
-		$dispatcher = JEventDispatcher::getInstance();
 		$api_paths = ApiResource::addIncludePath();
 		$methods = array ('get', 'post', 'put', 'delete', 'head');
 
 		foreach ($api_paths as $path) {
-			$resources = JFolder::files($path);
+			$resources = Folder::files($path);
 			foreach ($resources as $resource) {
 				$item = new stdClass;
 				$item->app = basename($path);
-				$item->resource = JFile::stripExt(basename($resource));
+				$item->resource = File::stripExt(basename($resource));
 				
 				$class_name = ucfirst($item->app) . 'ApiResource' . ucfirst($item->resource);
 				require_once $path . '/' . $resource;

@@ -10,12 +10,14 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Component\Router\RouterBase;
+
 /**
  * Routing class from com_api
  *
  * @since  2.0.1
  */
-class APIRouter extends JComponentRouterBase
+class APIRouter extends RouterBase
 {
 	private  $views = array('documentation','applogin', 'keys');
 

@@ -9,12 +9,18 @@
 
 defined('_JEXEC') or die('Unauthorized Access');
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Authentication\Authentication;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\User\User;
+
 /**
  * Class for Tjapi Authentication Plugin
  *
  * @since  1.0.0
  */
-class PlgAuthenticationTjapi extends JPlugin
+class PlgAuthenticationTjapi extends CMSPlugin
 {
 	/**
 	 * Verify Api Key
@@ -27,8 +33,8 @@ class PlgAuthenticationTjapi extends JPlugin
 	public function verifyApiKey($userId, $key)
 	{
 		// Load table
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
-		$table = JTable::getInstance('Key', 'ApiTable');
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
+		$table = Table::getInstance('Key', 'ApiTable');
 		$table->load(array('userid' => $userId));
 
 		if ($key == $table->hash)
@@ -59,8 +65,8 @@ class PlgAuthenticationTjapi extends JPlugin
 
 		if (empty($uid) || empty($key))
 		{
-			$response->status        = JAuthentication::STATUS_FAILURE;
-			$response->error_message = JText::_('JGLOBAL_AUTH_NO_USER');
+			$response->status        = Authentication::STATUS_FAILURE;
+			$response->error_message = Text::_('JGLOBAL_AUTH_NO_USER');
 		}
 		else
 		{
@@ -70,7 +76,7 @@ class PlgAuthenticationTjapi extends JPlugin
 			if ($match === true)
 			{
 				// Bring this in line with the rest of the authentication
-				$user = JUser::getInstance($uid);
+				$user = User::getInstance($uid);
 
 				// Set response data.
 				$response->username = $user->username;
@@ -79,14 +85,14 @@ class PlgAuthenticationTjapi extends JPlugin
 				$response->password = $user->password;
 				$response->language = $user->getParam('language');
 
-				$response->status        = JAuthentication::STATUS_SUCCESS;
+				$response->status        = Authentication::STATUS_SUCCESS;
 				$response->error_message = '';
 			}
 			else
 			{
 				// Invalid password
-				$response->status        = JAuthentication::STATUS_FAILURE;
-				$response->error_message = JText::_('JGLOBAL_AUTH_INVALID_PASS');
+				$response->status        = Authentication::STATUS_FAILURE;
+				$response->error_message = Text::_('JGLOBAL_AUTH_INVALID_PASS');
 			}
 		}
 

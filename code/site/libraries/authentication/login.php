@@ -10,6 +10,11 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Authentication\Authentication;
+use Joomla\CMS\User\UserHelper;
+use Joomla\CMS\Uri\Uri;
+
 /**
  * ApiAuthenticationLogin class.
  *
@@ -30,7 +35,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 	 */
 	public function authenticate()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$username = $app->input->post->get('username', '', 'STRING');
 		$password = $app->input->post->get('password', '', 'STRING');
@@ -38,7 +43,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 		$userId = $this->loadUserByCredentials($username, $password);
 
 		// Remove username and password from request for when it gets logged
-		$uri = JFactory::getURI();
+		$uri = Uri::getInstance();
 		$uri->delVar('username');
 		$uri->delVar('password');
 
@@ -64,15 +69,14 @@ class ApiAuthenticationLogin extends ApiAuthentication
 	 */
 	public function loadUserByCredentials($user, $pass)
 	{
-		jimport('joomla.user.authentication');
 
-		$authenticate = JAuthentication::getInstance();
+		$authenticate = Authentication::getInstance();
 
 		$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass), $options = array());
 
-		if ($response->status === JAuthentication::STATUS_SUCCESS)
+		if ($response->status === Authentication::STATUS_SUCCESS)
 		{
-			$userId = JUserHelper::getUserId($response->username);
+			$userId = UserHelper::getUserId($response->username);
 
 			if ($userId === false)
 			{

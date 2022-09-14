@@ -8,6 +8,8 @@
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
  */
 
+use Joomla\CMS\Factory;
+
 /**
  * Class APIJSONResponse to convert the response of API in json
  *
@@ -38,7 +40,7 @@ class APIJSONResponse
 	 */
 	public function __construct($response)
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$this->data = new \stdClass;
 
 		if ($response instanceof Exception)
@@ -75,7 +77,7 @@ class APIJSONResponse
 	 */
 	public function __toString()
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$callback = $app->input->get($this->callbackname, '', 'CMD');
 
 		if ($callback)

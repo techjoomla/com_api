@@ -5,10 +5,10 @@
 	<author>Techjoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<creationDate>22nd Oct 2019</creationDate>
+	<creationDate>14th Sep 2022</creationDate>
 	<copyright>Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>2.5.1</version>
+	<version>3.0.0</version>
 
 	<files>
 		<filename plugin="tjtokenlogin">tjtokenlogin.php</filename>

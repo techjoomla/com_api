@@ -10,6 +10,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 class APICache {
 
 	const CACHE_GROUP 	= 'com_api';
@@ -20,11 +22,11 @@ class APICache {
 	
 	public static function callback($object, $method, $args=array(), $cache_lifetime=null, $overrideConfig=false) {
 		
-		$conf 			= JFactory::getConfig();
+		$conf 			= Factory::getConfig();
 		$cacheactive 	= $conf->getValue('config.caching');
 		$cachetime		= $conf->getValue('config.cachetime');
 		
-		$cache= & JFactory::getCache(self::CACHE_GROUP,'callback');
+		$cache= & Factory::getCache(self::CACHE_GROUP,'callback');
 
 		if ($overrideConfig) :
 			$cache->setCaching(1); //enable caching

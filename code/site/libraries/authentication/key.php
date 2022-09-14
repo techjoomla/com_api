@@ -9,7 +9,10 @@
  */
 
 defined('_JEXEC') or die;
-jimport('joomla.application.component.model');
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
 
 /**
  * API resource class
@@ -29,7 +32,7 @@ class ApiAuthenticationKey extends ApiAuthentication
 	 */
 	public function authenticate()
 	{
-		$app          = JFactory::getApplication();
+		$app          = Factory::getApplication();
 		$query_token  = $app->input->get('key', '', 'STRING');
 		$header_token = $this->getBearerToken();
 		$key          = $header_token ? $header_token : $query_token;
@@ -47,7 +50,7 @@ class ApiAuthenticationKey extends ApiAuthentication
 			return $token->userid;
 		}
 
-		$this->setError(JText::_('COM_API_KEY_NOT_FOUND'));
+		$this->setError(Text::_('COM_API_KEY_NOT_FOUND'));
 
 		return false;
 	}
@@ -61,7 +64,7 @@ class ApiAuthenticationKey extends ApiAuthentication
 	 */
 	public function loadTokenByHash($hash)
 	{
-		$table = JTable::getInstance('Key', 'ApiTable');
+		$table = Table::getInstance('Key', 'ApiTable');
 		$table->loadByHash($hash);
 
 		return $table;

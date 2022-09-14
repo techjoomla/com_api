@@ -8,21 +8,27 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.modellist');
+use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Data\DataObject;
+use Joomla\CMS\Table\Table;
+
 
 /**
  * Methods supporting a list of log records.
  *
  * @since  1.0
  */
-class ApiModelLogs extends JModelList
+class ApiModelLogs extends ListModel
 {
 	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @see     \JModelLegacy
+	 * @see     \BaseDatabaseModel
 	 * @since   1.6
 	 */
 	public function __construct($config = array())
@@ -56,7 +62,7 @@ class ApiModelLogs extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication('administrator');
+		$app = Factory::getApplication('administrator');
 
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
@@ -66,7 +72,7 @@ class ApiModelLogs extends JModelList
 		$this->setState('filter.state', $published);
 
 		// Load the parameters.
-		$params = JComponentHelper::getParams('com_api');
+		$params = ComponentHelper::getParams('com_api');
 		$this->setState('params', $params);
 
 		// List state information.
@@ -98,7 +104,7 @@ class ApiModelLogs extends JModelList
 	/**
 	 * Build an SQL query to load the list data.
 	 *
-	 * @return  JDatabaseQuery
+	 * @return  DataObjectbaseQuery
 	 *
 	 * @since   1.6
 	 */
@@ -164,7 +170,7 @@ class ApiModelLogs extends JModelList
 	 */
 	public function delete($cid)
 	{
-		$table = JTable::getInstance('Log', 'ApiTable');
+		$table = Table::getInstance('Log', 'ApiTable');
 
 		foreach ($cid as $id)
 		{

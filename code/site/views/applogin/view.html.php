@@ -10,17 +10,23 @@
 
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Table\Table;
+
 require_once JPATH_SITE . '/components/com_api/vendors/php-jwt/src/JWT.php';
 
 use Firebase\JWT\JWT;
-use Joomla\CMS\Factory;
 
 /**
  * HTML Article View class for the Content component
  *
  * @since  1.5
  */
-class ApiViewApplogin extends JViewLegacy
+class ApiViewApplogin extends HtmlView
 {
 	public $keyObj = null;
 
@@ -31,7 +37,7 @@ class ApiViewApplogin extends JViewLegacy
 	 *
 	 * @return  mixed  A string if successful, otherwise an Error object.
 	 *
-	 * @see     \JViewLegacy::loadTemplate()
+	 * @see     \HtmlView::loadTemplate()
 	 * @since   3.0
 	 */
 	public function display($tpl = null)
@@ -41,10 +47,10 @@ class ApiViewApplogin extends JViewLegacy
 
 		if (!$user->id)
 		{
-			$msg = JText::_('COM_API_LOGIN_MSG');
+			$msg = Text::_('COM_API_LOGIN_MSG');
 			$uri = $_SERVER['REQUEST_URI'];
 			$url = base64_encode($uri);
-			$app->redirect(JRoute::_('index.php?option=com_users&view=login&return=' . $url, false), $msg);
+			$app->redirect(Route::_('index.php?option=com_users&view=login&return=' . $url, false), $msg);
 		}
 
 		$this->keyObj = $this->getKey();
@@ -62,7 +68,7 @@ class ApiViewApplogin extends JViewLegacy
 	protected function getKey()
 	{
 		$obj   = new stdclass;
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$id   = $user->id;
 
 		require_once JPATH_ADMINISTRATOR . '/components/com_api/models/key.php';
@@ -98,7 +104,7 @@ class ApiViewApplogin extends JViewLegacy
 				'c'      => 'key',
 				'ret'    => 'index.php?option=com_api&view=keys',
 				'option' => 'com_api',
-				JSession::getFormToken() => 1
+				Session::getFormToken() => 1
 			);
 
 			$result = $kmodel->save($data);
@@ -111,8 +117,8 @@ class ApiViewApplogin extends JViewLegacy
 			}
 
 			// Load api key table
-			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
-			$table = JTable::getInstance('Key', 'ApiTable');
+			Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_api/tables');
+			$table = Table::getInstance('Key', 'ApiTable');
 			$table->load(array('userid' => $user->id));
 			$key = $table->hash;
 		}
@@ -154,7 +160,7 @@ class ApiViewApplogin extends JViewLegacy
 			$lang->load('plg_api_users', JPATH_ADMINISTRATOR,'',true);
 
 			$obj->code = 403;
-			$obj->message = JText::_('PLG_API_USERS_BAD_REQUEST_MESSAGE');
+			$obj->message = Text::_('PLG_API_USERS_BAD_REQUEST_MESSAGE');
 		}
 
 		return $obj;
