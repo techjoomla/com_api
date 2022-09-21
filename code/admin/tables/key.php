@@ -14,6 +14,7 @@ use Joomla\Data\DataObject;
 use Joomla\CMS\Factory;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Access\Access;
 
 /**
  * key Table class
@@ -87,8 +88,8 @@ class ApiTablekey extends Table
 
 		if (! Factory::getUser()->authorise('core.admin', 'com_api.key.' . $array['id']))
 		{
-			$actions = Factory::getACL()->getActions('com_api', 'key');
-			$defaultActions = Factory::getACL()->getAssetRules('com_api.key.' . $array['id'])->getData();
+			$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_api/access.xml', "/access/section[@name='key']/");
+			$defaultActions = Access::getAssetRules('com_api.key.' . $array['id'])->getData();
 			$arrayJaccess = array();
 
 			foreach ($actions as $action)
