@@ -13,6 +13,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\Data\DataObject;
 use Joomla\CMS\Factory;
 use Joomla\Registry\Registry;
+use Joomla\CMS\Access\Access;
 
 /**
  * Log Table class
@@ -72,8 +73,8 @@ class ApiTablelog extends Table
 
 		if (! Factory::getUser()->authorise('core.admin', 'com_api.key.' . $array['id']))
 		{
-			$actions = Factory::getACL()->getActions('com_api', 'key');
-			$defaultActions = Factory::getACL()->getAssetRules('com_api.key.' . $array['id'])->getData();
+			$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_api/access.xml', "/access/section[@name='key']/");
+			$defaultActions = Access::getAssetRules('com_api.key.' . $array['id'])->getData();
 			$arrayJaccess = array();
 
 			foreach ($actions as $action)
