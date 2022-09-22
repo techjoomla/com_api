@@ -497,7 +497,7 @@ class ApiPlugin extends CMSPlugin
 	public function setResponse($data)
 	{
 		// For backward compatability -- TODO
-		if (!isset($data->result))
+		if (!isset($data->result) && !empty($data))
 		{
 			$data->result = clone $data;
 		}
