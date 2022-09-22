@@ -11,7 +11,7 @@ ALTER TABLE `#__api_keys` CHANGE `per_hour` `per_hour` int(10) NOT NULL DEFAULT 
 
 ALTER TABLE `#__api_logs` CHANGE `hash` `hash` varchar(255) NOT NULL DEFAULT '';
 ALTER TABLE `#__api_logs` CHANGE `ip_address` `ip_address` varchar(20) NOT NULL DEFAULT '';
-ALTER TABLE `#__api_logs` CHANGE `time` `time` timestamp ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE `#__api_logs` CHANGE `time` `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 ALTER TABLE `#__api_logs` CHANGE `request_method` `request_method` varchar(20) NOT NULL DEFAULT '';
 ALTER TABLE `#__api_logs` CHANGE `request` `request` varchar(255) NOT NULL DEFAULT '';
 ALTER TABLE `#__api_logs` CHANGE `post_data` `post_data` text DEFAULT NULL;

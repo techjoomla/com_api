@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `#__api_logs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `hash` varchar(255) NOT NULL DEFAULT '',
   `ip_address` varchar(20) NOT NULL DEFAULT '',
-  `time` timestamp DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `request_method` varchar(20) NOT NULL DEFAULT '',
   `request` varchar(255) NOT NULL DEFAULT '',
   `post_data` text DEFAULT NULL,
