@@ -77,7 +77,7 @@ class ApiPlugin extends CMSPlugin
 		$app = Factory::getApplication();
 		$param_path = JPATH_BASE . self::$plg_path . $name . '.xml';
 		$plugin = PluginHelper::getPlugin('api', $name);
-		PluginHelper::importPlugin("api");
+		PluginHelper::importPlugin("api", $name);
 
 		if (isset(self::$instances[$name]))
 		{
