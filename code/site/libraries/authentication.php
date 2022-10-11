@@ -75,7 +75,7 @@ abstract class ApiAuthentication extends CMSObject
 		{
 			self::setAuthError($auth_handler->getError());
 
-			return Factory::getUser();
+			return false;
 		}
 		else
 		{
