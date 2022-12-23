@@ -9,14 +9,19 @@
  */
 
 defined('_JEXEC') or die;
-jimport('joomla.application.component.model');
+
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Language\Text;
 
 /**
  * Class for API authetication
  *
  * @since  1.0
  */
-abstract class ApiAuthentication extends JObject
+abstract class ApiAuthentication extends CMSObject
 {
 	protected $auth_method     = null;
 
@@ -57,8 +62,8 @@ abstract class ApiAuthentication extends JObject
 	 */
 	public static function authenticateRequest()
 	{
-		$params       = JComponentHelper::getParams('com_api');
-		$app          = JFactory::getApplication();
+		$params       = ComponentHelper::getParams('com_api');
+		$app          = Factory::getApplication();
 
 		$className    = 'APIAuthentication' . ucwords(self::getAuthMethod());
 
@@ -73,24 +78,24 @@ abstract class ApiAuthentication extends JObject
 		}
 		else
 		{
-			$user = JFactory::getUser($user_id);
+			$user = Factory::getUser($user_id);
 
 			if (!$user->id)
 			{
-				self::setAuthError(JText::_("COM_API_USER_NOT_FOUND"));
+				self::setAuthError(Text::_("COM_API_USER_NOT_FOUND"));
 
 				return false;
 			}
 
 			if ($user->block == 1)
 			{
-				self::setAuthError(JText::_("COM_API_BLOCKED_USER"));
+				self::setAuthError(Text::_("COM_API_BLOCKED_USER"));
 
 				return false;
 			}
 
 			/* V1.8.1 - to set admin info headers
-			$log_user = JFactory::getUser(); */
+			$log_user = Factory::getUser(); */
 			$isroot = $user->authorise('core.admin');
 
 			if ($isroot)
@@ -145,12 +150,13 @@ abstract class ApiAuthentication extends JObject
 	 */
 	public static function getPluginsList()
 	{
-		$plugins    = JPluginHelper::getPlugin('api');
+		$plugins    = PluginHelper::getPlugin('api');
 		$pluginsArr = array();
 
 		foreach ($plugins as $plg)
 		{
-			$xml          = JFactory::getXML(JPATH_SITE . '/plugins/api/' . $plg->name . '/' . $plg->name . '.xml');
+			$xml          = simplexml_load_file(JPATH_SITE . '/plugins/api/' . $plg->name . '/' . $plg->name . '.xml');
+
 			$version      = (string) $xml->version;
 			$pluginsArr[] = $plg->name . '-' . $version;
 		}
@@ -167,7 +173,7 @@ abstract class ApiAuthentication extends JObject
 	 */
 	public static function getCom_apiVersion()
 	{
-		$xml = JFactory::getXML(JPATH_ADMINISTRATOR . '/components/com_api/api.xml');
+		$xml = simplexml_load_file(JPATH_ADMINISTRATOR . '/components/com_api/api.xml');
 
 		return $version = (string) $xml->version;
 	}
@@ -181,14 +187,13 @@ abstract class ApiAuthentication extends JObject
 	 */
 	private static function getAuthMethod()
 	{
-		$app = JFactory::getApplication();
-		$key = $app->input->get('key');
+		$server  = Factory::getApplication()->input->server;
 
-		if (isset($_SERVER['HTTP_X_AUTH']) && $_SERVER['HTTP_X_AUTH'])
+		if (!empty($server->getString('HTTP_X_AUTH', '')))
 		{
-			$authMethod = $_SERVER['HTTP_X_AUTH'];
+			$authMethod = trim($server->getString('HTTP_X_AUTH', ''));
 		}
-		elseif ($key || self::getBearerToken())
+		elseif (self::getBearerToken())
 		{
 			$authMethod = 'key';
 		}
@@ -228,14 +233,15 @@ abstract class ApiAuthentication extends JObject
 	private static function getAuthorizationHeader()
 	{
 		$headers = null;
+		$server  = Factory::getApplication()->input->server;
 
-		if (isset($_SERVER['Authorization']))
+		if (!empty($server->getString('Authorization', '')))
 		{
-			$headers = trim($_SERVER["Authorization"]);
+			$headers = trim($server->getString('Authorization', ''));
 		}
-		elseif (isset($_SERVER['HTTP_AUTHORIZATION']))
+		elseif (!empty($server->getString('HTTP_AUTHORIZATION', '')))
 		{
-			$headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+			$headers = trim($server->getString('HTTP_AUTHORIZATION', ''));
 		}
 		elseif (function_exists('apache_request_headers'))
 		{
@@ -250,13 +256,13 @@ abstract class ApiAuthentication extends JObject
 			}
 		}
 
-		if (isset($_SERVER['X-Authorization']))
+		if (!empty($server->getString('X-Authorization', '')))
 		{
-			$headers = trim($_SERVER["X-Authorization"]);
+			$headers = trim($server->getString('X-Authorization', ''));
 		}
-		elseif (isset($_SERVER['HTTP_X_AUTHORIZATION']))
+		elseif (!empty($server->getString('HTTP_X_AUTHORIZATION', '')))
 		{
-			$headers = trim($_SERVER["HTTP_X_AUTHORIZATION"]);
+			$headers = trim($server->getString('HTTP_X_AUTHORIZATION', ''));
 		}
 		elseif (function_exists('apache_request_headers'))
 		{
@@ -283,9 +289,9 @@ abstract class ApiAuthentication extends JObject
 	 */
 	public static function getImpersonateHeader()
 	{
-		$jinput           = JFactory::getApplication()->input;
-		$xImpersonate     = $jinput->server->get('X-Impersonate', '', 'STRING');
-		$httpXImpersonate = $jinput->server->get('HTTP_X_IMPERSONATE', '', 'STRING');
+		$server           = Factory::getApplication()->input->server;
+		$xImpersonate     = $server->getString('X-Impersonate', '');
+		$httpXImpersonate = $server->getString('HTTP_X_IMPERSONATE', '');
 
 		if (!empty($xImpersonate))
 		{
@@ -318,7 +324,7 @@ abstract class ApiAuthentication extends JObject
 		}
 
 		// Get user from tokenUserId
-		$user         = JFactory::getUser($tokenUserId);
+		$user         = Factory::getUser($tokenUserId);
 		$isSuperAdmin = $user->authorise('core.admin');
 
 		// If this user is not super admin user, return false
@@ -346,7 +352,7 @@ abstract class ApiAuthentication extends JObject
 		}
 		else
 		{
-			ApiError::raiseError("400", JText::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
+			ApiError::raiseError("400", Text::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
 
 			return false;
 		}
@@ -354,7 +360,7 @@ abstract class ApiAuthentication extends JObject
 		// If username or emailid exists ?
 		if ($searchFor)
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName('id'))
 				->from($db->quoteName('#__users'))
@@ -367,7 +373,7 @@ abstract class ApiAuthentication extends JObject
 			}
 			else
 			{
-				ApiError::raiseError("400", JText::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
+				ApiError::raiseError("400", Text::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
 
 				return false;
 			}
@@ -383,7 +389,7 @@ abstract class ApiAuthentication extends JObject
 			}
 			else
 			{
-				ApiError::raiseError("400", JText::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
+				ApiError::raiseError("400", Text::_('COM_API_INVALID_USER_TO_IMPERSONATE'), 'APIValidationException');
 
 				return false;
 			}
