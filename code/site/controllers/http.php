@@ -175,7 +175,13 @@ class ApiControllerHttp extends ApiController
 	 */
 	private function resetDocumentType()
 	{
-        header_remove();
+        if (!headers_sent())
+        {
+            foreach (headers_list() as $header)
+            {
+                header_remove(explode(":", $header, 2)[0]);
+            }
+        }
 		//JResponse::clearHeaders();
 	}
 }
