@@ -30,7 +30,7 @@ class ApiControllerKeys extends AdminController
 	 *
 	 * @since   3.0
 	 */
-	public function getModel($name = 'key', $prefix = 'ApiModel')
+	public function getModel($name = 'key', $prefix = 'ApiModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
