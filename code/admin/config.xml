@@ -3,6 +3,13 @@
 	<fieldset label="COM_API" name="api">
 		<field name="force_output" type="text" label="COM_API_FORM_LBL_FORCE_OUTPUT"
 			description="COM_API_FORM_DESC_FORCE_OUTPUT" />
+		<field name="request_limit_time" type="radio" default="hour"
+			label="COM_API_CONFIG_REQ_LT_LBL" description="COM_API_CONFIG_REQ_LT_DESC"
+			class="btn-group">
+			<option value="hour">Hour</option>
+			<option value="minute">Minute</option>
+			<option value="day">Day</option>
+		</field>
 		<field name="request_limit" type="text" label="COM_API_FORM_LBL_RATE_LIMIT"
 			description="COM_API_FORM_LBL_RATE_LIMIT_DESC" />
 		<field name="log_requests" type="radio" default="0"
@@ -23,6 +30,8 @@
 			<option value="get">GET</option>
 			<option value="*">ALL</option>
 		</field>
+        <field name="ip_address" type="textarea" default="*" columns="5"
+            label="COM_API_CONFIG_IPS_LBL" description="COM_API_CONFIG_IPS_DESC" />
         <field name="cors" type="textarea" default="*" columns="5"
             label="COM_API_CONFIG_CORS_LBL" description="COM_API_CONFIG_CORS_DESC" />
         <field name="allow_headers" type="textarea" default="Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods, X-Authorization, X-Compatibility-Mode, Content-Type, Accept" columns="5"

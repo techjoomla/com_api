@@ -280,7 +280,7 @@ class ApiPlugin extends CMSPlugin
 	final public function fetchResource($resource_name = null)
 	{
 		$this->log();
-
+		$app = Factory::getApplication();
 		if ($resource_name == null)
 		{
 			$resource_name = $this->get('resource');
@@ -309,6 +309,16 @@ class ApiPlugin extends CMSPlugin
 		if (! $this->checkRequestLimit())
 		{
 			ApiError::raiseError(403, Text::_('COM_API_RATE_LIMIT_EXCEEDED'), 'APIUnauthorisedException');
+		}
+
+		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
+		$ips = $this->params->get('ip_address', '*');
+
+		if ($ips === "*"){}else{
+			if (!IpHelper::IPinList($ip_address,$ips))
+			{
+				ApiError::raiseError(403, Text::_('COM_API_IP_RISRICTED'), 'APIUnauthorisedException');
+			} 
 		}
 
 		$this->lastUsed();
@@ -370,24 +380,27 @@ class ApiPlugin extends CMSPlugin
 		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 
 		$time = $this->params->get('request_limit_time', 'hour');
-
+		$now = Factory::getDate();
 		switch ($time)
 		{
 			case 'day':
 				$offset = 60 * 60 * 24;
+				$now->modify('-1 day');
 				break;
 
 			case 'minute':
 				$offset = 60;
+				$now->modify('-1 minute');
 				break;
 
 			case 'hour':
 			default:
 				$offset = 60 * 60;
+				$now->modify('-1 hour');
 				break;
 		}
 
-		$query_time = time() - $offset;
+		$query_time = $now->toSql();
 
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
