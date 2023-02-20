@@ -22,6 +22,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\User;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Utilities\IpHelper;
 
 /**
  * API_plugin base class
