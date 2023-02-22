@@ -377,32 +377,26 @@ class ApiPlugin extends CMSPlugin
 			return true;
 		}
 
-		$hash = $app->input->get('key', '', 'STRING');
-		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
-
+		$hash = $app->input->get('key', '', 'STRING'); 
 		$time = $this->params->get('request_limit_time', 'hour');
 		$now = Factory::getDate();
 		switch ($time)
 		{
-			case 'day':
-				$offset = 60 * 60 * 24;
+			case 'day': 
 				$now->modify('-1 day');
 				break;
 
-			case 'minute':
-				$offset = 60;
+			case 'minute': 
 				$now->modify('-1 minute');
 				break;
 
 			case 'hour':
-			default:
-				$offset = 60 * 60;
+			default: 
 				$now->modify('-1 hour');
 				break;
 		}
 
-		$query_time = $now->toSql();
-
+		$query_time = $now->toSql();		
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)');

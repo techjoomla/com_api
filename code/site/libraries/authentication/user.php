@@ -29,8 +29,7 @@ class ApiAuthenticationUser extends ApiAuthentication
 		//$username = Factory::getApplication()->input->get( 'username' );
 		//$password = Factory::getApplication()->input->get( 'password' );
 
-		$user = $this->loadUserByCredentials( $username, $password );
-
+		$user = $this->loadUserByCredentials( $username, $password ); 
 		// Remove username and password from request for when it gets logged
 		$uri = Factory::getURI();
 		$uri->delVar('username');
