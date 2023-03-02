@@ -254,7 +254,7 @@ class Com_ApiInstallerScript
 							}
 
 							$db->setQuery($sql);
-							$db->query();
+							$db->execute();
 
 							// B. Change the ordering of back-end modules to 1 + max ordering
 							if ($folder == 'admin')
@@ -272,7 +272,7 @@ class Com_ApiInstallerScript
 									->set($db->qn('ordering') . ' = ' . $db->q($position))
 									->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
 								$db->setQuery($query);
-								$db->query();
+								$db->execute();
 							}
 
 							// C. Link to all pages
@@ -364,7 +364,7 @@ class Com_ApiInstallerScript
 								)
 								->where($db->qn('folder') . ' = ' . $db->q($folder));
 							$db->setQuery($query);
-							$db->query();
+							$db->execute();
 						}
 					}
 				}
@@ -401,7 +401,7 @@ class Com_ApiInstallerScript
 						->where('( ' . ($db->qn('name') . ' = ' . $db->q($folder)) . ' OR ' . ($db->qn('element') . ' = ' . $db->q($folder)) . ' )')
 						->where($db->qn('folder') . ' = ' . $db->q($folder));
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}

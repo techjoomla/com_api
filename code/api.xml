@@ -47,7 +47,9 @@
 		<menu img="components/com_api/assets/images/s_com_api.png">COM_API</menu>
 		<submenu>
 			<menu link="option=com_api&amp;view=keys" view="keys" img="components/com_api/assets/images/s_keys.png" alt="Api/Keys">COM_API_TITLE_KEYS</menu>
+			<menu link="option=com_api&amp;view=logs" view="logs" img="components/com_api/assets/images/s_logs.png" alt="Api/Logs">COM_API_TITLE_LOGS</menu>
 		</submenu>
+		
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>

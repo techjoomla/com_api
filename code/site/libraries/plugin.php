@@ -22,7 +22,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\User;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Utilities\IpHelper;
+use Joomla\Utilities\IpHelper; 
 
 /**
  * API_plugin base class
@@ -280,8 +280,11 @@ class ApiPlugin extends CMSPlugin
 	 */
 	final public function fetchResource($resource_name = null)
 	{
-		$this->log();
 		$app = Factory::getApplication();
+		$app->input->set("key",APIAuthentication::getBearerToken());
+		
+		$this->log();
+		
 		if ($resource_name == null)
 		{
 			$resource_name = $this->get('resource');
@@ -439,7 +442,7 @@ class ApiPlugin extends CMSPlugin
 		$excludes = $params->get('exclude_log');
 		$raw_post = file_get_contents('php://input');
 		$redactions = explode(",", $excludes);
-		$req_url = Uri::current() . '?' . Factory::getURI()->getQuery();
+		$req_url = Uri::current() . '?' . Uri::getInstance()->getQuery();
 
 		switch ($app->input->server->get('CONTENT_TYPE'))
 		{

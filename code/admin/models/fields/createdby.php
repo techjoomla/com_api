@@ -7,7 +7,6 @@
  */
 
 defined('JPATH_BASE') or die();
-
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Factory;
 
@@ -16,7 +15,7 @@ use Joomla\CMS\Factory;
  *
  * @since  1.0
  */
-class JFormFieldCreatedby extends JFormField
+class FormFieldCreatedby extends FormField
 {
 	/**
 	 * The form field type.
