@@ -281,7 +281,6 @@ class ApiPlugin extends CMSPlugin
 	final public function fetchResource($resource_name = null)
 	{
 		$app = Factory::getApplication();
-		$app->input->set("key",APIAuthentication::getBearerToken());
 		
 		$this->log();
 		
@@ -316,9 +315,9 @@ class ApiPlugin extends CMSPlugin
 		}
 
 		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
-		$ips = $this->params->get('ip_address', '*');
+		$ips = $this->params->get('ip_address', '');
 
-		if ($ips === "*"){}else{
+		if ($ips === ""){}else{
 			if (!IpHelper::IPinList($ip_address,$ips))
 			{
 				ApiError::raiseError(403, Text::_('COM_API_IP_RISRICTED'), 'APIUnauthorisedException');
@@ -372,7 +371,6 @@ class ApiPlugin extends CMSPlugin
 	 */
 	final private function checkRequestLimit()
 	{
-		$app = Factory::getApplication();
 		$limit = $this->params->get('request_limit', 0);
 
 		if ($limit == 0)
@@ -380,7 +378,7 @@ class ApiPlugin extends CMSPlugin
 			return true;
 		}
 
-		$hash = $app->input->get('key', '', 'STRING'); 
+		$hash = APIAuthentication::getBearerToken(); 
 		$time = $this->params->get('request_limit_time', 'hour');
 		$now = Factory::getDate();
 		switch ($time)
@@ -470,7 +468,7 @@ class ApiPlugin extends CMSPlugin
 
 		$table = Table::getInstance('Log', 'ApiTable');
 		$date = Factory::getDate();
-		$table->hash = $app->input->get('key', '', 'STRING');
+		$table->hash = APIAuthentication::getBearerToken();
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
 		$table->request = $req_url;
@@ -489,10 +487,9 @@ class ApiPlugin extends CMSPlugin
 	 */
 	final private function lastUsed()
 	{
-		$app = Factory::getApplication();
 		$table = Table::getInstance('Key', 'ApiTable');
 
-		$hash = $app->input->get('key', '', 'STRING');
+		$hash = APIAuthentication::getBearerToken();
 		$table->setLastUsed($hash);
 	}
 

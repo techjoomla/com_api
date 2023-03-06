@@ -14,4 +14,4 @@
 
 ##### + Features Added:
 - #175851 - Joomla 4 & PHP 8.0 compatible
-- #194541 - Added IP based restrictions to access the APIs, Issue #63 
+- #194541 - Added IP based restrictions to access the APIs, Issue #63

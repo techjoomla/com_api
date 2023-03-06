@@ -31,12 +31,9 @@ class ApiAuthenticationKey extends ApiAuthentication
 	 * @return  int|boolean  User id of the user or false
 	 */
 	public function authenticate()
-	{
-		$app          = Factory::getApplication();
-		$query_token  = $app->input->get('key', '', 'STRING');
-		$header_token = $this->getBearerToken();
-		$key          = $header_token ? $header_token : $query_token;
-		$token        = $this->loadTokenByHash($key);
+	{		 
+		$header_token = $this->getBearerToken(); 
+		$token        = $this->loadTokenByHash($header_token);
 
 		if (isset($token->state) && $token->state == 1)
 		{
