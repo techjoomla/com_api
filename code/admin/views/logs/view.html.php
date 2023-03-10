@@ -7,13 +7,12 @@
  */
 
 // No direct access.
-defined('_JEXEC') or die();
-
+defined('_JEXEC') or die();  
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Pagination\Pagination;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 
 
 /**
@@ -94,17 +93,17 @@ class ApiViewLogs extends HtmlView
 
 		if (JVERSION >= '3.0')
 		{
-			JToolBarHelper::title(Text::_('COM_API_TITLE_LOGS'), 'list');
+			ToolBarHelper::title(Text::_('COM_API_TITLE_LOGS'), 'list');
 		}
 		else
 		{
-			JToolBarHelper::title(Text::_('COM_API_TITLE_LOGS'), 'logs.png');
+			ToolBarHelper::title(Text::_('COM_API_TITLE_LOGS'), 'logs.png');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
 			// If this component does not use state then show a direct delete button as we can not trash
-			JToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'logs.delete', 'JTOOLBAR_DELETE');
+			ToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'logs.delete', 'JTOOLBAR_DELETE');
 		}
 
 		// Show trash and delete for components that uses the state field
@@ -112,19 +111,19 @@ class ApiViewLogs extends HtmlView
 		{
 			if ($state->get('filter.state') == - 2 && $canDo->get('core.delete'))
 			{
-				JToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_EMPTY_TRASH');
-				JToolBarHelper::divider();
+				ToolBarHelper::deleteList('', 'logs.delete', 'JTOOLBAR_EMPTY_TRASH');
+				ToolBarHelper::divider();
 			}
 			elseif ($canDo->get('core.edit.state'))
 			{
-				JToolBarHelper::trash('logs.trash', 'JTOOLBAR_TRASH');
-				JToolBarHelper::divider();
+				ToolBarHelper::trash('logs.trash', 'JTOOLBAR_TRASH');
+				ToolBarHelper::divider();
 			}
 		}
 
 		if ($canDo->get('core.admin'))
 		{
-			JToolBarHelper::preferences('com_api');
+			ToolBarHelper::preferences('com_api');
 		}
 
 		if (JVERSION >= '3.0')

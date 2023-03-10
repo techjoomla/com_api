@@ -22,6 +22,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\User;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Utilities\IpHelper; 
 
 /**
  * API_plugin base class
@@ -279,8 +280,10 @@ class ApiPlugin extends CMSPlugin
 	 */
 	final public function fetchResource($resource_name = null)
 	{
+		$app = Factory::getApplication();
+		
 		$this->log();
-
+		
 		if ($resource_name == null)
 		{
 			$resource_name = $this->get('resource');
@@ -309,6 +312,16 @@ class ApiPlugin extends CMSPlugin
 		if (! $this->checkRequestLimit())
 		{
 			ApiError::raiseError(403, Text::_('COM_API_RATE_LIMIT_EXCEEDED'), 'APIUnauthorisedException');
+		}
+
+		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
+		$ips = $this->params->get('ip_address', '');
+
+		if ($ips === ""){}else{
+			if (!IpHelper::IPinList($ip_address,$ips))
+			{
+				ApiError::raiseError(403, Text::_('COM_API_IP_RISRICTED'), 'APIUnauthorisedException');
+			} 
 		}
 
 		$this->lastUsed();
@@ -358,7 +371,6 @@ class ApiPlugin extends CMSPlugin
 	 */
 	final private function checkRequestLimit()
 	{
-		$app = Factory::getApplication();
 		$limit = $this->params->get('request_limit', 0);
 
 		if ($limit == 0)
@@ -366,29 +378,26 @@ class ApiPlugin extends CMSPlugin
 			return true;
 		}
 
-		$hash = $app->input->get('key', '', 'STRING');
-		$ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
-
+		$hash = APIAuthentication::getBearerToken(); 
 		$time = $this->params->get('request_limit_time', 'hour');
-
+		$now = Factory::getDate();
 		switch ($time)
 		{
-			case 'day':
-				$offset = 60 * 60 * 24;
+			case 'day': 
+				$now->modify('-1 day');
 				break;
 
-			case 'minute':
-				$offset = 60;
+			case 'minute': 
+				$now->modify('-1 minute');
 				break;
 
 			case 'hour':
-			default:
-				$offset = 60 * 60;
+			default: 
+				$now->modify('-1 hour');
 				break;
 		}
 
-		$query_time = time() - $offset;
-
+		$query_time = $now->toSql();		
 		$db = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)');
@@ -431,7 +440,7 @@ class ApiPlugin extends CMSPlugin
 		$excludes = $params->get('exclude_log');
 		$raw_post = file_get_contents('php://input');
 		$redactions = explode(",", $excludes);
-		$req_url = Uri::current() . '?' . Factory::getURI()->getQuery();
+		$req_url = Uri::current() . '?' . Uri::getInstance()->getQuery();
 
 		switch ($app->input->server->get('CONTENT_TYPE'))
 		{
@@ -459,7 +468,7 @@ class ApiPlugin extends CMSPlugin
 
 		$table = Table::getInstance('Log', 'ApiTable');
 		$date = Factory::getDate();
-		$table->hash = $app->input->get('key', '', 'STRING');
+		$table->hash = APIAuthentication::getBearerToken();
 		$table->ip_address = $app->input->server->get('REMOTE_ADDR', '', 'STRING');
 		$table->time = $date->toSql();
 		$table->request = $req_url;
@@ -478,10 +487,9 @@ class ApiPlugin extends CMSPlugin
 	 */
 	final private function lastUsed()
 	{
-		$app = Factory::getApplication();
 		$table = Table::getInstance('Key', 'ApiTable');
 
-		$hash = $app->input->get('key', '', 'STRING');
+		$hash = APIAuthentication::getBearerToken();
 		$table->setLastUsed($hash);
 	}
 

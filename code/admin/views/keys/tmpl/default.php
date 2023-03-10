@@ -21,8 +21,7 @@ use Joomla\CMS\Language\Text;
 HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 // Import CSS
-$document = Factory::getDocument();
-$document->addStyleSheet('components/com_api/assets/css/api.css');
+HTMLHelper::_('stylesheet','components/com_api/assets/css/api.css');
 
 $user      = Factory::getUser();
 $userId    = $user->get('id');
@@ -38,29 +37,26 @@ if ($saveOrder)
 }
 
 $sortFields = $this->getSortFields();
-?>
 
-<script type="text/javascript">
+Factory::getDocument()->addScriptDeclaration('
 	Joomla.orderTable = function()
 	{
 		table = document.getElementById("sortTable");
 		direction = document.getElementById("directionTable");
 		order = table.options[table.selectedIndex].value;
-
-		if (order !== '<?php echo $listOrder; ?>')
+		if (order !== "' . $listOrder . '")
 		{
-			dirn = 'asc';
+			dirn = "asc";
 		}
 		else
 		{
 			dirn = direction.options[direction.selectedIndex].value;
 		}
 
-		Joomla.tableOrdering(order, dirn, '');
+		Joomla.tableOrdering(order, dirn, "");
 	}
-</script>
+');
 
-<?php
 if (! empty($this->extra_sidebar))
 {
 	$this->sidebar .= $this->extra_sidebar;

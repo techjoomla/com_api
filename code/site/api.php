@@ -10,8 +10,8 @@
  * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
  */
 defined('_JEXEC') or die('Restricted access');
-
 use Joomla\CMS\Table\Table;
+
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
