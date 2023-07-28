@@ -19,6 +19,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 
 HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+JHtml::stylesheet('administrator/components/com_api/assets/css/api.css');
 
 // Import CSS
 $document = Factory::getDocument();
@@ -73,30 +74,31 @@ if (! empty($this->extra_sidebar))
 		method="post" name="adminForm" id="adminForm">
 
 		<?php if (!empty($this->sidebar)): ?>
-		<div id="j-sidebar-container" class="span2">
+		<div id="j-sidebar-container" class="col-md-2">
 			<?php echo $this->sidebar; ?>
 		</div>
-		<div id="j-main-container" class="span10">
+		<div id="j-main-container" class="col-md-10">
 
 		<?php else : ?>
 			<div id="j-main-container">
 			<?php endif; ?>
-
+			<div  class="row">
+			<div  class="col-md-12">
+			<div class="js-stools api-filter" role="search">
+			<div class="js-stools-container-bar-api-filter ">
 			<div id="filter-bar" class="btn-toolbar">
-				<div class="filter-search btn-group pull-left">
+				<div class="filter-search btn-group ">
 					<input type="text" name="filter_search" id="filter_search"
 					placeholder="<?php echo Text::_('COM_API_KEYS_SEARCH_FILTER'); ?>"
 					value="<?php echo $this->escape($this->state->get('filter.search')); ?>"
-					class="hasTooltip"
+					class="hasTooltip form-control"
 					title="<?php echo Text::_('COM_API_KEYS_SEARCH_FILTER'); ?>" />
-				</div>
-
-				<div class="btn-group pull-left">
-					<button type="submit" class="btn hasTooltip"
+			
+					<button type="submit" class="btn hasTooltip filter-search-bar__button btn btn-primary"
 					title="<?php echo Text::_('JSEARCH_FILTER_SUBMIT'); ?>">
 						<i class="icon-search"></i>
 					</button>
-					<button type="button" class="btn hasTooltip"
+					<button type="button" class="btn hasTooltip filter-search-bar__button btn btn-primary"
 					title="<?php echo Text::_('JSEARCH_FILTER_CLEAR'); ?>"
 					onclick="document.getElementById('filter_search').value='';this.form.submit();">
 						<i class="icon-remove"></i>
@@ -155,6 +157,10 @@ if (! empty($this->extra_sidebar))
 					echo HTMLHelper::_('select.genericlist', $this->publish_states, "filter_state", 'class="input-medium form-select" size="1" onchange="document.adminForm.submit();" name="filter_state"', "value", "text", $this->state->get('filter.state'));
 					?>
 				</div>
+			</div>
+			</div>
+			</div>
+			</div>
 			</div>
 
 			<div class="clearfix"> </div>
