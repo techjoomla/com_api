@@ -19,7 +19,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 
 HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
-JHtml::stylesheet('administrator/components/com_api/assets/css/api.css');
+HTMLHelper::stylesheet('administrator/components/com_api/assets/css/api.css');
 
 // Import CSS
 $document = Factory::getDocument();
