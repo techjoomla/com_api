@@ -347,7 +347,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function checkInternally($resource_name)
+	final function checkInternally($resource_name)
 	{
 		if (! method_exists($this, $resource_name))
 		{
@@ -369,7 +369,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function checkRequestLimit()
+	final function checkRequestLimit()
 	{
 		$limit = $this->params->get('request_limit', 0);
 
@@ -424,7 +424,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function log()
+	final function log()
 	{
 		if (! $this->params->get('log_requests'))
 		{
@@ -485,7 +485,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function lastUsed()
+	final function lastUsed()
 	{
 		$table = Table::getInstance('Key', 'ApiTable');
 
