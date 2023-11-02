@@ -9,6 +9,8 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
+require_once JPATH_SITE . '/components/com_api/libraries/view.php';
+JLoader::register('ApiView', JPATH_SITE . '/components/com_api/libraries/view.php');
 
 /**
  * Cpanel class
