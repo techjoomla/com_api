@@ -1,12 +1,12 @@
 {
     "com_api": {
-        "3.0.2": {
+        "2.5.3": {
             "com_api": {
-                "version": "3.0.2",
+                "version": "2.5.3",
                 "repoUrl": "git@github.com:techjoomla/com_api.git",
-                "branch":  "j4x"
+                "branch":  "release-2.5.3"
             }
-        },        
+        },
         "2.5.2": {
             "com_api": {
                 "version": "2.5.2",
