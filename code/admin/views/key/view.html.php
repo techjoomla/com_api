@@ -14,6 +14,8 @@ use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+
 
 /**
  * View class key form.
@@ -95,11 +97,11 @@ class ApiViewKey extends HtmlView
 
 		if (JVERSION >= '3.0')
 		{
-			JToolBarHelper::title($viewTitle, 'pencil-2');
+			ToolBarHelper::title($viewTitle, 'pencil-2');
 		}
 		else
 		{
-			JToolBarHelper::title($viewTitle, 'key.png');
+			ToolBarHelper::title($viewTitle, 'key.png');
 		}
 
 		if (isset($this->item->checked_out))
@@ -116,28 +118,28 @@ class ApiViewKey extends HtmlView
 		// If not checked out, can save the item.
 		if (! $checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))
 		{
-			JToolBarHelper::apply('key.apply', 'JTOOLBAR_APPLY');
-			JToolBarHelper::save('key.save', 'JTOOLBAR_SAVE');
+			ToolBarHelper::apply('key.apply', 'JTOOLBAR_APPLY');
+			ToolBarHelper::save('key.save', 'JTOOLBAR_SAVE');
 		}
 
 		if (! $checkedOut && ($canDo->get('core.create')))
 		{
-			JToolBarHelper::custom('key.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+			ToolBarHelper::custom('key.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 
 		// If an existing item, can save to a copy.
 		if (! $isNew && $canDo->get('core.create'))
 		{
-			JToolBarHelper::custom('key.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+			ToolBarHelper::custom('key.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 		}
 
 		if (empty($this->item->id))
 		{
-			JToolBarHelper::cancel('key.cancel', 'JTOOLBAR_CANCEL');
+			ToolBarHelper::cancel('key.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
 		{
-			JToolBarHelper::cancel('key.cancel', 'JTOOLBAR_CLOSE');
+			ToolBarHelper::cancel('key.cancel', 'JTOOLBAR_CLOSE');
 		}
 	}
 }

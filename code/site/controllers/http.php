@@ -179,7 +179,13 @@ class ApiControllerHttp extends ApiController
 		{
 			foreach (headers_list() as $header)
 			{
-				header_remove($header);
+				$headerParts = explode(":", $header);
+
+				if (is_array($headerParts) && isset($headerParts[0]))
+				{
+					$headerToRemove = trim($headerParts[0]);
+					header_remove($headerToRemove);
+				}
 			}
 		}
 		//JResponse::clearHeaders();

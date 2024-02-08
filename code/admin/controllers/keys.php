@@ -12,6 +12,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Factory;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Keys list controller class.
@@ -30,7 +31,7 @@ class ApiControllerKeys extends AdminController
 	 *
 	 * @since   3.0
 	 */
-	public function getModel($name = 'key', $prefix = 'ApiModel')
+	public function getModel($name = 'key', $prefix = 'ApiModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
@@ -52,8 +53,8 @@ class ApiControllerKeys extends AdminController
 		$order = $input->post->get('order', array(), 'array');
 
 		// Sanitize the input
-		JArrayHelper::toInteger($pks);
-		JArrayHelper::toInteger($order);
+		ArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($order);
 
 		// Get the model
 		$model = $this->getModel();

@@ -7,13 +7,12 @@
  */
 
 // No direct access.
-defined('_JEXEC') or die();
-
+defined('_JEXEC') or die(); 
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 
 /**
  * View class for list of keys
@@ -97,11 +96,11 @@ class ApiViewKeys extends HtmlView
 
 		if (JVERSION >= '3.0')
 		{
-			JToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'key');
+			ToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'key');
 		}
 		else
 		{
-			JToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'keys.png');
+			ToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'keys.png');
 		}
 
 		// Check if the form exists before showing the add/edit buttons
@@ -111,12 +110,12 @@ class ApiViewKeys extends HtmlView
 		{
 			if ($canDo->get('core.create'))
 			{
-				JToolBarHelper::addNew('key.add', 'JTOOLBAR_NEW');
+				ToolBarHelper::addNew('key.add', 'JTOOLBAR_NEW');
 			}
 
 			if ($canDo->get('core.edit') && isset($this->items[0]))
 			{
-				JToolBarHelper::editList('key.edit', 'JTOOLBAR_EDIT');
+				ToolBarHelper::editList('key.edit', 'JTOOLBAR_EDIT');
 			}
 		}
 
@@ -124,9 +123,9 @@ class ApiViewKeys extends HtmlView
 		{
 			if (isset($this->items[0]->state))
 			{
-				JToolBarHelper::divider();
-				JToolBarHelper::custom('keys.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
-				JToolBarHelper::custom('keys.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+				ToolBarHelper::divider();
+				ToolBarHelper::custom('keys.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
+				ToolBarHelper::custom('keys.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 			}
 		}
 
@@ -135,14 +134,14 @@ class ApiViewKeys extends HtmlView
 		{
 			if ($canDo->get('core.delete'))
 			{
-				JToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'keys.delete', 'JTOOLBAR_DELETE');
-				JToolBarHelper::divider();
+				ToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'keys.delete', 'JTOOLBAR_DELETE');
+				ToolBarHelper::divider();
 			}
 		}
 
 		if ($canDo->get('core.admin'))
 		{
-			JToolBarHelper::preferences('com_api');
+			ToolBarHelper::preferences('com_api');
 		}
 
 		// Set sidebar action - New in 3.0
