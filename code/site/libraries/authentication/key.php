@@ -33,6 +33,13 @@ class ApiAuthenticationKey extends ApiAuthentication
 	public function authenticate()
 	{		 
 		$header_token = $this->getBearerToken(); 
+
+		if (!$header_token)
+		{
+			$app = Factory::getApplication();
+			$header_token = $app->input->get('key');
+		}
+
 		$token        = $this->loadTokenByHash($header_token);
 
 		if (isset($token->state) && $token->state == 1)
