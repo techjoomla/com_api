@@ -12,3 +12,21 @@
 	background-image: url(../images/l_logs.png);
 	padding-left:60px!important;
 }
+.api-filter {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.js-stools-container-bar-api-filter {
+    -webkit-margin-start: auto;
+    margin-inline-start: auto;
+}
+.js-stools-container-bar-api-filter .btn-toolbar>*+* {
+    -webkit-margin-start: 8px;
+    margin-inline-start: 8px;
+}
+.js-stools-container-bar-api-filter .btn-toolbar>* {
+    margin: 5px;
+}

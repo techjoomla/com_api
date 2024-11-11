@@ -7,9 +7,9 @@
  */
 
 defined('_JEXEC') or die();
-
-use Joomla\CMS\MVC\View\HtmlView;
+ 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 
 /**
  * Cpanel class
@@ -54,7 +54,7 @@ class ApiViewCpanel extends ApiView
 	 */
 	private function generateToolbar()
 	{
-		JToolBarHelper::title(Text::_('COM_API') . ': ' . Text::_('COM_API_CONTROL_PANEL'));
-		JToolBarHelper::preferences('com_api', 500, 500);
+		ToolbarHelper::title(Text::_('COM_API') . ': ' . Text::_('COM_API_CONTROL_PANEL'));
+		ToolbarHelper::preferences('com_api', 500, 500);
 	}
 }

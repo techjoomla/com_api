@@ -14,6 +14,7 @@ use Joomla\Data\DataObject;
 use Joomla\CMS\Factory;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Access\Access;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Log Table class
@@ -138,7 +139,7 @@ class ApiTablelog extends Table
 	{
 		if (is_array($this->post_data))
 		{
-			$this->post_data = JArrayHelper::toString($this->post_data, '=', '&');
+			$this->post_data = ArrayHelper::toString($this->post_data, '=', '&');
 		}
 
 		return parent::store($updateNulls = false);

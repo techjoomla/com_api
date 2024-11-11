@@ -7,7 +7,6 @@
  */
 
 defined('JPATH_BASE') or die();
-
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Factory;
 

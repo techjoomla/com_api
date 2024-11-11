@@ -8,9 +8,9 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+use Joomla\CMS\HTML\HTMLHelper;
 
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Factory;
 

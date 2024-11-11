@@ -1,0 +1,74 @@
+language: "en"
+
+early_access: false
+
+reviews:
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  path_filters:
+    # Exclude XML files for manifest and configuration
+    - "!**/*.xml"
+    # Exclude language files (translations)
+    - "!**/language/**/*.ini"
+    # Exclude asset files that don’t need review
+    - "!**/*.svg"
+    - "!**/*.png"
+    - "!**/*.jpg"
+    - "!**/*.jpeg"
+    - "!**/*.gif"
+    - "!**/*.ico"
+    # Exclude compiled and minified files
+    - "!**/*.min.js"
+    - "!**/*.min.css"
+    # Exclude SCSS files if they are intermediate and do not need review
+    - "!**/templates/**/*.scss"
+    # Exclude libraries and vendor code (third-party dependencies)
+    - "!**/node_modules/**"
+    - "!**/vendor/**"
+    # Exclude build files
+    - "!**/build/**"
+    # Exclude configuration files that are environment-specific
+    - "!**/configuration.php"
+  path_instructions:
+      # JavaScript files: front-end interactivity and functionality
+    - path: "**/*.js"
+      instructions: |
+        "Review JavaScript code to ensure:
+        - Adherence to Google JavaScript style guide.
+        - Efficient DOM manipulation suitable for Joomla’s frontend.
+        - Use of Joomla’s core JavaScript libraries where applicable (e.g., jQuery compatibility).
+        - Best practices for asynchronous requests if AJAX is used."
+    - path: "**/*.php"
+      instructions: |
+        "Review the PHP code for Joomla coding standards compliance, ensuring:
+        - Code follows Joomla's coding standards, validated using PHPCS with the Joomla standard.
+        - Adherence to Joomla’s MVC structure for extensions.
+        - Proper use of Joomla’s built-in functions (e.g., Input, Factory).
+        - SQL queries use Joomla’s database API to prevent SQL injection.
+        - Code is well-documented, with clear function and class descriptions."
+    - path: "**/*.ts"
+      instructions: |
+        "Review the JavaScript code for conformity with the Google JavaScript style guide, highlighting any deviations. Ensure that:
+        - The code adheres to best practices associated with nodejs.
+        - The code adheres to best practices associated with nestjs framework.
+        - The code adheres to best practices recommended for performance.
+        - The code adheres to similar naming conventions for controllers, models, services, methods, variables."
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+    drafts: false
+    base_branches:
+    - "master"
+    - "dev"
+    - "j4x"
+    - "feat/*"
+    - "feat-*"
+    - "release-*"
+
+chat:
+  auto_reply: true

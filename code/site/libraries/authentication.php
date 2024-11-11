@@ -191,7 +191,7 @@ abstract class ApiAuthentication extends CMSObject
 	{
 		$app = Factory::getApplication();
 		$key = $app->input->get('key');
-
+		
 		if (isset($_SERVER['HTTP_X_AUTH']) && $_SERVER['HTTP_X_AUTH'])
 		{
 			$authMethod = $_SERVER['HTTP_X_AUTH'];

@@ -28,36 +28,36 @@ if (version_compare(JVERSION, "3.0.0", "ge"))
 HTMLHelper::_('behavior.keepalive');
 
 // Import CSS
-$document = Factory::getDocument();
-$document->addStyleSheet('components/com_api/assets/css/api.css');
-?>
+HTMLHelper::_('stylesheet','components/com_api/assets/css/api.css');
 
-<script type="text/javascript">
-	js = jQuery.noConflict();
-	js(document).ready(function()
-	{
-
-	});
-
-	Joomla.submitbutton = function(task)
-	{
-		if (task == 'key.cancel')
+Factory::getDocument()->addScriptDeclaration(
+	"
+		js = jQuery.noConflict();
+		js(document).ready(function()
 		{
-			Joomla.submitform(task, document.getElementById('key-form'));
-		}
-		else
+	
+		});
+	
+		Joomla.submitbutton = function(task)
 		{
-			if (task != 'key.cancel' && document.formvalidator.isValid(document.getElementById('key-form')))
+			if (task == 'key.cancel')
 			{
 				Joomla.submitform(task, document.getElementById('key-form'));
 			}
 			else
 			{
-				alert('<?php echo $this->escape(Text::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
+				if (task != 'key.cancel' && document.formvalidator.isValid(document.getElementById('key-form')))
+				{
+					Joomla.submitform(task, document.getElementById('key-form'));
+				}
+				else
+				{
+					alert('".$this->escape(Text::_('JGLOBAL_VALIDATION_FORM_FAILED'))."');
+				}
 			}
 		}
-	}
-</script>
+		");
+	?>
 
 <div class="<?php echo COM_APIS_WRAPPER_CLASS; ?> api-key">
 	<form action="<?php echo Route::_('index.php?option=com_api&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="key-form" class="form-validate">

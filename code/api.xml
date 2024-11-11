@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.0" method="upgrade">
+<extension type="component" version="4.0" method="upgrade">
 	<name>com_api</name>
-	<creationDate>11th Oct 2022</creationDate>
+	<creationDate>06th MAR 2023</creationDate>
 	<copyright>Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Techjoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<version>3.0.2</version>
+	<version>4.0.0</version>
 	<description>Multi-purpose REST API framework for Joomla</description>
 	<install>
 		<!-- Runs on install -->
@@ -47,7 +47,9 @@
 		<menu img="components/com_api/assets/images/s_com_api.png">COM_API</menu>
 		<submenu>
 			<menu link="option=com_api&amp;view=keys" view="keys" img="components/com_api/assets/images/s_keys.png" alt="Api/Keys">COM_API_TITLE_KEYS</menu>
+			<menu link="option=com_api&amp;view=logs" view="logs" img="components/com_api/assets/images/s_logs.png" alt="Api/Logs">COM_API_TITLE_LOGS</menu>
 		</submenu>
+		
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
