@@ -1,0 +1,364 @@
+{
+  "api_info": {
+    "name": "Machado Meyer API",
+    "version": "1.0",
+    "base_url": "http://machadomeyer.local",
+    "format": "json",
+    "last_updated": "2025-08-05"
+  },
+  "url_patterns": {
+    "sef": "/{lang}/api/{app}/{resource}[/{id}]",
+    "direct": "/index.php?option=com_api&app={app}&resource={resource}&format=json&lang={lang}"
+  },
+  "global_parameters": {
+    "lang": {
+      "type": "string",
+      "values": ["pt", "en"],
+      "default": "pt",
+      "description": "Language code"
+    },
+    "limit": {
+      "type": "integer",
+      "default": 20,
+      "description": "Number of items per page"
+    },
+    "nolimit": {
+      "type": "integer",
+      "values": [0, 1],
+      "description": "Remove pagination limit (1 = unlimited)"
+    },
+    "offset": {
+      "type": "integer",
+      "default": 0,
+      "description": "Starting offset"
+    },
+    "limitstart": {
+      "type": "integer",
+      "default": 0,
+      "description": "Alias for offset"
+    },
+    "search": {
+      "type": "string",
+      "description": "Search term"
+    },
+    "listOrder": {
+      "type": "string",
+      "values": ["ASC", "DESC"],
+      "default": "DESC",
+      "description": "Sort order"
+    }
+  },
+  "endpoints": {
+    "articles": {
+      "description": "General articles management",
+      "resources": {
+        "articles": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Multiple articles",
+          "parameters": {
+            "id": {
+              "type": "integer",
+              "description": "Specific article ID"
+            },
+            "category_id": {
+              "type": "integer",
+              "description": "Filter by category"
+            },
+            "featured": {
+              "type": "integer",
+              "values": [0, 1],
+              "description": "Featured articles only"
+            },
+            "created_by": {
+              "type": "integer",
+              "description": "Filter by author ID"
+            },
+            "ij": {
+              "type": "integer",
+              "values": [0, 1],
+              "description": "Intelligence Juridica articles"
+            }
+          },
+          "examples": [
+            "/pt/api/articles/articles?featured=1&limit=5",
+            "/pt/api/articles/articles?search=direito&limit=10",
+            "/pt/api/articles/articles?nolimit=1"
+          ]
+        },
+        "article": {
+          "type": "single",
+          "method": "GET",
+          "description": "Single article by ID",
+          "required_parameters": ["id"],
+          "examples": [
+            "/pt/api/articles/article?id=123"
+          ]
+        },
+        "latest": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Latest articles",
+          "parameters": {
+            "catid": {
+              "type": "integer",
+              "description": "Filter by category"
+            }
+          },
+          "examples": [
+            "/pt/api/articles/latest?limit=10",
+            "/pt/api/articles/latest?catid=2&limit=5"
+          ]
+        }
+      }
+    },
+    "articlesij": {
+      "description": "Intelligence Juridica articles",
+      "resources": {
+        "articlesij": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Multiple IJ articles",
+          "parameters": {
+            "id": {
+              "type": "integer",
+              "description": "Specific article ID"
+            },
+            "category_id": {
+              "type": "integer",
+              "description": "IJ subcategory (different from 137)"
+            },
+            "featured": {
+              "type": "integer",
+              "values": [0, 1],
+              "description": "Featured articles"
+            },
+            "created_by": {
+              "type": "integer",
+              "description": "Author ID"
+            },
+            "ij": {
+              "type": "integer",
+              "values": [0, 1],
+              "description": "Simplified format"
+            },
+            "date_filtering": {
+              "type": "string",
+              "values": ["range"],
+              "description": "Date filter type"
+            },
+            "start_date_range": {
+              "type": "string",
+              "format": "YYYY-MM-DD",
+              "description": "Start date for range filter"
+            },
+            "end_date_range": {
+              "type": "string",
+              "format": "YYYY-MM-DD",
+              "description": "End date for range filter"
+            }
+          },
+          "examples": [
+            "/pt/api/articlesij/articlesij?nolimit=1",
+            "/pt/api/articlesij/articlesij?featured=1&limit=10",
+            "/pt/api/articlesij/articlesij?date_filtering=range&start_date_range=2024-01-01&end_date_range=2024-12-31"
+          ]
+        },
+        "articleij": {
+          "type": "single",
+          "method": "GET",
+          "description": "Single IJ article by ID",
+          "required_parameters": ["id"],
+          "examples": [
+            "/pt/api/articlesij/articleij?id=456"
+          ]
+        },
+        "latest": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Latest IJ articles",
+          "parameters": {
+            "categoryId": {
+              "type": "integer",
+              "description": "IJ subcategory"
+            }
+          },
+          "examples": [
+            "/pt/api/articlesij/latest?limit=10"
+          ]
+        },
+        "category": {
+          "type": "collection",
+          "method": "GET",
+          "description": "IJ articles by category",
+          "required_parameters": ["category_id"],
+          "examples": [
+            "/pt/api/articlesij/category?category_id=150&limit=20"
+          ]
+        }
+      }
+    },
+    "advogados": {
+      "description": "Lawyers management",
+      "resources": {
+        "advogados": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Multiple lawyers",
+          "parameters": {
+            "id": {
+              "type": "integer",
+              "description": "Specific lawyer ID"
+            },
+            "estado": {
+              "type": "string",
+              "description": "Filter by state"
+            },
+            "escritorio": {
+              "type": "string",
+              "description": "Filter by office"
+            },
+            "area_de_atuacao": {
+              "type": "string",
+              "description": "Filter by practice area"
+            },
+            "cargo": {
+              "type": "string",
+              "description": "Filter by position"
+            },
+            "codigo": {
+              "type": "string",
+              "description": "Lawyer unique code"
+            }
+          },
+          "examples": [
+            "/pt/api/advogados/advogados?estado=SP&limit=20",
+            "/pt/api/advogados/advogados?area_de_atuacao=Corporativo&limit=15",
+            "/pt/api/advogados/advogados?nolimit=1"
+          ]
+        },
+        "advogado": {
+          "type": "single",
+          "method": "GET",
+          "description": "Single lawyer by ID or code",
+          "parameters": {
+            "id": {
+              "type": "integer",
+              "description": "Lawyer ID"
+            },
+            "codigo": {
+              "type": "string",
+              "description": "Lawyer unique code"
+            }
+          },
+          "required_one_of": ["id", "codigo"],
+          "examples": [
+            "/pt/api/advogados/advogado?id=123",
+            "/pt/api/advogados/advogado?codigo=ABC123"
+          ]
+        },
+        "area": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Practice areas",
+          "examples": [
+            "/pt/api/advogados/area?nolimit=1"
+          ]
+        }
+      }
+    },
+    "categories": {
+      "description": "Categories management",
+      "resources": {
+        "categories": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Multiple categories",
+          "parameters": {
+            "parent_id": {
+              "type": "integer",
+              "description": "Filter by parent category"
+            },
+            "level": {
+              "type": "integer",
+              "description": "Hierarchical level"
+            }
+          },
+          "examples": [
+            "/pt/api/categories/categories?nolimit=1",
+            "/pt/api/categories/categories?parent_id=1&limit=15"
+          ]
+        }
+      }
+    },
+    "users": {
+      "description": "User management",
+      "authentication_required": true,
+      "resources": {
+        "users": {
+          "type": "collection",
+          "method": "GET",
+          "description": "Multiple users",
+          "required_parameters": ["token"],
+          "examples": [
+            "/pt/api/users/users?token=l2ZkZUO2oOJxp3Fk6aZ4&limit=10"
+          ]
+        }
+      }
+    },
+    "login": {
+      "description": "Authentication",
+      "resources": {
+        "login": {
+          "type": "action",
+          "method": "POST",
+          "description": "User authentication",
+          "required_parameters": ["username", "password"],
+          "examples": [
+            "/pt/api/login/login?username=admin&password=senha123"
+          ]
+        }
+      }
+    }
+  },
+  "response_format": {
+    "success": {
+      "structure": {
+        "success": true,
+        "data": {
+          "results": "array",
+          "total": "integer"
+        }
+      }
+    },
+    "error": {
+      "structure": {
+        "success": false,
+        "message": "string",
+        "err_code": "integer",
+        "err_msg": "string"
+      }
+    }
+  },
+  "http_status_codes": {
+    "200": "Success",
+    "303": "Redirect (SEF URLs)",
+    "400": "Bad Request",
+    "404": "Resource Not Found",
+    "500": "Internal Server Error"
+  },
+  "common_use_cases": {
+    "sync_all_articles": "/pt/api/articles/articles?nolimit=1",
+    "featured_homepage": "/pt/api/articles/articles?featured=1&limit=5",
+    "search_articles": "/pt/api/articles/articles?search={term}&limit=10",
+    "lawyer_directory": "/pt/api/advogados/advogados?nolimit=1",
+    "lawyers_by_state": "/pt/api/advogados/advogados?estado={state}&limit=20",
+    "ij_articles_range": "/pt/api/articlesij/articlesij?date_filtering=range&start_date_range={start}&end_date_range={end}",
+    "latest_news": "/pt/api/articles/latest?limit=20"
+  },
+  "debugging": {
+    "log_file": "administrator/logs/apisef_debug.log",
+    "clear_cache": "rm -rf administrator/cache/* cache/* tmp/*",
+    "test_connectivity": "curl -I {base_url}/pt/api/articles/latest?limit=1"
+  }
+}

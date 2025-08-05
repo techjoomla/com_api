@@ -64,6 +64,22 @@ class ApiPlugin extends CMSPlugin
 	public $customAttributes = null;
 
 	/**
+	 * Component name for the plugin
+	 *
+	 * @var    string
+	 * @since  1.0.0
+	 */
+	public $component = '';
+
+	/**
+	 * Resource name for the plugin
+	 *
+	 * @var    string
+	 * @since  1.0.0
+	 */
+	public $resource = '';
+
+	/**
 	 * create instance
 	 *
 	 * @param   STRING  $name  name
@@ -334,7 +350,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function checkInternally($resource_name)
+	private function checkInternally($resource_name)
 	{
 		if (! method_exists($this, $resource_name))
 		{
@@ -356,7 +372,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function checkRequestLimit()
+	private function checkRequestLimit()
 	{
 		$app = Factory::getApplication();
 		$limit = $this->params->get('request_limit', 0);
@@ -389,7 +405,7 @@ class ApiPlugin extends CMSPlugin
 
 		$query_time = time() - $offset;
 
-		$db = Factory::getDBO();
+		$db = Factory::getContainer()->get('DatabaseDriver');
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)');
 		$query->from($db->quoteName('#__api_logs'));
@@ -415,7 +431,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function log()
+	private function log()
 	{
 		if (! $this->params->get('log_requests'))
 		{
@@ -431,7 +447,7 @@ class ApiPlugin extends CMSPlugin
 		$excludes = $params->get('exclude_log');
 		$raw_post = file_get_contents('php://input');
 		$redactions = explode(",", $excludes);
-		$req_url = Uri::current() . '?' . Factory::getURI()->getQuery();
+		$req_url = Uri::current() . '?' . Factory::getApplication()->input->server->getString('QUERY_STRING', '');
 
 		switch ($app->input->server->get('CONTENT_TYPE'))
 		{
@@ -476,7 +492,7 @@ class ApiPlugin extends CMSPlugin
 	 *
 	 * @since 1.0
 	 */
-	final private function lastUsed()
+	private function lastUsed()
 	{
 		$app = Factory::getApplication();
 		$table = Table::getInstance('Key', 'ApiTable');
@@ -488,18 +504,24 @@ class ApiPlugin extends CMSPlugin
 	/**
 	 * Setter method for $response instance variable
 	 *
-	 * @param   STRING  $data  The plugin's output
+	 * @param   mixed  $data  The plugin's output
 	 *
-	 * @return  mixed
+	 * @return  void
 	 *
-	 * @since 1.0
+	 * @since   1.0.0
 	 */
-	public function setResponse($data)
+	public function setResponse($data): void
 	{
-		// For backward compatability -- TODO
-		if (!isset($data->result) && !empty($data))
+		// For backward compatibility -- Convert array to object
+		if (is_array($data) && !isset($data['result']) && !empty($data))
 		{
-			$data->result = clone $data;
+			$result = (object) $data;
+			$data = (object) ['result' => $result];
+		}
+		elseif (is_object($data) && !isset($data->result) && !empty($data))
+		{
+			$result = clone $data;
+			$data = (object) ['result' => $result];
 		}
 
 		$this->set('response', $data);

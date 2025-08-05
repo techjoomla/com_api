@@ -14,6 +14,8 @@ use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Factory;
 
 /**
  * View class for list of keys
@@ -73,10 +75,8 @@ class ApiViewKeys extends HtmlView
 
 		$this->addToolbar();
 
-		if (JVERSION >= '3.0')
-		{
-			$this->sidebar = JHtmlSidebar::render();
-		}
+		// Não precisamos mais do sidebar no Joomla 4/5
+		// $this->sidebar = JHtmlSidebar::render();
 
 		parent::display($tpl);
 	}
@@ -95,14 +95,7 @@ class ApiViewKeys extends HtmlView
 		$state = $this->get('State');
 		$canDo = ApiHelper::getActions($state->get('filter.category_id'));
 
-		if (JVERSION >= '3.0')
-		{
-			JToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'key');
-		}
-		else
-		{
-			JToolBarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'keys.png');
-		}
+		ToolbarHelper::title(Text::_('COM_API_TITLE_KEYS'), 'key');
 
 		// Check if the form exists before showing the add/edit buttons
 		$formPath = JPATH_COMPONENT_ADMINISTRATOR . '/views/key';
@@ -111,12 +104,12 @@ class ApiViewKeys extends HtmlView
 		{
 			if ($canDo->get('core.create'))
 			{
-				JToolBarHelper::addNew('key.add', 'JTOOLBAR_NEW');
+				ToolbarHelper::addNew('key.add', 'JTOOLBAR_NEW');
 			}
 
 			if ($canDo->get('core.edit') && isset($this->items[0]))
 			{
-				JToolBarHelper::editList('key.edit', 'JTOOLBAR_EDIT');
+				ToolbarHelper::editList('key.edit', 'JTOOLBAR_EDIT');
 			}
 		}
 
@@ -124,9 +117,9 @@ class ApiViewKeys extends HtmlView
 		{
 			if (isset($this->items[0]->state))
 			{
-				JToolBarHelper::divider();
-				JToolBarHelper::custom('keys.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
-				JToolBarHelper::custom('keys.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+				ToolbarHelper::divider();
+				ToolbarHelper::custom('keys.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
+				ToolbarHelper::custom('keys.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 			}
 		}
 
@@ -135,22 +128,18 @@ class ApiViewKeys extends HtmlView
 		{
 			if ($canDo->get('core.delete'))
 			{
-				JToolBarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'keys.delete', 'JTOOLBAR_DELETE');
-				JToolBarHelper::divider();
+				ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'keys.delete', 'JTOOLBAR_DELETE');
+				ToolbarHelper::divider();
 			}
 		}
 
 		if ($canDo->get('core.admin'))
 		{
-			JToolBarHelper::preferences('com_api');
+			ToolbarHelper::preferences('com_api');
 		}
 
-		// Set sidebar action - New in 3.0
-		if (version_compare(JVERSION, '3.0.0', 'ge'))
-		{
-			JHtmlSidebar::setAction('index.php?option=com_api&view=keys');
-			$this->extra_sidebar = '';
-		}
+		// Sidebar não é mais necessário no Joomla 4/5
+		$this->extra_sidebar = '';
 	}
 
 	/**

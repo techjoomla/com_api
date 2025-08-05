@@ -1,11 +1,10 @@
 <?php
 /**
- * @package    Com_Api
- * @copyright  Copyright (C) 2009-2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link       http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API)
- * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
+ * @package     Joomla.Component
+ * @subpackage  com_api
+ *
+ * @copyright   Copyright (C) 2024 Machado Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -14,24 +13,37 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Authentication\Authentication;
 use Joomla\CMS\User\UserHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
 
 /**
- * ApiAuthenticationLogin class.
+ * API Login Authentication class
  *
- * @since  1.6
+ * @since  1.0.0
  */
 class ApiAuthenticationLogin extends ApiAuthentication
 {
-	protected $auth_method     = null;
+	/**
+	 * Authentication method
+	 *
+	 * @var    string
+	 * @since  1.0.0
+	 */
+	protected $auth_method = null;
 
+	/**
+	 * Domain checking enabled
+	 *
+	 * @var    bool
+	 * @since  1.0.0
+	 */
 	protected $domain_checking = null;
 
 	/**
 	 * Method to check authentication
 	 *
-	 * @return  int
+	 * @return  int  User ID on success, false on failure
 	 *
-	 * @since	1.6
+	 * @since   1.0.0
 	 */
 	public function authenticate()
 	{
@@ -42,10 +54,9 @@ class ApiAuthenticationLogin extends ApiAuthentication
 
 		$userId = $this->loadUserByCredentials($username, $password);
 
-		// Remove username and password from request for when it gets logged
-		$uri = Uri::getInstance();
-		$uri->delVar('username');
-		$uri->delVar('password');
+		// Remove username and password from request for security
+		$app->input->set('username', null);
+		$app->input->set('password', null);
 
 		if ($userId === false)
 		{
@@ -69,10 +80,9 @@ class ApiAuthenticationLogin extends ApiAuthentication
 	 */
 	public function loadUserByCredentials($user, $pass)
 	{
-
 		$authenticate = Authentication::getInstance();
 
-		$response = $authenticate->authenticate(array('username' => $user, 'password' => $pass), $options = array());
+		$response = $authenticate->authenticate(['username' => $user, 'password' => $pass], []);
 
 		if ($response->status === Authentication::STATUS_SUCCESS)
 		{
@@ -80,8 +90,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 
 			if ($userId === false)
 			{
-				$this->setError(JError::getError());
-
+				$this->setError(Text::_('JERROR_LOGIN_DENIED'));
 				return false;
 			}
 		}
@@ -93,7 +102,7 @@ class ApiAuthenticationLogin extends ApiAuthentication
 			}
 			else
 			{
-				$this->setError($response->getError());
+				$this->setError(Text::_('JERROR_AUTHENTICATION_FAILED'));
 			}
 
 			return false;

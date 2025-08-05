@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+	<name>PLG_SYSTEM_APISEF</name>
+	<author>Uziel Almeida Oliveira via Ponto Mega</author>
+	<creationDate>2025-08-05</creationDate>
+	<copyright>Copyright (C) 2025 Ponto Mega. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>contato@pontomega.com.br</authorEmail>
+	<authorUrl>https://pontomega.com.br</authorUrl>
+	<version>5.0.0</version>
+	<description>PLG_SYSTEM_APISEF_DESCRIPTION</description>
+	
+	<files>
+		<filename plugin="apisef">apisef.php</filename>
+		<filename>script.php</filename>
+		<folder>language</folder>
+	</files>
+	
+	<languages folder="language">
+		<language tag="en-GB">en-GB/plg_system_apisef.ini</language>
+		<language tag="en-GB">en-GB/plg_system_apisef.sys.ini</language>
+		<language tag="pt-BR">pt-BR/plg_system_apisef.ini</language>
+		<language tag="pt-BR">pt-BR/plg_system_apisef.sys.ini</language>
+	</languages>
+	
+	<scriptfile>script.php</scriptfile>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="enabled"
+					type="radio"
+					label="PLG_SYSTEM_APISEF_ENABLED_LABEL"
+					description="PLG_SYSTEM_APISEF_ENABLED_DESC"
+					default="1"
+					class="btn-group btn-group-yesno"
+					>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+					name="default_lang"
+					type="list"
+					label="PLG_SYSTEM_APISEF_DEFAULT_LANG_LABEL"
+					description="PLG_SYSTEM_APISEF_DEFAULT_LANG_DESC"
+					default="pt"
+					>
+					<option value="pt">Português</option>
+					<option value="en">English</option>
+				</field>
+			</fieldset>
+			<fieldset name="limits" label="PLG_SYSTEM_APISEF_LIMITS_FIELDSET">
+				<field
+					name="default_limit"
+					type="number"
+					label="PLG_SYSTEM_APISEF_DEFAULT_LIMIT_LABEL"
+					description="PLG_SYSTEM_APISEF_DEFAULT_LIMIT_DESC"
+					default="50"
+					min="1"
+					max="1000"
+					/>
+				<field
+					name="advogados_limit"
+					type="number"
+					label="PLG_SYSTEM_APISEF_ADVOGADOS_LIMIT_LABEL"
+					description="PLG_SYSTEM_APISEF_ADVOGADOS_LIMIT_DESC"
+					default="50"
+					min="1"
+					max="1000"
+					/>
+				<field
+					name="articles_limit"
+					type="number"
+					label="PLG_SYSTEM_APISEF_ARTICLES_LIMIT_LABEL"
+					description="PLG_SYSTEM_APISEF_ARTICLES_LIMIT_DESC"
+					default="50"
+					min="1"
+					max="1000"
+					/>
+				<field
+					name="categories_limit"
+					type="number"
+					label="PLG_SYSTEM_APISEF_CATEGORIES_LIMIT_LABEL"
+					description="PLG_SYSTEM_APISEF_CATEGORIES_LIMIT_DESC"
+					default="50"
+					min="1"
+					max="1000"
+					/>
+				<field
+					name="unlimited_mode"
+					type="radio"
+					label="PLG_SYSTEM_APISEF_UNLIMITED_MODE_LABEL"
+					description="PLG_SYSTEM_APISEF_UNLIMITED_MODE_DESC"
+					default="0"
+					class="btn-group btn-group-yesno"
+					>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0.0" type="plugin" group="api" method="upgrade">
+    <name>PLG_API_USERS</name>
+    <version>1.8.7</version>
+    <creationDate>10/11/2014</creationDate>
+    <author>Techjoomla</author> 
+    <authorEmail>extensions@techjoomla.com</authorEmail> 
+    <authorUrl>www.techjoomla.com</authorUrl> 
+    <copyright>Techjoomla. All rights reserved.</copyright> 
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <description>PLG_API_USERS_DESCRIPTION</description>
+    <files>
+        <filename plugin="users">users.php</filename>
+        <folder>users</folder> 
+    </files>
+    <languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_api_users.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_api_users.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+					<field name="fb_login" type="radio" default="0" label="Allow facebook login" description="If you select yes, facebook login option enable at app login">
+						<option value="0">No</option>
+						<option value="1">Yes</option>
+					</field>
+					<field name="fb_app_id" type="text" default="" label="Facebook Application ID" description="Facebook Application ID" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

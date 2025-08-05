@@ -32,9 +32,9 @@ class ApiAuthenticationUser extends ApiAuthentication
 		$user = $this->loadUserByCredentials( $username, $password );
 
 		// Remove username and password from request for when it gets logged
-		$uri = Factory::getURI();
-		$uri->delVar('username');
-		$uri->delVar('password');
+		$app = Factory::getApplication();
+		$app->input->set('username', null);
+		$app->input->set('password', null);
 
 		if ( $user === false ) {
 			// Errors are already set, just return
@@ -53,7 +53,7 @@ class ApiAuthenticationUser extends ApiAuthentication
 		if ($response->status === Authentication::STATUS_SUCCESS) {
 			$instance = User::getInstance($response->username);
 			if ( $instance === false ) {
-				$this->setError( JError::getError() );
+				$this->setError( 'User instance creation failed' );
 				return false;
 			}
 		} else {

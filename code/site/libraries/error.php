@@ -1,17 +1,33 @@
 <?php
 /**
- * @package com_api
- * @copyright Copyright (C) 2009 2014 Techjoomla, Tekdi Technologies Pvt. Ltd. All rights reserved.
- * @license GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link http://techjoomla.com
- * Work derived from the original RESTful API by Techjoomla (https://github.com/techjoomla/Joomla-REST-API) 
- * and the com_api extension by Brian Edgerton (http://www.edgewebworks.com)
+ * @package     Joomla.Component
+ * @subpackage  com_api
+ *
+ * @copyright   Copyright (C) 2024 Machado Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+defined('_JEXEC') or die;
+
+/**
+ * API Error Handler
+ *
+ * @since  1.0.0
+ */
 class ApiError
 {
-	public static function raiseError($code, $msg, $exception_class = 'APIException')
+	/**
+	 * Raise an API error
+	 *
+	 * @param   int     $code             Error code
+	 * @param   string  $msg              Error message
+	 * @param   string  $exceptionClass   Exception class to use
+	 *
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	public static function raiseError(int $code, string $msg, string $exceptionClass = 'APIException'): void
 	{
-		throw new $exception_class($msg, $code);
+		throw new $exceptionClass($msg, $code);
 	}
 }

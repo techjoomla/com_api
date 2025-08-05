@@ -13,7 +13,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 
 // Access check.
-if (!Factory::getUser()->authorise('core.manage', 'com_api'))
+if (!Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_api'))
 {
 	throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
 }

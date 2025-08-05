@@ -1,24 +1,25 @@
 <?php
 /**
- * @package    Com.Api
+ * @package     Joomla.Administrator
+ * @subpackage  com_api
  *
- * @copyright  Copyright (C) 2005 - 2017 Techjoomla, Techjoomla Pvt. Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2024 Machado Meyer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 use Joomla\CMS\Table\Table;
 use Joomla\Data\DataObject;
 use Joomla\CMS\Factory;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Access\Access;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Log Table class
  *
- * @since  1.0
+ * @since  1.0.0
  */
 class ApiTablelog extends Table
 {
@@ -27,7 +28,7 @@ class ApiTablelog extends Table
 	 *
 	 * @param   DataObjectbaseDriver  &$db  Database object
 	 *
-	 * @since  1.0
+	 * @since  1.0.0
 	 */
 	public function __construct(&$db)
 	{
@@ -44,7 +45,7 @@ class ApiTablelog extends Table
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   1.0
+	 * @since   1.0.0
 	 * @throws  \InvalidArgumentException
 	 */
 	public function bind($array, $ignore = '')
@@ -54,7 +55,7 @@ class ApiTablelog extends Table
 
 		if ($array['id'] == 0)
 		{
-			$array['created_by'] = Factory::getUser()->id;
+			$array['created_by'] = Factory::getApplication()->getIdentity()->id;
 		}
 
 		if (isset($array['params']) && is_array($array['params']))
@@ -71,7 +72,7 @@ class ApiTablelog extends Table
 			$array['metadata'] = (string) $registry;
 		}
 
-		if (! Factory::getUser()->authorise('core.admin', 'com_api.key.' . $array['id']))
+		if (! Factory::getApplication()->getIdentity()->authorise('core.admin', 'com_api.key.' . $array['id']))
 		{
 			$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_api/access.xml', "/access/section[@name='key']/");
 			$defaultActions = Access::getAssetRules('com_api.key.' . $array['id'])->getData();
@@ -132,16 +133,45 @@ class ApiTablelog extends Table
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   1.0
+	 * @since   1.0.0
 	 */
 	public function store($updateNulls = false)
 	{
 		if (is_array($this->post_data))
 		{
-			$this->post_data = JArrayHelper::toString($this->post_data, '=', '&');
+			// Convert array to query string format (replacement for JArrayHelper::toString)
+			$this->post_data = $this->arrayToString($this->post_data, '=', '&');
 		}
 
-		return parent::store($updateNulls = false);
+		return parent::store($updateNulls);
+	}
+
+	/**
+	 * Convert array to string representation (replacement for JArrayHelper::toString)
+	 *
+	 * @param   array   $array      The array to convert
+	 * @param   string  $innerGlue  Glue for inner elements
+	 * @param   string  $outerGlue  Glue for outer elements
+	 *
+	 * @return  string  String representation of array
+	 *
+	 * @since   1.0.0
+	 */
+	private function arrayToString(array $array, string $innerGlue = '=', string $outerGlue = '&'): string
+	{
+		$output = [];
+		
+		foreach ($array as $key => $value)
+		{
+			if (is_array($value))
+			{
+				$value = $this->arrayToString($value, $innerGlue, $outerGlue);
+			}
+			
+			$output[] = $key . $innerGlue . $value;
+		}
+		
+		return implode($outerGlue, $output);
 	}
 
 	/**

@@ -36,7 +36,7 @@ class ApiAuthenticationSession extends ApiAuthentication
 	public function authenticate()
 	{
 		$app = Factory::getApplication();
-		$user = Factory::getUser();
+		$user = $app->getIdentity();
 
 		if (! $user->id)
 		{

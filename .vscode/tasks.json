@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "API Framework - Preparar e Executar",
+			"type": "shell",
+			"command": "echo",
+			"args": [
+				"Preparando o framework API para Joomla 5..."
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

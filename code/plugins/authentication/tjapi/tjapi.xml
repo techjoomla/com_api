@@ -8,7 +8,7 @@
 	<creationDate>11th Oct 2022</creationDate>
 	<copyright>Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<version>3.0.2</version>
+	<version>5.0.0</version>
 
 	<files>
 		<filename plugin="tjapi">tjapi.php</filename>

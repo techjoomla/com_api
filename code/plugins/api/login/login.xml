@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="5.0" type="plugin" group="api" method="upgrade">
+	<name>plg_api_login</name>
+	<author>Techjoomla</author>
+	<creationDate>2024</creationDate>
+	<copyright>Copyright (C) 2009-2014 Techjoomla. All rights reserved.</copyright>
+	<license>GNU GPLv2 &lt;http://www.gnu.org/licenses/old-licenses/gpl-2.0.html&gt;</license>
+	<authorEmail>extensions@techjoomla.com</authorEmail>
+	<authorUrl>http://techjoomla.com</authorUrl>
+	<version>5.0.0</version>
+	<description>PLG_API_LOGIN_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="login">login.php</filename>
+		<folder>login</folder>
+	</files>
+	<languages>
+		<language tag="en-GB">languages/en-GB/en-GB.plg_api_login.ini</language>
+		<language tag="en-GB">languages/en-GB/en-GB.plg_api_login.sys.ini</language>
+	</languages>
+</extension>

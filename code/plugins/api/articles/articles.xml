@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0.0" type="plugin" group="api" method="upgrade">
+    <name>Api - Articles</name>
+    <version>1.0</version>
+    <creationDate>Sept 2015</creationDate>
+    <author>AppCarvers</author>
+    <authorEmail>support@appcarvers.com</authorEmail>
+    <authorUrl>http://www.appcarvers.com</authorUrl>
+    <copyright>Appcarvers. All rights reserved.</copyright> 
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <description>This plugin use for get data from joomla site.</description>
+    
+    <files>
+        <filename plugin="articles">articles.php</filename>
+        <filename >articles/category.php</filename>
+        <folder>articles</folder> 
+    </files>
+    
+    <config>
+		<fields name="params">
+			<fieldset name="basic">
+<!--				<field
+					name="catid"
+					type="category"
+					extension="com_content"
+					multiple="true"
+					size="10"
+					default=""
+					label="JCATEGORY"
+					description="MOD_LATEST_NEWS_FIELD_CATEGORY_DESC"
+				>
+					<option value="">JOPTION_ALL_CATEGORIES</option>
+				</field>
+-->
+
+				<field
+					name="count"
+					type="text"
+					default="5"
+					label="Count"
+					description="Number of article show in api" />
+				
+				<field
+					name="take_action"
+					type="text"
+					default="132"
+					label="Take action menu id"
+					description="This menu id use for fetch categories assign to this menu" />
+					
+				<field
+					name="opportunities"
+					type="text"
+					default="357"
+					label="Opportunites menu id"
+					description="This menu id use for fetch categories assign to this menu" />
+<!--
+				<field
+					name="show_featured"
+					type="list"
+					default=""
+					label="Show featured article"
+					description="show "
+				>
+					<option value="">JSHOW</option>
+					<option value="0">JHIDE</option>
+					<option value="1">Show only featured article</option>
+				</field>
+
+				<field
+					name="ordering"
+					type="list"
+					default="published"
+					label="Order"
+					description="">
+					
+					<option value="c_dsc">Recently Added First</option>
+					<option value="m_dsc">Recently Modified First</option>
+					<option value="p_dsc">Recently Published First</option>
+					<option value="mc_dsc">Recently Touched First</option>
+					<option	value="random">Random Articles</option>
+				</field>
+
+				<field
+					name="user_id"
+					type="list"
+					default="0"
+					label="Authors"
+					description="Filter by author"
+				>
+					<option value="0">Anyone</option>
+					<option value="by_me">Added or modified by me</option>
+					<option value="not_me">Not added or modified by me</option>
+				</field>
+-->
+			</fieldset>
+		<!--
+			<fieldset name="advanced">
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
+
+				<field
+					name="moduleclass_sfx"
+					type="textarea" rows="3"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+
+				<field
+					name="cache"
+					type="list"
+					default="1"
+					label="COM_MODULES_FIELD_CACHING_LABEL"
+					description="COM_MODULES_FIELD_CACHING_DESC"
+				>
+					<option value="1">JGLOBAL_USE_GLOBAL</option>
+					<option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+				</field>
+
+				<field
+					name="cache_time"
+					type="text"
+					default="900"
+					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
+					description="COM_MODULES_FIELD_CACHE_TIME_DESC" />
+
+				<field
+					name="cachemode"
+					type="hidden"
+					default="static"
+				>
+					<option value="static"></option>
+				</field>
+			</fieldset>
+			-->
+		</fields>
+	</config>
+    
+</extension>

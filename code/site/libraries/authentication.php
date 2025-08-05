@@ -362,7 +362,7 @@ abstract class ApiAuthentication extends CMSObject
 		// If username or emailid exists ?
 		if ($searchFor)
 		{
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get('DatabaseDriver');
 			$query = $db->getQuery(true)
 				->select($db->quoteName('id'))
 				->from($db->quoteName('#__users'))

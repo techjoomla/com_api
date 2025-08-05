@@ -32,6 +32,34 @@ class APIRouter extends RouterBase
 	{
 		$segments = array();
 
+		// New SEF API structure: {lang}/api/{app}/{resource}
+		if (isset($query['app']) && isset($query['format']) && $query['format'] === 'raw')
+		{
+			// Get language from query or default to 'pt'
+			$lang = isset($query['lang']) ? $query['lang'] : 'pt';
+			
+			$segments[0] = $lang;
+			$segments[1] = 'api';
+			$segments[2] = $query['app'];
+			$segments[3] = $query['resource'];
+
+			// Handle ID or codigo parameters
+			if (isset($query['id']))
+			{
+				$segments[3] .= '/' . $query['id'];
+				unset($query['id']);
+			}
+			elseif (isset($query['codigo']))
+			{
+				$segments[3] .= '/' . $query['codigo'];
+				unset($query['codigo']);
+			}
+
+			unset($query['app'], $query['resource'], $query['lang'], $query['format']);
+			return $segments;
+		}
+
+		// Legacy structure for backward compatibility
 		if (isset($query['app']))
 		{
 			$segments[0] = $query['app'];
@@ -80,6 +108,34 @@ class APIRouter extends RouterBase
 	{
 		$vars = array();
 
+		// Check if it's the new SEF API format: {lang}/api/{app}/{resource}
+		if (count($segments) >= 4 && $segments[1] === 'api')
+		{
+			$vars['format'] = 'raw';
+			$vars['lang'] = $segments[0]; // pt or en
+			$vars['app'] = $segments[2];
+			
+			// Parse resource and potential ID/codigo
+			$resourceParts = explode('/', $segments[3]);
+			$vars['resource'] = $resourceParts[0];
+			
+			if (isset($resourceParts[1]) && !empty($resourceParts[1]))
+			{
+				// Check if it's numeric (ID) or alphanumeric (codigo)
+				if (is_numeric($resourceParts[1]))
+				{
+					$vars['id'] = $resourceParts[1];
+				}
+				else
+				{
+					$vars['codigo'] = $resourceParts[1];
+				}
+			}
+			
+			return $vars;
+		}
+
+		// Legacy parsing for backward compatibility
 		if (in_array($segments[0], $this->views))
 		{
 			$vars['view'] = $segments[0];
@@ -89,7 +145,7 @@ class APIRouter extends RouterBase
 				$vars['layout'] = $segments[1];
 			}
 
-			if ($vars['layout'] == 'edit' && isset($segments[2]))
+			if (isset($vars['layout']) && $vars['layout'] == 'edit' && isset($segments[2]))
 			{
 				$vars['id'] = $segments[2];
 			}

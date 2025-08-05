@@ -171,7 +171,7 @@ class Com_ApiInstallerScript
 	{
 		$src = $parent->getParent()->getPath('source');
 
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get('DatabaseDriver');
 
 		$status = new CMSObject;
 		$status->modules = array();

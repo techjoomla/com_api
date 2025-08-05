@@ -15,6 +15,8 @@ use Joomla\CMS\Factory;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Access\Access;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\User\UserFactoryInterface;
 
 /**
  * key Table class
@@ -62,14 +64,14 @@ class ApiTablekey extends Table
 		$input = Factory::getApplication()->input;
 		$task = $input->getString('task', '');
 
-		if (($task == 'save' || $task == 'apply') && (! Factory::getUser()->authorise('core.edit.state', 'com_api') && $array['state'] == 1))
+		if (($task == 'save' || $task == 'apply') && (! Factory::getApplication()->getIdentity()->authorise('core.edit.state', 'com_api') && $array['state'] == 1))
 		{
 			$array['state'] = 0;
 		}
 
 		if ($array['id'] == 0)
 		{
-			$array['created_by'] = Factory::getUser()->id;
+			$array['created_by'] = Factory::getApplication()->getIdentity()->id;
 		}
 
 		if (isset($array['params']) && is_array($array['params']))
@@ -86,7 +88,7 @@ class ApiTablekey extends Table
 			$array['metadata'] = (string) $registry;
 		}
 
-		if (! Factory::getUser()->authorise('core.admin', 'com_api.key.' . $array['id']))
+		if (! Factory::getApplication()->getIdentity()->authorise('core.admin', 'com_api.key.' . $array['id']))
 		{
 			$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_api/access.xml', "/access/section[@name='key']/");
 			$defaultActions = Access::getAssetRules('com_api.key.' . $array['id'])->getData();
@@ -150,7 +152,8 @@ class ApiTablekey extends Table
 	{
 		if (! $this->userid)
 		{
-			JError::raiseWarning(100, Text::_('COM_API_KEY_NO_USER'));
+			Log::add(Text::_('COM_API_KEY_NO_USER'), Log::WARNING, 'com_api');
+			Factory::getApplication()->enqueueMessage(Text::_('COM_API_KEY_NO_USER'), 'warning');
 
 			return false;
 		}
